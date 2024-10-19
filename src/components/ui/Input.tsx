@@ -12,6 +12,8 @@ interface InputProps {
   required?: boolean;
   errors: FieldErrors<any>;
   domain?: string;
+  placeholder: string;
+  onChange:any
 }
 
 const Input = ({
@@ -24,6 +26,8 @@ const Input = ({
   required = false,
   errors,
   domain,
+  placeholder,
+  onChange
 }: InputProps) => {
   return (
     <div className="w-full relative">
@@ -31,7 +35,8 @@ const Input = ({
         id={id}
         disabled={disabled}
         {...register(id, { required })}
-        placeholder=" "
+        placeholder={placeholder}
+        onChange={onChange}
         type={type}
         className={`peer w-full p-4 pt-6 bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed
             ${formatPrice ? "pl-9" : "pl-4"}

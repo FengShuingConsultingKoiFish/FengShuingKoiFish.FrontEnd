@@ -1,8 +1,8 @@
 import { jwtDecode } from "jwt-decode"
 import { Dispatch } from "redux"
-
 import { setCurrentUser } from "../redux/reducers/userSlice"
 import { axiosClient } from "./config/axios-client"
+import toast from "react-hot-toast"
 
 // Define the user type according to your backend response
 interface User {
@@ -10,12 +10,11 @@ interface User {
   Name: string
   Email: string
   Role: string
-  // Add any other fields from your backend response for the user
 }
 
 interface RegisterResponse {
-  // Define the structure of the registration response
   data: any
+  message: string
 }
 
 interface LoginResponse {
@@ -27,9 +26,20 @@ interface LoginResponse {
   // Add any other fields from your backend response for the login
 }
 
-// Define the expected error shape if applicable
-interface ErrorResponse {
+interface VerifyEmailResponse {
   message: string
+  user: User
+}
+
+interface ErrorResponse {
+  statusCode: number
+  isSuccess: boolean
+  message: string
+  errors: Array<{
+    key: string;
+    value: string;
+  }>;
+  result: any;
 }
 
 // Register User function
@@ -102,3 +112,23 @@ export const loginUser =
       throw error as ErrorResponse
     }
   }
+
+  // Verify Email function
+  export const verifyEmail = async (
+    token: string,
+    email: string
+  ): Promise<VerifyEmailResponse> => {
+    try {
+      const response = await axiosClient.get<VerifyEmailResponse>(
+        `/api/Accounts/verify-email?token=${token}&email=${email}`
+      )
+  
+      const responseData = response.data
+      console.log("Response Data:", responseData)
+  
+      return responseData
+    } catch (error) {
+      throw error as ErrorResponse
+    }
+  }
+

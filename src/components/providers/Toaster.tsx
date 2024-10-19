@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import React from "react";
 
@@ -43,11 +44,29 @@ const ToasterProvider: React.FC = () => {
                         background: '#f44336',
                         color: '#fff',
                     },
-                },
+                },       
                 // Customize other types as needed
             }}
         />
     );
 };
+export const toastWarn = (message: string) => {
+    toast.custom((t) => (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          background: "#ff9800",
+          color: "#fff",
+          padding: "16px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <span style={{ marginRight: "10px", fontSize: "18px" }}>⚠️</span>
+        {message}
+      </div>
+    ));
+  };
 
 export default ToasterProvider;

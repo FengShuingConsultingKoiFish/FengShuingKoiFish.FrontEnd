@@ -1,29 +1,37 @@
+import { configureStore } from "@reduxjs/toolkit"
+import { combineReducers } from "redux"
+import { persistReducer, persistStore } from "redux-persist"
+import storage from "redux-persist/lib/storage"
 
-import { configureStore } from '@reduxjs/toolkit'; 
-import usersSlice, { setCurrentUser } from './reducers/userSlice';
+import usersSlice, { setCurrentUser } from "./reducers/userSlice"
 
 // Configure Redux store
+
+const rootReducer = combineReducers({
+  users: usersSlice
+})
+
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["users"]
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
 const store = configureStore({
-  reducer: {
-    users: usersSlice,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       thunk: true,
-      serializableCheck: false,
-    }),
-});
+      serializableCheck: false // Allow non-serializable actions, such as redux-persist actions
+    })
+})
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+export const persistor = persistStore(store)
 
-
-if (typeof window !== "undefined") {
-    const currentUser = sessionStorage.getItem("user");
-    if (currentUser) {
-      store.dispatch(setCurrentUser(JSON.parse(currentUser)));
-    }
-  }
+export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>
 
 
-export default store;
+export default store

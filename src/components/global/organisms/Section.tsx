@@ -9,4 +9,5 @@ function Section({ pageName }: { pageName: string }) {
   )
 }
 
+
 export default Section

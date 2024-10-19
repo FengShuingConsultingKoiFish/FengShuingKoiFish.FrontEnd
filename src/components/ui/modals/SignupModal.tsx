@@ -1,7 +1,5 @@
-"use client"
 
 import { useCallback, useState } from "react"
-
 import { yupResolver } from "@hookform/resolvers/yup"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
@@ -18,17 +16,13 @@ import Input from "../Input"
 import Heading from "../ModalHead"
 import Modal from "./Modal"
 
-const emailUsernameRegex = /^[a-zA-Z0-9.]+$/
+//const emailUsernameRegex = /^[a-zA-Z0-9.]+$/
 
 // Define the form schema with Yup
 const schema = yup.object().shape({
   name: yup.string().required("Hãy nhập tên của bạn"),
   email: yup
     .string()
-    .matches(
-      emailUsernameRegex,
-      "Email không hợp lệ"
-    )
     .required("Email là bắt buộc"),
   password: yup
     .string()
@@ -74,9 +68,9 @@ const SignupModal: React.FC = () => {
     async (data) => {
       try {
         setIsLoading(true)
-        const emailWithDomain = `${data.email}@gmail.com`
-        await registerUser(
-          emailWithDomain,
+
+        const result = await registerUser(
+          data.email,
           data.name,
           data.password,
           data.confirmPassword,
@@ -84,13 +78,15 @@ const SignupModal: React.FC = () => {
         )
         setIsLoading(false)
         signupModal.onClose()
-        toast.success("Please verify your email to finish register!")
+        toast.success(result.message)
       } catch (error: any) {
         if (error.response && error.response.status === 400) {
           const errorMessage = error.response.data.errors
-            ? error.response.data.errors.map((err: { value: string }) => `${err.value}`).join(', ')
+            ? error.response.data.errors
+                .map((err: { value: string }) => `${err.value}`)
+                .join(", ")
             : error.response.data.message || "Error occurred!"
-            
+
           toast.error(errorMessage)
         } else {
           toast.error("Something went wrong")
@@ -116,8 +112,10 @@ const SignupModal: React.FC = () => {
 
       <Input
         id="email"
+        placeholder=""
+        onChange={()=>{}}
         label="Email"
-        domain="@gmail.com"
+        domain=""
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -127,6 +125,8 @@ const SignupModal: React.FC = () => {
 
       <Input
         id="name"
+        placeholder=""
+        onChange={()=>{}}
         label="Tên của bạn"
         disabled={isLoading}
         register={register}
@@ -137,6 +137,8 @@ const SignupModal: React.FC = () => {
 
       <Input
         id="password"
+        placeholder=""
+        onChange={()=>{}}
         type="password"
         label="Mật khẩu"
         disabled={isLoading}
@@ -150,6 +152,8 @@ const SignupModal: React.FC = () => {
 
       <Input
         id="confirmPassword"
+        placeholder=""
+        onChange={()=>{}}
         type="password"
         label="Nhập lại mật khẩu"
         disabled={isLoading}
@@ -163,6 +167,8 @@ const SignupModal: React.FC = () => {
 
       <Input
         id="phoneNumber"
+        placeholder=""
+        onChange={()=>{}}
         type="text"
         label="Số điện thoại"
         disabled={isLoading}

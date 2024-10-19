@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from "axios";
 
-export const BASE_URL = "https://localhost:7166";
+export const BASE_URL = "https://consultingfish.azurewebsites.net";
 
 export const axiosClient = axios.create({
   baseURL: BASE_URL,
@@ -18,10 +18,11 @@ axiosClient.interceptors.request.use(
       if (config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
         config.headers.Accept = "application/json";
+        config.headers.Accept = "multipart/form-data"
       }
     }
     
-    if (config.headers && !config.headers["Content-Type"]) {
+    if (config.headers && !config.headers["Content-Type"] && !(config.data instanceof FormData)) {
       config.headers["Content-Type"] = "application/json";
     }
 

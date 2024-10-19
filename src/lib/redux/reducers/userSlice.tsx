@@ -8,11 +8,22 @@ interface User {
   Role: string;
 }
 
+interface UserDetail {
+  userId: string;
+  userName: string;
+  fullName: string;
+  identityCard: string;
+  gender: string;
+  dateOfBirth: string;
+  avatar: string;
+  createdDate: string;
+}
+
 
 interface UsersState {
   usersList: User[];
-  updateUser: Partial<User>;
-  detailUser: User | null;
+  updateUser: Partial<UserDetail>;
+  detailUser: UserDetail | null;
   userHistory: User[];
   currentUser: User | null;
 }
@@ -33,11 +44,20 @@ const usersSlice = createSlice({
     setUsersList: (state, action: PayloadAction<User[]>) => {
       state.usersList = action.payload;
     },
-    setUpdateUser: (state, action: PayloadAction<Partial<User>>) => {
-      state.updateUser = action.payload;
+    setUpdateUser: (state, action: PayloadAction<Partial<UserDetail>>) => {
+      if (state.detailUser) {
+        state.updateUser = { ...state.detailUser, ...action.payload };
+      } else {
+        state.updateUser = action.payload;
+      }
     },
-    setDetailUser: (state, action: PayloadAction<User | null>) => {
+    setDetailUser: (state, action: PayloadAction<UserDetail | null>) => {
       state.detailUser = action.payload;
+    },
+    updateUserDetail: (state, action: PayloadAction<Partial<User>>) => {
+      if (state.detailUser) {
+        state.detailUser = { ...state.detailUser, ...action.payload };
+      }
     },
     setUserHistory: (state, action: PayloadAction<User[]>) => {
       state.userHistory = action.payload;
@@ -50,6 +70,7 @@ const usersSlice = createSlice({
     },
     clearCurrentUser: (state) => {
       state.currentUser = null;
+      state.detailUser = null;
       sessionStorage.removeItem("token"); // Remove token from sessionStorage
       sessionStorage.removeItem("user");  // Remove user from sessionStorage
     },
@@ -60,6 +81,7 @@ export const {
   setUsersList,
   setUpdateUser,
   setDetailUser,
+  updateUserDetail,
   setUserHistory,
   setCurrentUser,
   clearCurrentUser,

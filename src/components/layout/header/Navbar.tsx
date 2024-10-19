@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import { useSelector } from "react-redux"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 import useLoginModal from "@/hooks/useLoginModal"
 import useSignupModal from "@/hooks/useSignupModal"
@@ -19,6 +19,7 @@ import UserMenu from "./UserMenu"
 const Navbar = () => {
   const loginModal = useLoginModal()
   const signupModal = useSignupModal()
+  const location = useLocation()
 
   interface currentUser {
     Id: string
@@ -30,6 +31,7 @@ const Navbar = () => {
   // Get current user from Redux store
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
 
+
   // State to control the dropdown menu visibility
   const [isServiceMenuOpen, setIsServiceMenuOpen] = useState(false)
 
@@ -38,7 +40,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className="sticky top-0 z-20 w-full bg-background shadow-sm">
+    <div className="sticky top-0 z-40 w-full bg-background shadow-2xl">
       <div className="h-[110px] border-b-[1px]">
         <Container>
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0">
@@ -46,6 +48,16 @@ const Navbar = () => {
               <Logo />
             </Link>
 
+            {location.pathname !== "/blog/create" && (
+              <div className="flex flex-row gap-5">
+                <Item label="Giới thiệu" link=""></Item>
+                <Item label="Dịch vụ" link=""></Item>
+                <Item label="Kiến thức" link=""></Item>
+                <Item label="Hỏi đáp" link=""></Item>
+                <Item label="Hội viên" link=""></Item>
+                <Item label="Blog" link="/blog"></Item>
+              </div>
+            )}
             <div className="relative flex flex-row gap-5">
               <Item label="Giới thiệu" link=""></Item>
 
