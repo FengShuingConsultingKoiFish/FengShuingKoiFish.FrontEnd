@@ -1,3 +1,5 @@
+import { useState } from "react"
+
 import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 
@@ -19,15 +21,21 @@ const Navbar = () => {
   const signupModal = useSignupModal()
 
   interface currentUser {
-    Id: string;
-    Name: string;
-    Email: string;
-    Role: string; // Assuming Role can be "Admin", "Staff", or something else
+    Id: string
+    Name: string
+    Email: string
+    Role: string // Assuming Role can be "Admin", "Staff", or something else
   }
-  
+
   // Get current user from Redux store
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
-  
+
+  // State to control the dropdown menu visibility
+  const [isServiceMenuOpen, setIsServiceMenuOpen] = useState(false)
+
+  const toggleServiceMenu = () => {
+    setIsServiceMenuOpen((prev) => !prev)
+  }
 
   return (
     <div className="sticky top-0 z-20 w-full bg-background shadow-sm">
@@ -38,15 +46,36 @@ const Navbar = () => {
               <Logo />
             </Link>
 
-            <div className="flex flex-row gap-5">
+            <div className="relative flex flex-row gap-5">
               <Item label="Giới thiệu" link=""></Item>
-              <Item label="Dịch vụ" link=""></Item>
+
+              {/* Toggleable service menu */}
+              <div className="relative" onClick={toggleServiceMenu}>
+                <Item label="Dịch vụ" link="" />
+                {isServiceMenuOpen && (
+                  <div className="absolute left-0 top-full mt-2 w-48 rounded-lg border border-gray-300 bg-white shadow-lg">
+                    <Link
+                      to="/doan-menh"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      Đoán mệnh
+                    </Link>
+                    <Link
+                      to="/tu-van-ho"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                    >
+                      Tư vấn hồ
+                    </Link>
+                  </div>
+                )}
+              </div>
+
               <Item label="Kiến thức" link=""></Item>
               <Item label="Hỏi đáp" link=""></Item>
               <Item label="Hội viên" link=""></Item>
               <Item label="Blog" link="/blog"></Item>
             </div>
-            <div className="flex flex-row justify-between gap-3 items-center">
+            <div className="flex flex-row items-center justify-between gap-3">
               <Button variant="outline" size="lg">
                 <GifCall />
                 Liên hệ
