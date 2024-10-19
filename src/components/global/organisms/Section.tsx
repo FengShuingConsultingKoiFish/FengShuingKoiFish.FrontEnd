@@ -8,4 +8,6 @@ function Section({ pageName }: { pageName: string }) {
     </div>
   )
 }
+
+
 export default Section

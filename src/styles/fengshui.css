@@ -1,0 +1,27 @@
+.button-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-glow::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: skewX(-45deg);
+  transition: all 0.5s ease;
+}
+
+.button-glow:hover::before {
+  left: 150%;
+  transition: all 0.5s ease;
+}
+.bg-cream-stone {
+  background-color: #f5f5dc;
+  background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvr3JbwnBahAREwgul799W-PnlErE27LC3Hg&s");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
