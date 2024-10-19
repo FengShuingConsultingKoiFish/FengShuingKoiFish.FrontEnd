@@ -30,22 +30,12 @@ import ProfileSetting from "./pages/Setting/Profile"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
+import FengShuiLookup from "./pages/FengShuiLookup"
+import ResultPage from "./pages/ResultPage"
+
 
 const ProtectedAdminPage = ProtectedRoute(AdminPage)
 const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
-
-import Footer from "./components/layout/footer/Footer"
-import Navbar from "./components/layout/header/Navbar"
-import ToasterProvider from "./components/providers/Toaster"
-import LoginModal from "./components/ui/modals/LoginModal"
-import SignupModal from "./components/ui/modals/SignupModal"
-import store from "./lib/redux/store"
-import Blog from "./pages/Blog"
-import FengShuiLookup from "./pages/FengShuiLookup"
-import Home from "./pages/Home"
-import KoiPondConsultation from "./pages/KoiPondConsultation"
-import ResultPage from "./pages/ResultPage"
 
 function App() {
   const location = useLocation()
@@ -81,6 +71,11 @@ function App() {
               <Route path="/blog/read" element={<ViewBlog />} />
               <Route path="/404" element={<NotFound />} />
               <Route path="/401" element={<UnauthorizedPage />} />
+              <Route path="/" element={<Home />} />
+            <Route path="/doan-menh" element={<FengShuiLookup />} />
+            {/*<Route path="/tu-van-ho" element={<KoiPondConsultation />} />*/}
+            <Route path="/ket-qua" element={<ResultPage />} />{" "}
+            <Route path="/blog" element={<Blog />} />
 
               <Route path="*" element={<NotFound />} />
 
@@ -97,22 +92,6 @@ function App() {
           </div>
           {!shouldExcludeLayout && <Footer />}
         </PersistGate>
-
-        <Navbar />
-        <ToasterProvider />
-        <LoginModal />
-        <SignupModal />
-        <div className="">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/doan-menh" element={<FengShuiLookup />} />
-            <Route path="/tu-van-ho" element={<KoiPondConsultation />} />
-            <Route path="/ket-qua" element={<ResultPage />} />{" "}
-            <Route path="/blog" element={<Blog />} />
-          </Routes>
-        </div>
-        <Footer />
-
       </Provider>
     </>
   )

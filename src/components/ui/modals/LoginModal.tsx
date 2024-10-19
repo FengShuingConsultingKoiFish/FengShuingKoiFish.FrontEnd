@@ -7,11 +7,14 @@ import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
 import * as yup from "yup"
+
 import useLoginModal from "@/hooks/useLoginModal"
 import useSignupModal from "@/hooks/useSignupModal"
+
 import { loginUser } from "@/lib/api/Authen"
 import { setCurrentUser } from "@/lib/redux/reducers/userSlice"
 import { AppDispatch } from "@/lib/redux/store"
+
 import Input from "../Input"
 import Heading from "../ModalHead"
 import Modal from "./Modal"
@@ -65,20 +68,29 @@ const LoginModal = () => {
 
           toast.success(result.message)
           loginModal.onClose()
+          if (result.user.Name === "Admin") {
+            navigate("/admin")
+          } else {
+            navigate("/")
+          }
         }
       } catch (error: any) {
         setIsLoading(false)
-        if (error.response && error.response.data && error.response.data.errors) {
-          const errors = error.response.data.errors;
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.errors
+        ) {
+          const errors = error.response.data.errors
           if (Array.isArray(errors) && errors.length > 0) {
             errors.forEach((err: { key: string; value: string }) => {
-              toast.error(`${err.value}`);
-            });
+              toast.error(`${err.value}`)
+            })
           } else {
-            toast.error("Login failed due to unknown reasons");
+            toast.error("Login failed due to unknown reasons")
           }
         } else {
-          toast.error("An unknown error occurred during login.");
+          toast.error("An unknown error occurred during login.")
         }
       }
     },
@@ -104,7 +116,7 @@ const LoginModal = () => {
 
       <Input
         id="email"
-        onChange={()=>{}}
+        onChange={() => {}}
         label="Email hoặc tên"
         disabled={isLoading}
         register={register}
@@ -115,7 +127,7 @@ const LoginModal = () => {
       {errors.email && <p className="text-red-500">{errors.email.message}</p>}
       <Input
         id="password"
-        onChange={()=>{}}
+        onChange={() => {}}
         type="password"
         label="Mật khẩu"
         disabled={isLoading}
