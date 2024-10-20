@@ -8,7 +8,6 @@ import {
   useLocation,
   useNavigate
 } from "react-router-dom"
-import { PersistGate } from "redux-persist/integration/react"
 
 import Footer from "./components/layout/footer/Footer"
 import Navbar from "./components/layout/header/Navbar"
@@ -69,7 +68,7 @@ function App() {
 
   return (
     <>
-      <PersistGate loading={null} persistor={persistor}>
+      
         <ToasterProvider />
         <LoginModal />
         <SignupModal />
@@ -113,7 +112,7 @@ function App() {
           </Routes>
         </div>
         {!shouldExcludeLayout && !isAdminRoute && <Footer />}
-      </PersistGate>
+    
     </>
   )
 }

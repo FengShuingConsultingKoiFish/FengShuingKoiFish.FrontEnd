@@ -2,13 +2,13 @@ import axios from "axios"
 import nProgress from "nprogress"
 import "nprogress/nprogress.css"
 import toast from "react-hot-toast"
+import { useNavigate } from "react-router-dom"
 import { Dispatch } from "redux"
+
+import { toastWarn } from "@/components/providers/Toaster"
 
 import { clearCurrentUser, setDetailUser } from "../redux/reducers/userSlice"
 import { axiosClient } from "./config/axios-client"
-import { toastWarn } from "@/components/providers/Toaster"
-import { useNavigate } from "react-router-dom"
-
 
 interface UserPassWord {
   email: string
@@ -33,7 +33,7 @@ interface GetUserProfile {
 interface UserProfile {
   fullName: string
   identityCard: string
-  dateOfBirth: string
+  dateOfBirth: string | null
   gender: string
   imageId?: number
 }
@@ -69,7 +69,6 @@ export const ForgotPassword = async (
         email: email
       }
     )
-    nProgress.done()
     console.log(response)
     return response.data
   } catch (error: any) {
@@ -78,6 +77,8 @@ export const ForgotPassword = async (
     } else {
       toast.error("An unknown error occurred")
     }
+  } finally {
+    nProgress.done()
   }
 }
 
@@ -98,7 +99,6 @@ export const ResetPassword = async (
         token
       }
     )
-    nProgress.done()
     console.log(response)
     return response.data
   } catch (error: any) {
@@ -107,6 +107,8 @@ export const ResetPassword = async (
     } else {
       toast.error("An unknown error occurred")
     }
+  } finally {
+    nProgress.done()
   }
 }
 
@@ -126,7 +128,6 @@ export const CreateOrUpdateUserProfile = async (
         //imageId: userProfile.imageId
       }
     )
-    nProgress.done()
     console.log(response)
     if (response.data.isSuccess) {
       toast.success("Cập nhật thông tin thành công!")
@@ -141,26 +142,25 @@ export const CreateOrUpdateUserProfile = async (
     } else {
       throw error
     }
+  } finally {
+    nProgress.done()
   }
 }
 
 export const GetUserProfile = async (
   dispatch: Dispatch
 ): Promise<GetUserProfile | void> => {
-  const navigate = useNavigate()
   try {
     nProgress.start()
     const response = await axiosClient.get<GetUserProfile>(
       "/api/UserDetails/get-user-detail-for-user"
     )
     //console.log(response.data.result)
-    nProgress.done()
     if (response.data.isSuccess) {
       dispatch(setDetailUser(response.data.result))
     }
     return response.data
   } catch (error: any) {
-    nProgress.done()
     if (axios.isAxiosError(error) && error.response) {
       switch (error.response.status) {
         case 400:
@@ -168,8 +168,6 @@ export const GetUserProfile = async (
           break
         case 401:
           dispatch(clearCurrentUser())
-          dispatch(clearCurrentUser())
-          navigate("/")
           toast.error("Phiên của bạn đã hết hạn !!")
           break
         default:
@@ -180,5 +178,7 @@ export const GetUserProfile = async (
     } else {
       toast.error("An unknown error occurred")
     }
+  } finally {
+    nProgress.done()
   }
 }

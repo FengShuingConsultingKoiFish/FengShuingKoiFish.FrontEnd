@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react"
 
-import { getAllBlogsForAdmin, updateBlogStatus } from "@/lib/api/Blog"
 import toast from "react-hot-toast"
+import {
+  IoIosArrowDropleftCircle,
+  IoIosArrowDroprightCircle
+} from "react-icons/io"
+
+import { getAllBlogsForAdmin, updateBlogStatus } from "@/lib/api/Blog"
+
 import CustomButton from "../../Setting/Components/CustomBtn"
 import PostSection from "../components/BlogSection"
 
@@ -76,26 +82,26 @@ export const RejectedPosts: React.FC = () => {
 
   const handleVerify = async (id: number) => {
     try {
-      await updateBlogStatus({ id, status: 2 });
+      await updateBlogStatus({ id, status: 2 })
       toast.success("Duyệt bài thành công !")
-      fetchBlogs(); 
+      fetchBlogs()
     } catch (error) {
-      console.error("Error updating status:", error);
+      console.error("Error updating status:", error)
     }
-  };
+  }
 
   const handleDeny = async (id: number) => {
     try {
-      await updateBlogStatus({ id, status: 3 });
+      await updateBlogStatus({ id, status: 3 })
       toast.success("Đã hủy bài thành công")
-      fetchBlogs();
+      fetchBlogs()
     } catch (error) {
-      console.error("Error updating status:", error);
+      console.error("Error updating status:", error)
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col relative w-full">
+    <div className="relative flex w-full flex-col">
       <div className="">
         <h2 className="mb-4 text-2xl font-semibold">Các Blog đang đợi</h2>
 
@@ -117,7 +123,7 @@ export const RejectedPosts: React.FC = () => {
                     createdDate={blog.createdDate}
                     status={blog.status}
                     changeStatusToVerify={() => handleVerify(blog.id)}
-                    changeStatusToDeny={() => handleDeny(blog.id)} 
+                    changeStatusToDeny={() => handleDeny(blog.id)}
                     imageViewDtos={blog.imageViewDtos}
                     commentViewDtos={blog.commentViewDtos || []}
                   />
@@ -127,14 +133,16 @@ export const RejectedPosts: React.FC = () => {
           </div>
         )}
 
-        <div className="mt-6 inline-flex items-center fixed bottom-0 translate-x-[45rem]">
+        <div className="fixed bottom-0 mt-6 inline-flex translate-x-[45rem] items-center">
           <CustomButton
+            icon={<IoIosArrowDropleftCircle />}
             label="Trang trước"
             onClick={handlePreviousPage}
             disabled={pageIndex === 1 || isLoading}
           />
-          <span className="px-4 inline-flex items-center">{`Trang ${pageIndex} trên ${totalPages}`}</span>
+          <span className="inline-flex items-center px-4">{`Trang ${pageIndex} trên ${totalPages}`}</span>
           <CustomButton
+            icon={<IoIosArrowDroprightCircle />}
             label="Trang sau"
             onClick={handleNextPage}
             disabled={pageIndex === totalPages || isLoading}
@@ -145,4 +153,4 @@ export const RejectedPosts: React.FC = () => {
   )
 }
 
-export default RejectedPosts;
+export default RejectedPosts
