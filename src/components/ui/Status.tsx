@@ -28,13 +28,13 @@ const Status: React.FC<StatusProps> = ({ status }) => {
       statusClass = "bg-green-500";
       label = "Hoạt động";
       break;
-    case "Accepted":
+    case "Approved":
       statusClass = "bg-green-500";
       label = "Đã duyệt";
       break;
-    case "Denied":
+    case "Rejected":
       statusClass = "bg-red-500";
-      label = "Từ chối";
+      label = "Đã từ chối";
       break;
     case "Pending":
       statusClass = "bg-yellow-500";

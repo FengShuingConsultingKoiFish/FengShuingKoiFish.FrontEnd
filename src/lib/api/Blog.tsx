@@ -47,7 +47,7 @@ interface CreateUpdateBlogRequest {
     pageIndex: number;
     pageSize: number;
     title?: string;
-    blogStatus?: string | null;
+    blogStatus?: number | null;
     orderBlog?: string | null;
     orderComment?: string | null;
     orderImage?: string | null;
@@ -110,3 +110,41 @@ interface CreateUpdateBlogRequest {
       }
     }
   };
+
+  interface UpdateBlogStatusRequest {
+    id: number;
+    status: number;
+  }
+  
+  interface UpdateBlogStatusResponse {
+    statusCode: number;
+    isSuccess: boolean;
+    message: string;
+  }
+
+  export const updateBlogStatus = async (
+    requestData: UpdateBlogStatusRequest
+  ): Promise<UpdateBlogStatusResponse> => {
+    try {
+      nProgress.start();
+      const response = await axiosClient.post<UpdateBlogStatusResponse>(
+        "/api/Blogs/update-status-blogs",
+        requestData
+      );
+      nProgress.done();
+      return response.data;
+    } catch (error: any) {
+      nProgress.done();
+      if (error.response) {
+        console.error("API Error: ", error.response.data.message);
+        throw new Error(error.response.data.message || "An error occurred");
+      } else {
+        console.error("Unknown error: ", error.message);
+        throw new Error("An unknown error occurred");
+      }
+    }
+  };
+
+
+
+
