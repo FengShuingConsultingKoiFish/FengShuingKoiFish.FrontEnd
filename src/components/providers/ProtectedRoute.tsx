@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "@/lib/redux/store"; // Adjust based on your actual store path
 
 export interface ProtectedRouteProps {
+  requiredRoles?: string[];
   [key: string]: any;
 }
 

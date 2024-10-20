@@ -34,8 +34,8 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
         try {
           console.log("Fetching images...")
           const requestData = {
-            pageIndex: 1,
-            pageSize: 10,
+            pageIndex: 10,
+            pageSize: 7,
             name: "",
             orderDate: null
           }
@@ -117,6 +117,7 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
         onClose={imgChoosingModal.onClose}
         onSubmit={handleSave}
         body={bodyContent}
+        currentUser
       />
     
   )

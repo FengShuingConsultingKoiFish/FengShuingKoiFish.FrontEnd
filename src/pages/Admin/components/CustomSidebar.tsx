@@ -1,11 +1,8 @@
-"use client"
 
 import React, { createContext, useContext, useState } from "react"
-
 import { IconMenu2, IconX } from "@tabler/icons-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Link } from "react-router-dom"
-
 import { cn } from "@/lib/utils"
 
 interface Links {
@@ -116,13 +113,13 @@ export const MobileSidebar = ({
     <>
       <div
         className={cn(
-          "flex h-10 w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 dark:bg-neutral-800 md:hidden"
+          "flex h-full w-full flex-row items-center justify-between bg-neutral-100 px-4 py-4 md:hidden overflow-auto "
         )}
         {...props}
       >
         <div className="z-20 flex w-full justify-end">
           <IconMenu2
-            className="text-neutral-800 dark:text-neutral-200"
+            className="text-neutral-800"
             onClick={() => setOpen(!open)}
           />
         </div>
@@ -137,12 +134,12 @@ export const MobileSidebar = ({
                 ease: "easeInOut"
               }}
               className={cn(
-                "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
+                "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between bg-white p-10",
                 className
               )}
             >
               <div
-                className="absolute right-10 top-10 z-50 text-neutral-800 dark:text-neutral-200"
+                className="absolute right-10 top-10 z-50 text-neutral-800"
                 onClick={() => setOpen(!open)}
               >
                 <IconX />
@@ -182,7 +179,7 @@ export const SidebarLink = ({
           display: animate ? (open ? "inline-block" : "none") : "inline-block",
           opacity: animate ? (open ? 1 : 0) : 1
         }}
-        className="!m-0 inline-block whitespace-pre !p-0 text-sm text-neutral-700 transition duration-150 group-hover/sidebar:translate-x-1 dark:text-neutral-200"
+        className="!m-0 inline-block whitespace-pre !p-0 text-sm text-neutral-700 transition duration-150 group-hover/sidebar:translate-x-1"
       >
         {link.label}
       </motion.span>
