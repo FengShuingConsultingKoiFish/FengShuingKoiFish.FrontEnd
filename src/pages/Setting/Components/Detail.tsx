@@ -26,11 +26,14 @@ import Input from "@/components/ui/Input"
 import CustomButton from "./CustomBtn"
 import useProfileImgModal from "@/hooks/useProfileImgModal"
 import ProfileImgChoosingModal from "./ProfileImgChoosing"
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as yup from "yup"
+
 
 interface AccountDetailProps {
   fullName: string
   identityCard: string
-  dateOfBirth: string
+  dateOfBirth: Date | null
   gender: string
   imageId: any
   avatar: any
@@ -69,9 +72,14 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
 
   useEffect(() => {
     if (dateOfBirth) {
-      setStartDate(new Date(dateOfBirth)) // Ensure dateOfBirth is converted to Date
+      const parsedDate = new Date(dateOfBirth);
+      if (!isNaN(parsedDate.getTime())) {
+        setStartDate(parsedDate);
+      } else {
+        setStartDate(null);
+      }
     }
-  }, [dateOfBirth])
+  }, [dateOfBirth]);
 
   const handleAvatarClick = () => {
     if (fileInputRef.current) {
@@ -126,7 +134,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
       imageId: imageId,
       avatar: avatar
       //
-    }
+    },
     //resolver: yupResolver(schema),
   })
 
@@ -157,7 +165,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
       const profileData = {
         fullName,
         identityCard,
-        dateOfBirth: startDate ? formatDate(startDate) : formatDate(new Date()),
+        dateOfBirth: startDate ? formatDate(startDate) : null,
         gender: selectedGender,
         imageId: imageIdToUpload || imageId
       }
@@ -253,6 +261,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
                 disabled={isLoading}
               />
             </div>
+            
           ) : (
             <div
               onClick={handleEditFullName}
@@ -291,6 +300,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
                 onClick={handleSubmit(handleSaveIdentityCard)}
                 disabled={isLoading}
               />
+              {errors.identityCard && <p className="text-red-500">{errors.identityCard.message}</p>}
             </div>
           ) : (
             <div
@@ -311,9 +321,11 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
             <DatePicker
               icon={<FaCalendar />}
               selected={startDate}
-              onChange={(date: Date | null) => setStartDate(date)}
+              onChange={(date) => setStartDate(date)}
               className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               placeholderText="Chọn ngày"
+              dateFormat="dd/MM/yyyy" 
+              isClearable
             />
           </div>
         </div>

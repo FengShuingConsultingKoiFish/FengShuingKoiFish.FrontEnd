@@ -10,7 +10,7 @@ import AccountDetail from "./Components/Detail"
 interface User {
   fullName: string
   identityCard: string
-  dateOfBirth: string
+  dateOfBirth: Date
   gender: string
   imageId: string
 }
@@ -47,7 +47,7 @@ const ProfileSetting: React.FC<ProfileSettingProps> = () => {
             <AccountDetail
                fullName={userProfile?.fullName || ""}
                identityCard={userProfile?.identityCard || ""}
-               dateOfBirth={userProfile?.dateOfBirth || ""}
+               dateOfBirth={userProfile?.dateOfBirth ? new Date(userProfile.dateOfBirth) : null}
                gender={userProfile?.gender || ""}
                imageId=""
                avatar={userProfile?.avatar || defaultAvatar}

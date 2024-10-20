@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react"
 
+import CustomButton from "@/pages/Setting/Components/CustomBtn"
+import {
+  IoIosArrowDropleftCircle,
+  IoIosArrowDroprightCircle
+} from "react-icons/io"
 import { ClipLoader } from "react-spinners"
 
 import useImgChoosingModal from "@/hooks/useChooseImgModal"
@@ -23,9 +28,10 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
   const [images, setImages] = useState<Image[]>([])
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [pageIndex, setPageIndex] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(1)
 
   const imgChoosingModal = useImgChoosingModal()
-
 
   useEffect(() => {
     console.log("ImgChoosingModal open status:", imgChoosingModal.isOpen)
@@ -34,8 +40,8 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
         try {
           console.log("Fetching images...")
           const requestData = {
-            pageIndex: 10,
-            pageSize: 7,
+            pageIndex: pageIndex,
+            pageSize: 6,
             name: "",
             orderDate: null
           }
@@ -49,6 +55,7 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
               imageUrl: image.filePath // Use filePath as imageUrl
             }))
             setImages(mappedImages)
+            setTotalPages(response.result.totalPages)
           } else {
             console.error("Error: No images found.")
           }
@@ -60,7 +67,7 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
       }
       fetchImages()
     }
-  }, [imgChoosingModal.isOpen])
+  }, [imgChoosingModal.isOpen, pageIndex])
   // Handle image selection
   const toggleImageSelection = (image: Image) => {
     if (selectedImages.some((img) => img.id === image.id)) {
@@ -75,11 +82,23 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
     imgChoosingModal.onClose()
   }
 
+  const handleNextPage = () => {
+    if (pageIndex < totalPages) {
+      setPageIndex((prev) => prev + 1)
+    }
+  }
+
+  const handlePreviousPage = () => {
+    if (pageIndex > 1) {
+      setPageIndex((prev) => prev - 1)
+    }
+  }
+
   if (!imgChoosingModal.isOpen) return null
 
   const bodyContent =
     images.length > 0 ? (
-      <div className="grid grid-cols-3 gap-4 cursor-pointer">
+      <div className="grid cursor-pointer grid-cols-3 gap-4">
         {images.map((image) => (
           <div
             key={image.id}
@@ -105,21 +124,40 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
       <p>No images found or error fetching images.</p>
     )
 
-  return (
-    
-      <BlogModal
-        disabled={isLoading}
-        isOpen={imgChoosingModal.isOpen}
-        title="Chọn ảnh"
-        actionLabel={
-          isLoading ? <ClipLoader size={20} color={"#fff"} /> : "Lưu"
-        }
-        onClose={imgChoosingModal.onClose}
-        onSubmit={handleSave}
-        body={bodyContent}
-        currentUser
+  const paginationControls = (
+    <div className="mt-4 flex justify-between">
+      <CustomButton
+        icon={<IoIosArrowDropleftCircle />}
+        label="Trang trước"
+        onClick={handlePreviousPage}
+        disabled={pageIndex === 1 || isLoading}
       />
-    
+      <span className="inline-flex items-center px-4">{`Trang ${pageIndex} trên ${totalPages}`}</span>
+      <CustomButton
+        icon={<IoIosArrowDroprightCircle />}
+        label="Trang sau"
+        onClick={handleNextPage}
+        disabled={pageIndex === totalPages || isLoading}
+      />
+    </div>
+  )
+
+  return (
+    <BlogModal
+      disabled={isLoading}
+      isOpen={imgChoosingModal.isOpen}
+      title="Chọn ảnh"
+      actionLabel={isLoading ? <ClipLoader size={20} color={"#fff"} /> : "Lưu"}
+      onClose={imgChoosingModal.onClose}
+      onSubmit={handleSave}
+      body={
+        <>
+          {bodyContent}
+          {paginationControls}
+        </>
+      }
+      currentUser
+    />
   )
 }
 

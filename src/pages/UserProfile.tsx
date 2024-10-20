@@ -129,7 +129,10 @@ const UserProfilePage = () => {
                 <p className="inline-flex items-center gap-3 font-semibold">
                   <FaBirthdayCake /> Ngày/Năm sinh :
                 </p>
-                {userProfile.dateOfBirth}
+                {userProfile.dateOfBirth
+                  ? userProfile.dateOfBirth 
+                  : "Bạn chưa cung cấp ngày sinh" 
+                }
               </span>
             </div>
           ) : (
