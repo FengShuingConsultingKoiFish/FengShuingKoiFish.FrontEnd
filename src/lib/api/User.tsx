@@ -7,6 +7,8 @@ import { Dispatch } from "redux"
 import { clearCurrentUser, setDetailUser } from "../redux/reducers/userSlice"
 import { axiosClient } from "./config/axios-client"
 import { toastWarn } from "@/components/providers/Toaster"
+import { useNavigate } from "react-router-dom"
+
 
 interface UserPassWord {
   email: string
@@ -145,6 +147,7 @@ export const CreateOrUpdateUserProfile = async (
 export const GetUserProfile = async (
   dispatch: Dispatch
 ): Promise<GetUserProfile | void> => {
+  const navigate = useNavigate()
   try {
     nProgress.start()
     const response = await axiosClient.get<GetUserProfile>(
@@ -165,6 +168,8 @@ export const GetUserProfile = async (
           break
         case 401:
           dispatch(clearCurrentUser())
+          dispatch(clearCurrentUser())
+          navigate("/")
           toast.error("Phiên của bạn đã hết hạn !!")
           break
         default:

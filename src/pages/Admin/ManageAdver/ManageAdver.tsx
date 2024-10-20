@@ -16,37 +16,32 @@ import {
   Sidebar,
   SidebarBody,
   SidebarLink
-} from "../Admin/components/CustomSidebar"
+} from "../components/CustomSidebar"
 
-export function ManageBlogPage() {
+export function ManageAdverPage() {
   const links = [
     {
-      label: "Đang chờ",
-      href: "/admin/blogs/pending",
+      label: "Các gói quảng cáo đang chờ",
+      href: "/admin/quang-cao/pending",
       icon: (
         <IconBrandBlogger className="h-5 w-5 flex-shrink-0 text-neutral-700" />
       )
     },
     {
-      label: "Đã đăng",
-      href: "/admin/blogs/approved",
+      label: "Quảng cáo đã duyệt",
+      href: "/admin/quang-cao/approved",
       icon: (
         <IconRosetteDiscountCheck className="h-5 w-5 flex-shrink-0 text-neutral-700" />
       )
     },
     {
-      label: "Đã từ chối kèm theo ý kiến đóng góp",
-      href: "/admin/blogs/rejected",
+      label: "Quảng cáo đã hủy",
+      href: "/admin/quang-cao/rejected",
       icon: <IconBan className="h-5 w-5 flex-shrink-0 text-neutral-700" />
     },
     {
-      label: "Đã gỡ kèm theo ý kiến đóng góp",
-      href: "/admin/blogs/removed",
-      icon: <IconTrash className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-    },
-    {
       label: "Bị gắn cờ",
-      href: "/admin/blogs/flagged",
+      href: "/admin/quang-cao/flagged",
       icon: <IconFlag className="h-5 w-5 flex-shrink-0 text-neutral-700" />
     }
   ]

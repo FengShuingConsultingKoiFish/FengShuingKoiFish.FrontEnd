@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 
-import { getAllBlogsForAdmin } from "@/lib/api/Blog"
-
-import CustomButton from "../Setting/Components/CustomBtn"
-import PostSection from "./components/BlogSection"
+import { getAllBlogsForAdmin, updateBlogStatus } from "@/lib/api/Blog"
+import toast from "react-hot-toast"
+import CustomButton from "../../Setting/Components/CustomBtn"
+import PostSection from "../components/BlogSection"
 
 interface ImageViewDto {
   id: number
@@ -43,7 +43,7 @@ export const PendingPosts: React.FC = () => {
         pageIndex,
         pageSize,
         title: "",
-        blogStatus: null,
+        blogStatus: 1,
         orderBlog: null,
         orderComment: null,
         orderImage: null
@@ -74,6 +74,26 @@ export const PendingPosts: React.FC = () => {
     }
   }
 
+  const handleVerify = async (id: number) => {
+    try {
+      await updateBlogStatus({ id, status: 2 });
+      toast.success("Duyệt bài thành công !")
+      fetchBlogs(); 
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
+  const handleDeny = async (id: number) => {
+    try {
+      await updateBlogStatus({ id, status: 3 });
+      toast.success("Đã hủy bài thành công")
+      fetchBlogs();
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col relative w-full">
       <div className="">
@@ -96,6 +116,8 @@ export const PendingPosts: React.FC = () => {
                     userName={blog.userName}
                     createdDate={blog.createdDate}
                     status={blog.status}
+                    changeStatusToVerify={() => handleVerify(blog.id)}
+                    changeStatusToDeny={() => handleDeny(blog.id)} 
                     imageViewDtos={blog.imageViewDtos}
                     commentViewDtos={blog.commentViewDtos || []}
                   />
