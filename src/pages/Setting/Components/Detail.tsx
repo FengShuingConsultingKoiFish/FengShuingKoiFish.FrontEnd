@@ -12,21 +12,20 @@ import "react-datepicker/dist/react-datepicker.css"
 import { useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { FaCalendar } from "react-icons/fa"
-import { MdEdit } from "react-icons/md"
+import { MdAddPhotoAlternate, MdEdit } from "react-icons/md"
 import { RiArrowDropDownLine } from "react-icons/ri"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { Navigate } from "react-router-dom"
-
 import { uploadImage } from "@/lib/api/Image"
 import { updateUserAvatar } from "@/lib/api/Image"
 import { CreateOrUpdateUserProfile, GetUserProfile } from "@/lib/api/User"
 import { setDetailUser } from "@/lib/redux/reducers/userSlice"
-
 import Avatar from "@/components/layout/header/Avatar"
 import Input from "@/components/ui/Input"
-
 import CustomButton from "./CustomBtn"
+import useProfileImgModal from "@/hooks/useProfileImgModal"
+import ProfileImgChoosingModal from "./ProfileImgChoosing"
 
 interface AccountDetailProps {
   fullName: string
@@ -59,10 +58,14 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
   const [isEditingFullName, setIsEditingFullName] = useState(false)
   const [isEditingIdentityCard, setIsEditingIdentityCard] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
+  const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
   const [startDate, setStartDate] = useState<Date | null>()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedGender, setSelectedGender] = useState("Nam")
+  const [selectedGender, setSelectedGender] = useState(gender || "Nam")
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const profileImgChoosingModal = useProfileImgModal()
 
   useEffect(() => {
     if (dateOfBirth) {
@@ -75,20 +78,24 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
       fileInputRef.current.click() // Trigger file input click
     }
   }
+  const handleSelectImageClick = () => {
+    profileImgChoosingModal.onOpen() 
+  }
+
+  const handleSelectImage = (image: { id: number; imageUrl: string }) => {
+    setSelectedImageUrl(image.imageUrl);
+    setSelectedImageId(image.id);
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-      const reader = new FileReader()
-      reader.onload = () => {
-        setSelectedImage(reader.result as string)
-        console.log("file", file)
-      }
-      reader.readAsDataURL(file)
+      setUploadedFile(file);
+      console.log(file)
 
       const imageUrl = URL.createObjectURL(file)
       console.log("Temporary Image URL:", imageUrl)
-      setSelectedImage(imageUrl)
+      setSelectedImageUrl(imageUrl);
     } else {
       toast.error("Vui lòng chọn đúng loại ảnh")
     }
@@ -135,53 +142,48 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
   //----------------------------------Logic onSubmit---------------------------------//
 
   // API call to update the user profile
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = async () => {
     setIsLoading(true)
-
     try {
-      let imageId: number | undefined = undefined
-      if (fileInputRef.current?.files?.[0]) {
-        // Upload image and get the image ID
-        const filePath = fileInputRef.current.files[0]
-        console.log("img-file:", filePath)
-        //const fileName = `Image of ${data.fullName}`;
+      let imageIdToUpload: number | null = selectedImageId
 
-        const imageId = await uploadImage(filePath)
-        console.log(imageId)
-        if (imageId) {
-          const updateImageResponse = await updateUserAvatar(imageId)
-          console.log("Image Updated Successfully:", updateImageResponse)
-        }
+      if (uploadedFile) {
+        console.log("Uploading file:", uploadedFile)
+        imageIdToUpload = await uploadImage(uploadedFile) 
+        console.log("Image ID after upload:", imageIdToUpload)
+
       }
 
-      // Step 3: Submit user profile with the imageId
       const profileData = {
         fullName,
         identityCard,
         dateOfBirth: startDate ? formatDate(startDate) : formatDate(new Date()),
-        gender: selectedGender
-        //imageId: imageId || data.imageId
+        gender: selectedGender,
+        imageId: imageIdToUpload || imageId
       }
 
+      console.log("Profile data to update:", profileData)
+
       const response = await CreateOrUpdateUserProfile(profileData, dispatch)
-      console.log(profileData)
-
       if (response && response.isSuccess) {
-        const updatedProfile = await GetUserProfile(dispatch)
 
-        // Dispatch the updated profile data to Redux store
-        if (updatedProfile && updatedProfile.result) {
-          dispatch(setDetailUser(updatedProfile.result))
-          console.log("Updated profile:", updatedProfile.result)
+        if (imageIdToUpload) {
+          const updateAvatarResponse = await updateUserAvatar(imageIdToUpload)
+          console.log("Avatar updated successfully", updateAvatarResponse)
+        }
+        const updatedProfile = await GetUserProfile(dispatch)
+        if (updatedProfile?.result) {
+          dispatch(setDetailUser(updatedProfile.result)) // Update Redux store with new profile
         }
       }
     } catch (error) {
       console.error(error)
-      toast.error("Đã có lỗi xảy ra khi kết nối tới server!")
+      toast.error("Đã có lỗi xảy ra khi cập nhật thông tin cá nhân.")
     } finally {
       setIsLoading(false)
     }
-  })
+  }
+
 
   const people = [
     { id: 1, name: "Nam" },
@@ -195,7 +197,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
       <div className="flex flex-col items-center justify-start">
         <h2 className="mb-4 text-lg font-semibold">Ảnh cá nhân</h2>
         <div className="relative cursor-pointer" onClick={handleAvatarClick}>
-          <Avatar w="200px" h="200px" userImg={selectedImage || avatar} />
+          <Avatar w="200px" h="200px" userImg={selectedImageUrl || avatar} />
           {/* Edit overlay */}
           <div className="absolute bottom-2 left-0 inline-flex items-center gap-1 rounded bg-black bg-opacity-50 p-1 text-sm text-white">
             <MdEdit size={25} />
@@ -210,7 +212,13 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
           style={{ display: "none" }}
           accept="image/png, image/jpeg"
         />
+         <CustomButton
+            icon={<MdAddPhotoAlternate size={25} />}
+            label="Chọn ảnh từ thư viện của bạn"
+            onClick={handleSelectImageClick}
+          />
       </div>
+      
 
       {/* Detail Section */}
       <div>
@@ -352,6 +360,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
           disabled={isLoading}
         />
       </div>
+      <ProfileImgChoosingModal onSelectImage={handleSelectImage} />
     </div>
   )
 }

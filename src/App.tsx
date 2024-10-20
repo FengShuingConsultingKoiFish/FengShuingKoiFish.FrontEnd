@@ -1,9 +1,10 @@
-import { Provider } from "react-redux"
+import { Provider, useSelector } from "react-redux"
 import {
   Route,
   BrowserRouter as Router,
   Routes,
-  useLocation
+  useLocation,
+  useNavigate
 } from "react-router-dom"
 import { PersistGate } from "redux-persist/integration/react"
 
@@ -13,7 +14,7 @@ import ProtectedRoute from "./components/providers/ProtectedRoute"
 import ToasterProvider from "./components/providers/Toaster"
 import LoginModal from "./components/ui/modals/LoginModal"
 import SignupModal from "./components/ui/modals/SignupModal"
-import store, { persistor } from "./lib/redux/store"
+import store, { persistor, RootState } from "./lib/redux/store"
 import { AdminPage } from "./pages/Admin/AdminPage"
 import { ApprovedPosts } from "./pages/Admin/ApprovedBlog"
 import { ManageBlogPage } from "./pages/Admin/ManageBlogs"
@@ -32,6 +33,7 @@ import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
 import FengShuiLookup from "./pages/FengShuiLookup"
 import ResultPage from "./pages/ResultPage"
+import { useEffect } from "react"
 
 
 const ProtectedAdminPage = ProtectedRoute(AdminPage)
@@ -39,6 +41,15 @@ const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
 
 function App() {
   const location = useLocation()
+  const navigate = useNavigate();
+  const currentUser = useSelector((state: RootState) => state.users.currentUser);
+
+  useEffect(() => {
+    if (currentUser?.Name === "Admin" && location.pathname === "/") {
+      navigate("/admin");
+    }
+  }, [currentUser, location.pathname, navigate]);
+  
   const excludeLayoutPaths = [
     "/password-forgot",
     "/password-reset",
@@ -49,9 +60,11 @@ function App() {
   ]
   const shouldExcludeLayout = excludeLayoutPaths.includes(location.pathname)
 
+  const isAdminRoute = location.pathname.startsWith("/admin")
+
   return (
     <>
-      <Provider store={store}>
+      
 
         <PersistGate loading={null} persistor={persistor}>
           <ToasterProvider />
@@ -80,19 +93,19 @@ function App() {
               <Route path="*" element={<NotFound />} />
 
               {/*ADMIN ROUTE*/}
-              <Route path="/admin" element={<ProtectedAdminPage />} />
+              <Route path="/admin" element={<ProtectedAdminPage/>} />
 
               {/* NESTED ROUTES FOR ManageBlogPage */}
-              <Route path="/admin/blogs" element={<ProtectedManageBlogPage />}>
+              <Route path="/admin/blogs" element={<ProtectedManageBlogPage/>}>
                 <Route path="pending" element={<PendingPosts />} />
                 <Route path="approved" element={<ApprovedPosts />} />
                 <Route path="rejected" element={<RejectedPosts />} />
               </Route>
             </Routes>
           </div>
-          {!shouldExcludeLayout && <Footer />}
+          {!shouldExcludeLayout && !isAdminRoute && <Footer />}
         </PersistGate>
-      </Provider>
+      
     </>
   )
 }

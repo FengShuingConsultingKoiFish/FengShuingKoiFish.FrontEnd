@@ -1,5 +1,5 @@
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import {
   IconWriting,
   IconBrandTabler,
@@ -15,9 +15,17 @@ import {
   SidebarBody,
   SidebarLink
 } from "../Admin/components/CustomSidebar"
-import ProtectedRoute from "@/components/providers/ProtectedRoute"
+
+
+
 
 export function AdminPage() {
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+
   const links = [
     {
       label: "Thống kê",
@@ -102,7 +110,7 @@ const Dashboard = () => {
   return (
     <div className="flex flex-1">
       <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-900 md:p-10">
-        <div className="flex flex-grow flex-col items-center justify-start p-10 text-black">
+        <div className="flex flex-grow flex-col items-center justify-start text-black">
           <TbMoodEmpty size={140} />
           <p className="mt-5 font-semibold">
             Dashboard cho admin

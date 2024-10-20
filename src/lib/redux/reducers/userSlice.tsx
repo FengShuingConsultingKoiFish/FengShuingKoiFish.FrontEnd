@@ -1,31 +1,31 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 // Define the types for the state
 interface User {
-  Id: string;
-  Name: string;
-  Email: string;
-  Role: string;
+  Id: string
+  Name: string
+  Email: string
+  Role: string
+  [key: string]: any
 }
 
 interface UserDetail {
-  userId: string;
-  userName: string;
-  fullName: string;
-  identityCard: string;
-  gender: string;
-  dateOfBirth: string;
-  avatar: string;
-  createdDate: string;
+  userId: string
+  userName: string
+  fullName: string
+  identityCard: string
+  gender: string
+  dateOfBirth: string
+  avatar: string
+  createdDate: string
 }
 
-
 interface UsersState {
-  usersList: User[];
-  updateUser: Partial<UserDetail>;
-  detailUser: UserDetail | null;
-  userHistory: User[];
-  currentUser: User | null;
+  usersList: User[]
+  updateUser: Partial<UserDetail>
+  detailUser: UserDetail | null
+  userHistory: User[]
+  currentUser: User | null
 }
 
 // Initial state with type annotations
@@ -34,48 +34,48 @@ const initialState: UsersState = {
   updateUser: {},
   detailUser: null,
   userHistory: [],
-  currentUser: null,
-};
+  currentUser: null
+}
 
 const usersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
     setUsersList: (state, action: PayloadAction<User[]>) => {
-      state.usersList = action.payload;
+      state.usersList = action.payload
     },
     setUpdateUser: (state, action: PayloadAction<Partial<UserDetail>>) => {
       if (state.detailUser) {
-        state.updateUser = { ...state.detailUser, ...action.payload };
+        state.updateUser = { ...state.detailUser, ...action.payload }
       } else {
-        state.updateUser = action.payload;
+        state.updateUser = action.payload
       }
     },
     setDetailUser: (state, action: PayloadAction<UserDetail | null>) => {
-      state.detailUser = action.payload;
+      state.detailUser = action.payload
     },
     updateUserDetail: (state, action: PayloadAction<Partial<User>>) => {
       if (state.detailUser) {
-        state.detailUser = { ...state.detailUser, ...action.payload };
+        state.detailUser = { ...state.detailUser, ...action.payload }
       }
     },
     setUserHistory: (state, action: PayloadAction<User[]>) => {
-      state.userHistory = action.payload;
+      state.userHistory = action.payload
     },
     setCurrentUser: {
       reducer: (state, action: PayloadAction<{ user: User }>) => {
-        state.currentUser = action.payload.user;
+        state.currentUser = action.payload.user
       },
-      prepare: (user: User) => ({ payload: { user } }),
+      prepare: (user: User) => ({ payload: { user } })
     },
     clearCurrentUser: (state) => {
-      state.currentUser = null;
-      state.detailUser = null;
-      sessionStorage.removeItem("token"); // Remove token from sessionStorage
-      sessionStorage.removeItem("user");  // Remove user from sessionStorage
-    },
-  },
-});
+      state.currentUser = null
+      state.detailUser = null
+      sessionStorage.removeItem("token") // Remove token from sessionStorage
+      sessionStorage.removeItem("user") // Remove user from sessionStorage
+    }
+  }
+})
 
 export const {
   setUsersList,
@@ -84,7 +84,7 @@ export const {
   updateUserDetail,
   setUserHistory,
   setCurrentUser,
-  clearCurrentUser,
-} = usersSlice.actions;
+  clearCurrentUser
+} = usersSlice.actions
 
-export default usersSlice.reducer;
+export default usersSlice.reducer
