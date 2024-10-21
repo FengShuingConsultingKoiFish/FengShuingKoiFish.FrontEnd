@@ -108,7 +108,7 @@ const NotFound = () => {
           to="/"
           className="rounded-md bg-gray-200 p-3 font-mono text-xl text-gray-500 hover:shadow-md"
         >
-          Quay về
+          Quay về trang chủ
         </Link>
       </center>
     </div>

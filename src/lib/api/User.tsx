@@ -182,3 +182,36 @@ export const GetUserProfile = async (
     nProgress.done()
   }
 }
+
+interface GetUserAvatarResponse {
+  statusCode: number;
+  isSuccess: boolean;
+  message: string;
+  result: string;
+}
+
+export const GetUserAvatar = async (
+  userName: string
+): Promise<GetUserAvatarResponse | void> => {
+  try {
+    nProgress.start();
+    const response = await axiosClient.get<GetUserAvatarResponse>(
+      `/api/UserDetails/get-user-avatar-by-userName/${userName}`
+    );
+    
+    if (response.data.isSuccess) {
+      console.log("Avatar URL:", response.data.result); 
+      return response.data;
+    } else {
+      toast.error(response.data.message || "Failed to fetch user avatar.");
+    }
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response) {
+      toast.error(error.response.data?.message || "An error occurred");
+    } else {
+      toast.error("An unknown error occurred");
+    }
+  } finally {
+    nProgress.done();
+  }
+};

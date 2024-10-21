@@ -1,3 +1,12 @@
+import { useEffect, useState } from "react"
+
+import {
+  IoIosArrowDropleftCircle,
+  IoIosArrowDroprightCircle
+} from "react-icons/io"
+
+import { getAllBlogs } from "@/lib/api/Blog"
+
 import Container from "@/components/ui/Container"
 import {
   Select,
@@ -9,7 +18,76 @@ import {
 import { ArticleCard } from "@/components/ui/blog/ArticleCard"
 import { Hero } from "@/components/ui/blog/Hero"
 
+import CustomButton from "../Setting/Components/CustomBtn"
+
+interface ImageViewDto {
+  id: number
+  filePath: string
+  altText: string | null
+  userId: string
+  userName: string
+  createdDate: string
+}
+
+interface Blog {
+  id: number
+  title: string
+  content: string
+  userName: string
+  createdDate: string
+  status: string
+  imageViewDtos: ImageViewDto[]
+  commentViewDtos?: []
+}
+
 const Blog = () => {
+  const [blogs, setBlogs] = useState<Blog[]>([])
+  const [pageIndex, setPageIndex] = useState(1)
+  const [pageSize] = useState(7)
+  const [totalPages, setTotalPages] = useState(1)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+
+    const fetchBlogs = async () => {
+      try {
+        setIsLoading(true)
+        const requestData = {
+          pageIndex,
+          pageSize,
+          title: null,
+          blogStatus: 2,
+          orderBlog: null,
+          orderComment: null,
+          orderImage: null
+        }
+        const response = await getAllBlogs(requestData)
+        console.log(response.result.datas)
+        setBlogs(response.result.datas)
+        setTotalPages(response.result.totalPages)
+      } catch (error) {
+        console.error("Error fetching blogs:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchBlogs()
+  }, [pageIndex])
+
+  const handlePreviousPage = () => {
+    if (pageIndex > 1) {
+      setPageIndex((prev) => prev - 1)
+    }
+  }
+
+  const handleNextPage = () => {
+    if (pageIndex < totalPages) {
+      setPageIndex((prev) => prev + 1)
+    }
+  }
+
   const images = [
     "https://images.unsplash.com/photo-1521584934521-f27ac11b7523?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     "https://images.unsplash.com/photo-1466354424719-343280fe118b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -20,8 +98,8 @@ const Blog = () => {
     <div className="">
       <Hero images={images} />
       <Container>
-        <div className="flex flex-row items-center justify-start gap-5 my-10 font-semibold">
-         <span>Bộ lọc</span>
+        <div className="my-10 flex flex-row items-center justify-start gap-5 font-semibold">
+          <span>Bộ lọc</span>
           <Select>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Thời gian đăng bài" />
@@ -32,35 +110,48 @@ const Blog = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
-          <ArticleCard
-            img="https://images.unsplash.com/photo-1714523580277-c4130f4b4dfe?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            title="This fish is incredible"
-            body="I just visit this website and i found a lot of interesting things and received some useful consulting"
-            author="Nguyen Van A"
-            date="19/09/2024"
-          />
-          <ArticleCard
-            img="https://images.unsplash.com/photo-1522567659205-ee20ba167aaa?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            title="This fish is incredible"
-            body="I just visit this website and i found a lot of interesting things and received some useful consulting"
-            author="Nguyen Van A"
-            date="19/09/2024"
-          />
-          <ArticleCard
-            img="https://images.unsplash.com/photo-1658266588086-1a88604ad115?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            title="This fish is incredible"
-            body="I just visit this website and i found a lot of interesting things and received some useful consulting"
-            author="Nguyen Van A"
-            date="19/09/2024"
-          />
-          <ArticleCard
-            img="https://images.unsplash.com/photo-1714187343814-63a549b5b9cf?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            title="This fish is incredible"
-            body="I just visit this website and i found a lot of interesting things and received some useful consulting"
-            author="Nguyen Van A"
-            date="19/09/2024"
-          />
+
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : blogs.length > 0 ? (
+          <div className="flex w-full justify-center">
+            <div className="flex w-[60rem] flex-col justify-center">
+              {blogs.map((blog) => (
+                <ArticleCard
+                  key={blog.id}
+                  id={blog.id}
+                  img={
+                    blog.imageViewDtos.length > 0
+                      ? blog.imageViewDtos.map((image) => image.filePath)
+                      : ["https://via.placeholder.com/150"]
+                  }
+                  title={blog.title}
+                  content={blog.content}
+                  userName={blog.userName}
+                  createdDate={blog.createdDate}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div>No blogs available.</div>
+        )}
+        <div className="flex justify-center">
+          <div className="mt-6 inline-flex items-center">
+            <CustomButton
+              icon={<IoIosArrowDropleftCircle />}
+              label="Trang trước"
+              onClick={handlePreviousPage}
+              disabled={pageIndex === 1 || isLoading}
+            />
+            <span className="inline-flex items-center px-4">{`Trang ${pageIndex} trên ${totalPages}`}</span>
+            <CustomButton
+              icon={<IoIosArrowDroprightCircle />}
+              label="Trang sau"
+              onClick={handleNextPage}
+              disabled={pageIndex === totalPages || isLoading}
+            />
+          </div>
         </div>
       </Container>
     </div>
