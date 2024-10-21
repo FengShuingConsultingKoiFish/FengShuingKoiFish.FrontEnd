@@ -1,30 +1,29 @@
+import React, { useEffect, useState } from "react"
 
-import React, { useState, useEffect } from "react"
 import {
-  IconWriting,
   IconBrandTabler,
+  IconPackage,
   IconSettings,
-  IconPackage
+  IconWriting
 } from "@tabler/icons-react"
 import { motion } from "framer-motion"
 import { TbMoodEmpty } from "react-icons/tb"
 import { Link } from "react-router-dom"
+
 import { cn } from "@/lib/utils"
+
+import Breadcrumb from "@/components/ui/Breadcums"
+
 import {
   Sidebar,
   SidebarBody,
   SidebarLink
 } from "../Admin/components/CustomSidebar"
 
-
-
-
 export function AdminPage() {
-
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
+    window.scrollTo(0, 0)
+  }, [])
 
   const links = [
     {
@@ -35,26 +34,20 @@ export function AdminPage() {
       )
     },
     {
-        label: "Quản lý blog",
-        href: "/admin/blogs",
-        icon: (
-          <IconWriting className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-        )
-      },
+      label: "Quản lý blog",
+      href: "/admin/blogs",
+      icon: <IconWriting className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+    },
     {
       label: "Quản lý gói quảng cáo",
       href: "/admin/quang-cao",
-      icon: (
-        <IconPackage className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-      )
+      icon: <IconPackage className="h-5 w-5 flex-shrink-0 text-neutral-700" />
     },
     {
       label: "Cài đặt",
       href: "/",
-      icon: (
-        <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-      )
-    },
+      icon: <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+    }
   ]
   const [open, setOpen] = useState(false)
   return (
@@ -109,16 +102,13 @@ export const LogoIcon = () => {
 const Dashboard = () => {
   return (
     <div className="flex flex-1">
-      <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-900 md:p-10">
+      <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2">
+        <Breadcrumb />
         <div className="flex flex-grow flex-col items-center justify-start text-black">
           <TbMoodEmpty size={140} />
-          <p className="mt-5 font-semibold">
-            Dashboard cho admin
-          </p>
+          <p className="mt-5 font-semibold">Dashboard cho admin</p>
         </div>
       </div>
     </div>
   )
 }
-
-

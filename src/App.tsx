@@ -58,8 +58,7 @@ function App() {
     "/password-forgot",
     "/password-reset",
     "/verification/success",
-    "/blog/create",
-    "/404",
+    "*",
     "/401"
   ]
   const shouldExcludeLayout = excludeLayoutPaths.includes(location.pathname)
@@ -89,7 +88,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/doan-menh" element={<FengShuiLookup />} />
             {/*<Route path="/tu-van-ho" element={<KoiPondConsultation />} />*/}
-            <Route path="/ket-qua" element={<ResultPage />} />{" "}
+            <Route path="/ket-qua" element={<ResultPage />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="*" element={<NotFound />} />
             {/*ADMIN ROUTE*/}

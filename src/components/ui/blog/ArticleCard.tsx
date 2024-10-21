@@ -1,57 +1,95 @@
 import React from "react"
-
-import Container from "../Container"
-
+import { IconMessageCircle, IconShare } from "@tabler/icons-react"
 interface ArticleCardProps {
-  //id: string;
-  img: string
+  id: number
+  img: string[]
   title: string
-  body: string
-  author: string
-  date: string
+  content: string
+  userName: string
+  createdDate: string
+  userImg?: string
 }
 
 export const ArticleCard: React.FC<ArticleCardProps> = ({
+  id,
   img,
   title,
-  body,
-  author,
-  date
+  content,
+  userName,
+  createdDate
 }) => {
+  // const maxContentLength = 150;
+  // const truncatedContent =
+  //   content.length > maxContentLength ? `${content.slice(0, maxContentLength)}...` : content;
 
-  const maxBodyLength = 100;
-  const truncatedBody = body.length > maxBodyLength ? `${body.slice(0, maxBodyLength)}...` : body;
-  
   return (
-    <div className="my-5 flex cursor-pointer flex-col shadow-xl transition duration-300 hover:scale-105 rounded-lg">
-      <div className="block rounded-lg shadow-sm shadow-indigo-100">
-        <img
-          className="h-56 w-full transform rounded-md object-cover"
-          src={img}
-          alt={title}
-        />
-      </div>
-      <div className="p-5">
-        <div className="mt-2 w-full">
-          <dl>
-            <div className="flex flex-col">
-              <div className="sr-only"></div>
-              <div className="font-semibold">{title}</div>
-            </div>
-          </dl>
+    <div className="my-5 flex flex-col rounded-lg border bg-white shadow-2xl">
+      <div className="p-4">
+        <div className="flex flex-col space-y-3">
+          <div className="tex-xl inline-flex items-center justify-start gap-3 font-semibold">
+            <p className="">Người đăng :</p>
+            <div className="font-semibold">{userName}</div>
+          </div>
+
+          <div className="tex-xl inline-flex items-center justify-start gap-3 font-semibold">
+            <p>Ngày đăng :</p>
+            <div className="text-sm text-gray-500">{createdDate}</div>
+          </div>
         </div>
-        <div className="mt-2 items-center gap-8 text-lg font-semibold">
-          <div className="sm:inline-flex sm:shrink-0 sm:items-center sm:gap-2">
-            <div>{truncatedBody}</div>
-          </div>
-          <div className="mt-1 flex flex-row space-x-5">
-            <span className="font-semibold">Được đăng bởi :</span>
-            <span className="font-light">{author}</span>
-          </div>
-          <div className="mt-1 flex flex-row space-x-5">
-            <span className="font-semibold">Vào lúc :</span>
-            <span className="font-light">{date}</span>
-          </div>
+      </div>
+
+      {/* Body (Text Content) */}
+      <div className="px-4">
+        <h2 className="text-lg font-bold">{title}</h2>
+        <p className="mb-2 text-gray-700">{content}</p>
+      </div>
+
+      {/* Image Gallery */}
+      {Array.isArray(img) && img.length > 0 && (
+        <div className="flex flex-wrap gap-1 p-4">
+          {img.length === 1 ? (
+            <img
+              src={img[0]}
+              alt="Post"
+              className="h-auto w-full rounded-lg object-cover"
+            />
+          ) : (
+            img.slice(0, 4).map((image, index) => (
+              <div
+                key={index}
+                className={`flex-1 ${index === 3 ? "relative" : ""}`}
+              >
+                <img
+                  src={image}
+                  alt={`Post image ${index + 1}`}
+                  className="h-36 w-full rounded-lg object-cover"
+                />
+                {index === 3 && img.length > 4 && (
+                  <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-50 text-2xl font-semibold text-white">
+                    +{img.length - 4}
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {/* Footer (Like, Comment, Share) */}
+      <div className="flex justify-center border-t p-4 space-x-40">
+        <div className="flex items-center space-x-2">
+          <button className="flex items-center space-x-1 text-gray-500 hover:text-blue-500">
+            <IconMessageCircle />
+            <span>Comment</span>
+          </button>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <button className="flex items-center space-x-1 text-gray-500 hover:text-blue-500">
+            <IconShare />
+
+            <span>Share</span>
+          </button>
         </div>
       </div>
     </div>

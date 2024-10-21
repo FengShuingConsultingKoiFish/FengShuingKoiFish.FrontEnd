@@ -103,7 +103,7 @@ export const ApprovedPosts: React.FC = () => {
   return (
     <div className="relative flex w-full flex-col">
       <div className="">
-        <h2 className="mb-4 text-2xl font-semibold">Các Blog đang đợi</h2>
+        <h2 className="mb-4 text-2xl font-semibold">Các Blog đã duyệt</h2>
 
         {isLoading ? (
           <p>Đang tải...</p>
