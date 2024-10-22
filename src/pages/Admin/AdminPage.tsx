@@ -12,7 +12,7 @@ import { Link } from "react-router-dom"
 
 import { cn } from "@/lib/utils"
 
-import Breadcrumb from "@/components/ui/Breadcums"
+import Breadcrumb from "@/components/ui/Breadcrums"
 
 import {
   Sidebar,

@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit"
+import { createAsyncThunk, Dispatch } from "@reduxjs/toolkit"
 import axios from "axios"
 import nProgress from "nprogress"
 import "nprogress/nprogress.css"
@@ -12,12 +12,12 @@ import { axiosClient } from "./config/axios-client"
 interface UserProfile {
   fullName: string
   identityCard: string
-  dateOfBirth: string
+  dateOfBirth: string | null
   gender: string
   imageId?: number
 }
 
-interface GetUserProfileResponse {
+interface GetUserProfile {
   statusCode: number
   isSuccess: boolean
   message: any
@@ -87,7 +87,8 @@ export const ResetPassword = async (
 }
 
 export const CreateOrUpdateUserProfile = async (
-  userProfile: UserProfile
+  userProfile: UserProfile,
+  dispatch: Dispatch
 ): Promise<Response | void> => {
   try {
     nProgress.start()
@@ -111,45 +112,41 @@ export const CreateOrUpdateUserProfile = async (
   }
 }
 
-// Thunk action to get user profile
-export const GetUserProfile = createAsyncThunk(
-  "user/getUserProfile",
-  async (_, { dispatch, rejectWithValue }) => {
-    try {
-      nProgress.start()
-      const response = await axiosClient.get<GetUserProfileResponse>(
-        "/api/UserDetails/get-user-detail-for-user"
-      )
-      nProgress.done()
-
-      if (response.data.isSuccess) {
-        dispatch(setDetailUser(response.data.result))
-      }
-      return response.data
-    } catch (error: any) {
-      nProgress.done()
-      if (axios.isAxiosError(error) && error.response) {
-        switch (error.response.status) {
-          case 400:
-            toastWarn("Hãy cập nhật thông tin của bạn!")
-            break
-          case 401:
-            dispatch(clearCurrentUser())
-            toast.error("Phiên của bạn đã hết hạn !!")
-            break
-          default:
-            toast.error(
-              error.response.data?.statusCode || "An unknown error occurred"
-            )
-        }
-      } else {
-        toast.error("An unknown error occurred")
-      }
-
-      return rejectWithValue(error)
+export const GetUserProfile = async (
+  dispatch: Dispatch
+): Promise<GetUserProfile | void> => {
+  try {
+    nProgress.start()
+    const response = await axiosClient.get<GetUserProfile>(
+      "/api/UserDetails/get-user-detail-for-user"
+    )
+    //console.log(response.data.result)
+    if (response.data.isSuccess) {
+      dispatch(setDetailUser(response.data.result))
     }
+    return response.data
+  } catch (error: any) {
+    if (axios.isAxiosError(error) && error.response) {
+      switch (error.response.status) {
+        case 400:
+          toastWarn("Hãy cập nhật thông tin của bạn!")
+          break
+        case 401:
+          dispatch(clearCurrentUser())
+          toast.error("Phiên của bạn đã hết hạn !!")
+          break
+        default:
+          toast.error(
+            error.response.data?.statusCode || "An unknown error occurred"
+          )
+      }
+    } else {
+      toast.error("An unknown error occurred")
+    }
+  } finally {
+    nProgress.done()
   }
-)
+}
 
 function handleAxiosError(error: any) {
   if (axios.isAxiosError(error) && error.response) {
