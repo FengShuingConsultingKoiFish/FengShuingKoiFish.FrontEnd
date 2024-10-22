@@ -71,6 +71,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
   const profileImgChoosingModal = useProfileImgModal()
 
   useEffect(() => {
+    console.log("value of dob:", dateOfBirth)
     if (dateOfBirth) {
       const parsedDate = new Date(dateOfBirth);
       if (!isNaN(parsedDate.getTime())) {
@@ -172,7 +173,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
 
       console.log("Profile data to update:", profileData)
 
-      const response = await CreateOrUpdateUserProfile(profileData, dispatch)
+      const response = await CreateOrUpdateUserProfile(profileData, dispatch) 
       if (response && response.isSuccess) {
 
         if (imageIdToUpload) {

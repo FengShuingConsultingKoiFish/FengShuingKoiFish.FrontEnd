@@ -47,7 +47,7 @@ const Navbar = () => {
               <Logo />
             </Link>
 
-            {location.pathname !== "/blog/create" && (
+            {currentUser?.Name !== "Admin" &&(
               <div className="relative flex flex-row gap-5">
                 <Item label="Giới thiệu" link=""></Item>
 
