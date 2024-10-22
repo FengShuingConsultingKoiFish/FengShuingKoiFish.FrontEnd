@@ -67,51 +67,45 @@ function App() {
 
   return (
     <>
-      
-        <ToasterProvider />
-        <LoginModal />
-        <SignupModal />
-        <CreateBlogModal />
-        {!shouldExcludeLayout && <Navbar />}
-        <div className={shouldExcludeLayout ? "no-layout" : "with-layout"}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/password-forgot" element={<PasswordForgot />} />
-            <Route path="/password-reset" element={<PasswordReset />} />
-            <Route path="/verification/success" element={<SuccessPage />} />
-            <Route path="/profile/:name" element={<UserProfilePage />} />
-            <Route path="/setting/profile" element={<ProfileSetting />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/read" element={<ViewBlog />} />
-            <Route path="/404" element={<NotFound />} />
-            <Route path="/401" element={<UnauthorizedPage />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/doan-menh" element={<FengShuiLookup />} />
-            {/*<Route path="/tu-van-ho" element={<KoiPondConsultation />} />*/}
-            <Route path="/ket-qua" element={<ResultPage />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="*" element={<NotFound />} />
-            {/*ADMIN ROUTE*/}
-            <Route path="/admin" element={<ProtectedAdminPage />} />
-            {/* NESTED ROUTES FOR ManageBlogPage */}
-            <Route path="/admin/blogs" element={<ProtectedManageBlogPage />}>
-              <Route path="pending" element={<PendingPosts />} />
-              <Route path="approved" element={<ApprovedPosts />} />
-              <Route path="rejected" element={<RejectedPosts />} />
-            </Route>
-            {/* NESTED ROUTES FOR ManageAdverPage */}
-            <Route
-              path="/admin/quang-cao"
-              element={<ProtectedManageAdverPage />}
-            >
-              <Route path="pending" element={<PendingAdver />} />
-              <Route path="approved" element={<ApprovedAdver />} />
-              <Route path="rejected" element={<RejectedAdver />} />
-            </Route>
-          </Routes>
-        </div>
-        {!shouldExcludeLayout && !isAdminRoute && <Footer />}
-    
+      <ToasterProvider />
+      <LoginModal />
+      <SignupModal />
+      <CreateBlogModal />
+      {!shouldExcludeLayout && <Navbar />}
+      <div className={shouldExcludeLayout ? "no-layout" : "with-layout"}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/password-forgot" element={<PasswordForgot />} />
+          <Route path="/password-reset" element={<PasswordReset />} />
+          <Route path="/verification/success" element={<SuccessPage />} />
+          <Route path="/profile/:name" element={<UserProfilePage />} />
+          <Route path="/setting/profile" element={<ProfileSetting />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/read" element={<ViewBlog />} />
+          <Route path="/404" element={<NotFound />} />
+          <Route path="/401" element={<UnauthorizedPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/doan-menh" element={<FengShuiLookup />} />
+          <Route path="/ket-qua" element={<ResultPage />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="*" element={<NotFound />} />
+          {/*ADMIN ROUTE*/}
+          <Route path="/admin" element={<ProtectedAdminPage />} />
+          {/* NESTED ROUTES FOR ManageBlogPage */}
+          <Route path="/admin/blogs" element={<ProtectedManageBlogPage />}>
+            <Route path="pending" element={<PendingPosts />} />
+            <Route path="approved" element={<ApprovedPosts />} />
+            <Route path="rejected" element={<RejectedPosts />} />
+          </Route>
+          {/* NESTED ROUTES FOR ManageAdverPage */}
+          <Route path="/admin/quang-cao" element={<ProtectedManageAdverPage />}>
+            <Route path="pending" element={<PendingAdver />} />
+            <Route path="approved" element={<ApprovedAdver />} />
+            <Route path="rejected" element={<RejectedAdver />} />
+          </Route>
+        </Routes>
+      </div>
+      {!shouldExcludeLayout && !isAdminRoute && <Footer />}
     </>
   )
 }

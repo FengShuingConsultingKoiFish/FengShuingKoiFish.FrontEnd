@@ -1,6 +1,10 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
+
+import { GetUserProfile } from "@/lib/api/User"
+import { RootState } from "@/lib/redux/store"
 
 import InputField from "@/components/global/atoms/InputField"
 import SubmitButton from "@/components/global/atoms/SubmitButton"
@@ -8,26 +12,87 @@ import ToggleSwitch from "@/components/global/atoms/ToggleSwitch"
 
 import "../styles/fengshui.css"
 
+interface UserProfile {
+  fullName: string
+  dateOfBirth: string
+  gender: string
+}
+
 const FengShuiLookup: React.FC = () => {
   const navigate = useNavigate()
-  const [name, setName] = useState("TRẦN HOÀNG QUỐC VIỆT")
-  const [gender, setGender] = useState("Nam")
-  const [year, setYear] = useState("1999")
-  const [month, setMonth] = useState("02")
-  const [day, setDay] = useState("4")
-  const [isToggled, setIsToggled] = useState(false)
+  const dispatch = useDispatch()
 
-  const handleToggle = () => {
-    setIsToggled(!isToggled)
+  const [name, setName] = useState("")
+  const [gender, setGender] = useState("")
+  const [year, setYear] = useState("")
+  const [month, setMonth] = useState("")
+  const [day, setDay] = useState("")
+  const [isToggled, setIsToggled] = useState(false)
+  const [isReadOnly, setIsReadOnly] = useState(false)
+
+  const currentUser = useSelector((state: RootState) => state.users.currentUser)
+  const userProfile: UserProfile | null = useSelector(
+    (state: RootState) => state.users.detailUser
+  )
+
+  // Gọi API để lấy thông tin người dùng khi component mount
+  useEffect(() => {
+    if (!userProfile && currentUser) {
+      dispatch(GetUserProfile())
+    }
+  }, [dispatch, currentUser, userProfile])
+
+  // Kiểm tra xem thông tin người dùng đã đầy đủ hay chưa
+  const isProfileComplete = (user: UserProfile): boolean => {
+    return (
+      user.fullName.trim() !== "" &&
+      user.dateOfBirth.trim() !== "" &&
+      user.gender.trim() !== ""
+    )
   }
 
+  // Hàm xử lý khi bật/tắt toggle
+  const handleToggle = () => {
+    const newToggleState = !isToggled
+    setIsToggled(newToggleState)
+
+    if (newToggleState) {
+      if (userProfile && isProfileComplete(userProfile)) {
+        // Nếu thông tin đầy đủ, điền vào form
+        setName(userProfile.fullName)
+        setGender(userProfile.gender)
+
+        const [day, month, year] = userProfile.dateOfBirth.split("/")
+        setDay(day)
+        setMonth(month)
+        setYear(year)
+
+        setIsReadOnly(true)
+      } else {
+        // Nếu thông tin chưa đầy đủ, chuyển đến trang cài đặt
+        navigate("/Setting/profile")
+      }
+    } else {
+      // Reset form khi tắt toggle
+      setName("")
+      setGender("")
+      setDay("")
+      setMonth("")
+      setYear("")
+      setIsReadOnly(false)
+    }
+  }
+
+  // Hàm xử lý khi submit form
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
     navigate("/ket-qua", {
       state: {
         name,
         gender,
-        birthDate: `${day}/${month}/${year} (DL)`
+        birthDate: `${day}/${month}/${year} (DL)`,
+        useAccountInfo: isToggled
       }
     })
   }
@@ -64,7 +129,9 @@ const FengShuiLookup: React.FC = () => {
               value={name}
               onChange={setName}
               id="name"
+              readOnly={isReadOnly}
             />
+
             <div className="flex space-x-4">
               <InputField
                 label="Giới tính"
@@ -72,7 +139,8 @@ const FengShuiLookup: React.FC = () => {
                 onChange={setGender}
                 id="gender"
                 type="select"
-                options={["Nam", "Nữ"]}
+                options={["", "Nam", "Nữ"]}
+                disabled={isReadOnly}
               />
               <InputField
                 label="Năm sinh"
@@ -84,6 +152,7 @@ const FengShuiLookup: React.FC = () => {
                   { length: 100 },
                   (_, index) => `${2023 - index}`
                 )}
+                disabled={isReadOnly}
               />
             </div>
             <div className="flex space-x-4">
@@ -93,10 +162,14 @@ const FengShuiLookup: React.FC = () => {
                 onChange={setMonth}
                 id="month"
                 type="select"
-                options={Array.from(
-                  { length: 12 },
-                  (_, index) => `Tháng ${index + 1}`
-                )}
+                options={[
+                  "",
+                  ...Array.from(
+                    { length: 12 },
+                    (_, index) => `${(index + 1).toString().padStart(2, "0")}`
+                  )
+                ]}
+                disabled={isReadOnly}
               />
               <InputField
                 label="Ngày sinh"
@@ -104,18 +177,24 @@ const FengShuiLookup: React.FC = () => {
                 onChange={setDay}
                 id="day"
                 type="select"
-                options={Array.from(
-                  { length: 31 },
-                  (_, index) => `${index + 1}`
-                )}
+                options={[
+                  "",
+                  ...Array.from(
+                    { length: 31 },
+                    (_, index) => `${(index + 1).toString().padStart(2, "0")}`
+                  )
+                ]}
+                disabled={isReadOnly}
               />
             </div>
+
             <ToggleSwitch
               isToggled={isToggled}
               onToggle={handleToggle}
               labelOn="Nhập thông tin mới"
               labelOff="Sử dụng từ tài khoản đăng nhập"
             />
+
             <div className="mt-8 flex justify-center">
               <SubmitButton label="Giải mã" />
             </div>
