@@ -18,6 +18,7 @@ import SignupModal from "./components/ui/modals/SignupModal"
 import store, { RootState, persistor } from "./lib/redux/store"
 import { AdminPage } from "./pages/Admin/AdminPage"
 import { ApprovedAdver } from "./pages/Admin/ManageAdver/ApprovedAdver"
+import { CreateAdver } from "./pages/Admin/ManageAdver/CreateAdver"
 import { ManageAdverPage } from "./pages/Admin/ManageAdver/ManageAdver"
 import { PendingAdver } from "./pages/Admin/ManageAdver/PendingAdver"
 import { RejectedAdver } from "./pages/Admin/ManageAdver/RejectedAdver"
@@ -31,6 +32,8 @@ import CreateBlogModal from "./pages/Blog/components/CreateBlogModal"
 import FengShuiLookup from "./pages/FengShuiLookup"
 import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
+import { PackageDetailPage } from "./pages/Packages/PackageDetailPage"
+import { PackagePage } from "./pages/Packages/PackagePage"
 import PasswordForgot from "./pages/Password-forgot"
 import PasswordReset from "./pages/Password-reset"
 import ResultPage from "./pages/ResultPage"
@@ -81,7 +84,8 @@ function App() {
           <Route path="/profile/:name" element={<UserProfilePage />} />
           <Route path="/setting/profile" element={<ProfileSetting />} />
           <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/read" element={<ViewBlog />} />
+          <Route path="/goi-hoi-vien/:id" element={<PackageDetailPage />} />
+          <Route path="/goi-hoi-vien" element={<PackagePage />} />
           <Route path="/404" element={<NotFound />} />
           <Route path="/401" element={<UnauthorizedPage />} />
           <Route path="/" element={<Home />} />
@@ -99,6 +103,7 @@ function App() {
           </Route>
           {/* NESTED ROUTES FOR ManageAdverPage */}
           <Route path="/admin/quang-cao" element={<ProtectedManageAdverPage />}>
+            <Route path="create" element={<CreateAdver />} />
             <Route path="pending" element={<PendingAdver />} />
             <Route path="approved" element={<ApprovedAdver />} />
             <Route path="rejected" element={<RejectedAdver />} />

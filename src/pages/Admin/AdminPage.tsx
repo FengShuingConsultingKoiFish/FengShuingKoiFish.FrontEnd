@@ -102,7 +102,7 @@ export const LogoIcon = () => {
 const Dashboard = () => {
   return (
     <div className="flex flex-1">
-      <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2">
+      <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-10">
         <Breadcrumb />
         <div className="flex flex-grow flex-col items-center justify-start text-black">
           <TbMoodEmpty size={140} />

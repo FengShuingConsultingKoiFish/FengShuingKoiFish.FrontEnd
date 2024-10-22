@@ -3,6 +3,7 @@ import React, { useState } from "react"
 import {
   IconBan,
   IconBrandBlogger,
+  IconCirclePlus,
   IconFlag,
   IconRosetteDiscountCheck,
   IconTrash
@@ -20,6 +21,14 @@ import {
 
 export function ManageAdverPage() {
   const links = [
+    {
+      label: "Tạo gói quảng cáo",
+      href: "/admin/quang-cao/create",
+      icon: (
+        <IconCirclePlus className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+      )
+    },
+    
     {
       label: "Các gói quảng cáo đang chờ",
       href: "/admin/quang-cao/pending",
