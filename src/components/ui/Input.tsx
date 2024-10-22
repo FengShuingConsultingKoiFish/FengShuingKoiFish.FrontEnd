@@ -1,69 +1,94 @@
-"use client";
-
-import { UseFormRegister, FieldErrors } from "react-hook-form";
+import { Control, Controller, FieldError, FieldErrors } from "react-hook-form"
+import { UseFormRegister } from "react-hook-form"
+import { FaDongSign } from "react-icons/fa6"
+import { NumericFormat, NumericFormatProps } from "react-number-format"
 
 interface InputProps {
-  id: string;
-  label: string;
-  type?: "text" | "password" | "email" | "number"; 
-  disabled?: boolean;
-  formatPrice?: boolean;
-  register: UseFormRegister<any>; 
-  required?: boolean;
-  errors: FieldErrors<any>;
-  domain?: string;
-  placeholder: string;
-  onChange:any
+  id: string
+  label: string
+  disabled?: boolean
+  formatPrice?: boolean
+  control?: Control<any>
+  type?: "text" | "password" | "email" | "number"
+  register: UseFormRegister<any>
+  required?: boolean
+  errors: FieldErrors
+  placeholder?: string
+  onChange: any
+  validate?: any
 }
 
-const Input = ({
+const Input: React.FC<InputProps> = ({
   id,
   label,
-  type = "text",
   disabled = false,
   formatPrice = false,
+  control,
   register,
   required = false,
   errors,
-  domain,
+  onChange,
+  type = "text",
   placeholder,
-  onChange
-}: InputProps) => {
+  validate
+}) => {
   return (
-    <div className="w-full relative">
-      <input
-        id={id}
-        disabled={disabled}
-        {...register(id, { required })}
-        placeholder={placeholder}
-        onChange={onChange}
-        type={type}
-        className={`peer w-full p-4 pt-6 bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed
-            ${formatPrice ? "pl-9" : "pl-4"}
-            ${errors[id] ? "border-rose-500" : "border-neutral-300"}
-            ${errors[id] ? "focus:border-rose-500" : "focus:border-neutral-black"}
-        `}
-      />
-      {domain && (
-        <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-neutral-700">
-          {domain}
-        </span>
+    <div className="relative w-full">
+      {formatPrice && (
+        <FaDongSign
+          size={24}
+          className="absolute bottom-[0.5px] left-3 -translate-y-4 transform text-neutral-700"
+        />
       )}
 
+      {formatPrice && control ? (
+        <Controller
+          control={control}
+          name={id}
+          rules={{ required, validate }}
+          render={({ field: { onChange, onBlur, value, ref } }) => (
+            <NumericFormat
+              id={id}
+              disabled={disabled}
+              value={value}
+              onValueChange={(values) => {
+                onChange(values.floatValue)
+              }}
+              placeholder={placeholder}
+              thousandSeparator=","
+              decimalScale={0}
+              className={`peer w-full rounded-md border-2 bg-white p-4 pt-6 outline-none transition disabled:cursor-not-allowed disabled:opacity-70 ${
+                errors[id] ? "border-rose-500" : "border-neutral-300"
+              } ${
+                errors[id]
+                  ? "focus:border-rose-500"
+                  : "focus:border-neutral-black"
+              } pl-10`}
+            />
+          )}
+        />
+      ) : (
+        <input
+          id={id}
+          disabled={disabled}
+          {...register(id, { required, validate })}
+          placeholder={placeholder}
+          onChange={onChange}
+          type={type}
+          className={`peer w-full rounded-md border-2 bg-white p-4 pt-6 outline-none transition disabled:cursor-not-allowed disabled:opacity-70 ${
+            errors[id] ? "border-rose-500" : "border-neutral-300"
+          } ${
+            errors[id] ? "focus:border-rose-500" : "focus:border-neutral-black"
+          } ${formatPrice ? "pl-10" : ""}`}
+        />
+      )}
       <label
-        className={`absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] 
-          ${formatPrice ? "left-9" : "left-4"}
-          peer-placeholder-shown:scale-100
-          peer-placeholder-shown:translate-y-0
-          peer-focus:scale-75
-          peer-focus:-translate-y-4
-          ${errors[id] ? "text-rose-500" : "text-zinc-400"}  
-        `}
+        className={`text-md absolute top-5 z-10 origin-[0] -translate-y-3 transform duration-150 ${formatPrice ? "left-9" : "left-4"} peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 ${errors[id] ? "text-rose-500" : "text-zinc-400"} `}
       >
         {label}
       </label>
     </div>
-  );
-};
+  )
+}
 
-export default Input;
+export default Input

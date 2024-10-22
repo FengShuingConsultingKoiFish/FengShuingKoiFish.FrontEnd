@@ -6,7 +6,8 @@ import { FaHistory } from "react-icons/fa"
 import { HiOutlineLogin } from "react-icons/hi"
 import { IoMdArrowDropdown } from "react-icons/io"
 import { IoIosSettings, IoMdNotifications } from "react-icons/io"
-import { MdDashboard, MdManageAccounts } from "react-icons/md"
+import { MdDashboard } from "react-icons/md"
+import { PiPackageFill } from "react-icons/pi"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
@@ -38,7 +39,8 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const navigate = useNavigate()
   //const [userProfile, setUserProfile] = useState<any>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const defaultAvatar = "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg";
+  const defaultAvatar =
+    "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
 
   const ToggleOpen = useCallback(() => {
     setIsOpen((value) => !value)
@@ -84,7 +86,11 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
         <HoverBorderGradient>
           {currentUser?.Name}
           <Avatar
-            userImg={userProfile && userProfile.avatar ? userProfile.avatar : defaultAvatar}
+            userImg={
+              userProfile && userProfile.avatar
+                ? userProfile.avatar
+                : defaultAvatar
+            }
             w="32px"
             h="32px"
             //onClick={()=> {}}
@@ -118,25 +124,19 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     icon={<HiOutlineLogin size={20} />}
                   />
                 </>
-              ) : currentUser.Role === "Admin" ? (
+              ) : currentUser.Name === "Admin" ? (
                 <>
+                  <MenuItem
+                    onClick={handleMyProfile}
+                    closeMenu={closeMenu}
+                    label="Hồ sơ của tôi"
+                    icon={<CgProfile size={20} />}
+                  />
                   <MenuItem
                     onClick={() => {}}
                     closeMenu={closeMenu}
                     label="Dashboard"
                     icon={<MdDashboard size={20} />}
-                  />
-                  <MenuItem
-                    onClick={() => {}}
-                    closeMenu={closeMenu}
-                    label="Quản lý người dùng"
-                    icon={<MdManageAccounts size={20} />}
-                  />
-                  <MenuItem
-                    onClick={() => {}}
-                    closeMenu={closeMenu}
-                    label="Thông báo"
-                    icon={<IoMdNotifications size={20} />}
                   />
                   <MenuItem
                     onClick={handleLogout}
@@ -158,6 +158,12 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     closeMenu={closeMenu}
                     label="Lịch sử"
                     icon={<FaHistory size={20} />}
+                  />
+                  <MenuItem
+                    onClick={() => {}}
+                    closeMenu={closeMenu}
+                    label="Gói hội viên của tôi"
+                    icon={<PiPackageFill size={20} />}
                   />
                   <MenuItem
                     onClick={() => {}}
