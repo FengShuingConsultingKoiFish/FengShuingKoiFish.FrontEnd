@@ -1,28 +1,30 @@
 import React, { useEffect } from "react"
+
 import { RiArrowLeftSFill } from "react-icons/ri"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
+
 import { GetUserProfile } from "@/lib/api/User"
 import { RootState } from "@/lib/redux/store"
+
 import Container from "@/components/ui/Container"
+
 import AccountDetail from "./Components/Detail"
 
 interface User {
   fullName: string
   identityCard: string
-  dateOfBirth: Date
+  dateOfBirth: string
   gender: string
   imageId: string
 }
 
 interface ProfileSettingProps {}
 
-
 const ProfileSetting: React.FC<ProfileSettingProps> = () => {
   //const dispatch = useDispatch()
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
 
-  
   const userProfile = useSelector((state: RootState) => state.users.detailUser)
   const defaultAvatar =
     "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
@@ -45,12 +47,12 @@ const ProfileSetting: React.FC<ProfileSettingProps> = () => {
           <h1 className="mb-10 text-3xl">Cài đặt tài khoản</h1>
           <div className="flex border-t-[2px] pt-10">
             <AccountDetail
-               fullName={userProfile?.fullName || ""}
-               identityCard={userProfile?.identityCard || ""}
-               dateOfBirth={userProfile?.dateOfBirth ? new Date(userProfile.dateOfBirth) : null}
-               gender={userProfile?.gender || ""}
-               imageId=""
-               avatar={userProfile?.avatar || defaultAvatar}
+              fullName={userProfile?.fullName || ""}
+              identityCard={userProfile?.identityCard || ""}
+              dateOfBirth={userProfile?.dateOfBirth || ""}
+              gender={userProfile?.gender || ""}
+              imageId=""
+              avatar={userProfile?.avatar || defaultAvatar}
             />
           </div>
         </div>

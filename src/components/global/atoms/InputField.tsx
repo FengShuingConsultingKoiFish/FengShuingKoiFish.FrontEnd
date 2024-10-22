@@ -7,6 +7,9 @@ interface InputFieldProps {
   id: string
   type?: "text" | "select"
   options?: string[]
+  readOnly?: boolean // Thêm thuộc tính readOnly
+  disabled?: boolean // Thêm thuộc tính disabled
+  placeholder?: string
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -15,7 +18,9 @@ const InputField: React.FC<InputFieldProps> = ({
   onChange,
   id,
   type = "text",
-  options
+  options,
+  readOnly = false, // Giá trị mặc định là false
+  disabled = false // Giá trị mặc định là false
 }) => {
   return (
     <div className="flex-1">
@@ -29,6 +34,7 @@ const InputField: React.FC<InputFieldProps> = ({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          readOnly={readOnly} // Áp dụng readOnly cho input
         />
       ) : (
         <select
@@ -36,6 +42,7 @@ const InputField: React.FC<InputFieldProps> = ({
           id={id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          disabled={disabled} // Áp dụng disabled cho select
         >
           {options?.map((option, index) => (
             <option key={index} value={option}>
