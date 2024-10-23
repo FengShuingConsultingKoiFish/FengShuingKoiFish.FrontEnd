@@ -133,7 +133,6 @@ export const GetUserProfile = async (
           break
         case 401:
           dispatch(clearCurrentUser())
-          window.location.href = "/";
           toast.error("Phiên của bạn đã hết hạn !!")
           break
         default:

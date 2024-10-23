@@ -5,6 +5,8 @@ import {
   IconBrandBlogger,
   IconCirclePlus,
   IconFlag,
+  IconList,
+  IconPhotoPlus,
   IconRosetteDiscountCheck,
   IconTrash
 } from "@tabler/icons-react"
@@ -13,52 +15,32 @@ import { Link, Outlet } from "react-router-dom"
 
 import { cn } from "@/lib/utils"
 
-import {
-  Sidebar,
-  SidebarBody,
-  SidebarLink
-} from "../components/CustomSidebar"
+import Breadcrumb from "@/components/ui/Breadcrums"
+
+import { Sidebar, SidebarBody, SidebarLink } from "../components/CustomSidebar"
 
 export function ManageAdverPage() {
   const links = [
     {
       label: "Tạo gói quảng cáo",
-      href: "/admin/quang-cao/create",
+      href: "/admin/goi-quang-cao/create",
       icon: (
         <IconCirclePlus className="h-5 w-5 flex-shrink-0 text-neutral-700" />
       )
     },
-    
     {
-      label: "Các gói quảng cáo đang chờ",
-      href: "/admin/quang-cao/pending",
+      label: "Xem tất cả gói quảng cáo",
+      href: "/admin/goi-quang-cao/all",
       icon: (
-        <IconBrandBlogger className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+        <IconList className="h-5 w-5 flex-shrink-0 text-neutral-700" />
       )
     },
-    {
-      label: "Quảng cáo đã duyệt",
-      href: "/admin/quang-cao/approved",
-      icon: (
-        <IconRosetteDiscountCheck className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-      )
-    },
-    {
-      label: "Quảng cáo đã hủy",
-      href: "/admin/quang-cao/rejected",
-      icon: <IconBan className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-    },
-    {
-      label: "Bị gắn cờ",
-      href: "/admin/quang-cao/flagged",
-      icon: <IconFlag className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-    }
   ]
   const [open, setOpen] = useState(false)
   return (
     <div
       className={cn(
-        "mx-auto flex w-full min-h-screen flex-col rounded-md border border-neutral-200 bg-gray-100 md:flex-row"
+        "mx-auto flex min-h-screen w-full flex-col rounded-md border border-neutral-200 bg-gray-100 md:flex-row"
       )}
     >
       <Sidebar open={open} setOpen={setOpen}>
@@ -88,10 +70,11 @@ export const LogoIcon = () => {
 
 const Dashboard = () => {
   return (
-    <div className="flex flex-1 ">
-      <div className="flex w-full h-full flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10">
+    <div className="flex flex-1">
+      <div className="flex h-full w-full flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10">
+        <Breadcrumb />
         <div className="flex flex-grow flex-col items-center justify-start text-black">
-            <Outlet />
+          <Outlet />
         </div>
       </div>
     </div>

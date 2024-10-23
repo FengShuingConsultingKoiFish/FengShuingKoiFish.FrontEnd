@@ -44,7 +44,7 @@ export function PackageCard({
             backgroundPosition: "center",
           }}
         ></div>
-        <div className="text relative z-50">
+        <div className="text relative z-30">
           <h1 className="relative text-xl font-bold text-white text-opacity-100 md:text-3xl text-shadow">
             {name} 
           </h1>

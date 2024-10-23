@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { useParams } from "react-router-dom"
 
-import { getAdvertisementPackageById } from "@/lib/api/Advertisement"
+import { getAdvertisementPackageById } from "@/lib/api/AdvertisementPkg"
 
 import { AuroraBackground } from "@/components/ui/AuroraBg"
 import { ArticleReading } from "@/components/ui/blog/ArticleReading"
@@ -52,14 +52,13 @@ export const PackageDetailPage = () => {
 
   const data = [
     {
-      title: "Giới thiệu về gói",
+      title: "Giới thiệu",
       content: (
         <div>
           <p className="mb-8 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
             {packageDetail?.description || "No description available"}
           </p>
           <div className="grid grid-cols-2 gap-4">
-            {packageDetail?.description}
           </div>
         </div>
       )

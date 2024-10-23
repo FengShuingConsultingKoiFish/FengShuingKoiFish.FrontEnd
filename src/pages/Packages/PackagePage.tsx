@@ -1,14 +1,9 @@
-"use client"
 
 import React, { useEffect, useState } from "react"
-
 import { motion } from "framer-motion"
 import { ClipLoader } from "react-spinners"
-
-import { getAllAdvertisements } from "@/lib/api/Advertisement"
-
+import { getAllAdvertisementsPkg } from "@/lib/api/AdvertisementPkg"
 import { AuroraBackground } from "@/components/ui/AuroraBg"
-
 import CustomButton from "../Setting/Components/CustomBtn"
 import { PackageCard } from "./components/PackageCard"
 import { useNavigate } from "react-router-dom"
@@ -43,18 +38,18 @@ export function PackagePage() {
     window.scrollTo(0, 0)
   })
 
-  const fetchPackages = async (page: number) => {
+  const fetchPackages = async () => {
     setIsLoading(true)
     const requestData = {
-      pageIndex: page,
-      pageSize: 5, // You can change the pageSize as needed
+      pageIndex: pageIndex,
+      pageSize: 5,
       name: "",
       priceFilter: null,
       orderImage: null
     }
 
     try {
-      const response = await getAllAdvertisements(requestData)
+      const response = await getAllAdvertisementsPkg(requestData)
       console.log(response)
       setPackages(response.result.datas)
       setTotalPages(response.result.totalPages)
@@ -66,8 +61,7 @@ export function PackagePage() {
   }
 
   useEffect(() => {
-    // Initial fetch for the first page
-    fetchPackages(pageIndex)
+    fetchPackages()
   }, [pageIndex])
 
   const handleNextPage = () => {
