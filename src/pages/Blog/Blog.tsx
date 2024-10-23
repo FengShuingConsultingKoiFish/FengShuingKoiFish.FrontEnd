@@ -46,6 +46,7 @@ const Blog = () => {
   const [pageSize] = useState(7)
   const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
+  const [orderBlog, setOrderBlog] = useState<1 | 2>(1)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -58,7 +59,7 @@ const Blog = () => {
           pageSize,
           title: null,
           blogStatus: 2,
-          orderBlog: null,
+          orderBlog,
           orderComment: null,
           orderImage: null
         }
@@ -74,7 +75,7 @@ const Blog = () => {
     }
 
     fetchBlogs()
-  }, [pageIndex])
+  }, [pageIndex, orderBlog])
 
   const handlePreviousPage = () => {
     if (pageIndex > 1) {
@@ -86,6 +87,15 @@ const Blog = () => {
     if (pageIndex < totalPages) {
       setPageIndex((prev) => prev + 1)
     }
+  }
+
+  const handleOrderChange = (value: "newest" | "oldest") => {
+    if (value === "newest") {
+      setOrderBlog(1) 
+    } else if (value === "oldest") {
+      setOrderBlog(2) 
+    }
+    setPageIndex(1)
   }
 
   const images = [
@@ -100,7 +110,7 @@ const Blog = () => {
       <Container>
         <div className="my-10 flex flex-row items-center justify-start gap-5 font-semibold">
           <span>Bộ lọc</span>
-          <Select>
+          <Select onValueChange={handleOrderChange} value={orderBlog === 1 ? "newest" : "oldest"}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Thời gian đăng bài" />
             </SelectTrigger>

@@ -50,7 +50,7 @@ export const ApprovedPosts: React.FC = () => {
         pageSize,
         title: "",
         blogStatus: 2,
-        orderBlog: null,
+        orderBlog: 1,
         orderComment: null,
         orderImage: null
       }
@@ -133,7 +133,7 @@ export const ApprovedPosts: React.FC = () => {
           </div>
         )}
 
-        <div className="fixed bottom-0 mt-6 inline-flex translate-x-[45rem] items-center">
+        <div className="fixed bottom-0 mt-6 inline-flex translate-x-[45rem] sm:translate-x-[40rem] items-center">
           <CustomButton
             icon={<IoIosArrowDropleftCircle />}
             label="Trang trước"

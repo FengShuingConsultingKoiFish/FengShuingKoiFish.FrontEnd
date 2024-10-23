@@ -10,7 +10,8 @@ import {
   IconPackages,
   IconPhotoPlus,
   IconSquareRoundedPlus,
-  IconTrash
+  IconTrash,
+  IconUser
 } from "@tabler/icons-react"
 import { MdKeyboardArrowRight } from "react-icons/md"
 import { Link, useLocation } from "react-router-dom"
@@ -47,13 +48,17 @@ const breadcrumbMap: {
     label: "Xem tất cả gói quảng cáo",
     icon: <IconList className="mr-2 h-4 w-4" />
   },
-  "/admin/goi-quang-cao/add-images/": {
+  "/admin/goi-quang-cao/add-images": {
     label: "Thêm hình ảnh cho gói quảng cáo",
     icon: <IconPhotoPlus className="mr-2 h-4 w-4" />
   },
-  "/admin/goi-quang-cao/delete-images/": {
+  "/admin/goi-quang-cao/delete-images": {
     label: "Xóa ảnh cho gói quảng cáo",
     icon: <IconTrash className="mr-2 h-4 w-4" />
+  },
+  "/admin/nguoi-dung/all": {
+    label: "Xem tất cả người dùng",
+    icon: <IconUser className="mr-2 h-4 w-4" />
   }
 }
 
@@ -83,7 +88,7 @@ const Breadcrumb = () => {
         const breadcrumb = breadcrumbMap[basePath]
 
         if (!breadcrumb) {
-          return null 
+          return null
         }
         return (
           <li key={path} className="inline-flex items-center">

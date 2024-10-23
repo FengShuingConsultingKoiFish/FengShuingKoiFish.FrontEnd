@@ -1,4 +1,4 @@
-import { createAsyncThunk, Dispatch } from "@reduxjs/toolkit"
+import { Dispatch, createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
 import nProgress from "nprogress"
 import "nprogress/nprogress.css"
@@ -6,7 +6,11 @@ import toast from "react-hot-toast"
 
 import { toastWarn } from "@/components/providers/Toaster"
 
-import { clearCurrentUser, setDetailUser } from "../redux/reducers/userSlice"
+import {
+  clearCurrentUser,
+  setDetailUser,
+  setUsersList
+} from "../redux/reducers/userSlice"
 import { axiosClient } from "./config/axios-client"
 
 interface UserProfile {
@@ -153,5 +157,57 @@ function handleAxiosError(error: any) {
     toast.error(error.response.data?.message || "An error occurred")
   } else {
     toast.error("An unknown error occurred")
+  }
+}
+
+interface GetAllUserDetailsRequest {
+  pageIndex: number
+  pageSize: number
+  fullName?: string
+  userName?: string
+  userId?: string
+}
+
+interface UserDetails {
+  userId: string
+  userName: string
+  fullName: string
+  identityCard: string
+  dateOfBirth: string
+  gender: string
+  avatar: string
+  createdDate: string
+}
+
+interface GetAllUserDetailsResponse {
+  statusCode: number
+  isSuccess: boolean
+  message: string
+  result: {
+    pageIndex: number
+    totalPages: number
+    totalItems: number
+    hasPreviousPage: boolean
+    hasNextPage: boolean
+    datas: UserDetails[]
+  }
+}
+
+export const GetAllUserDetails = async (
+  requestData: GetAllUserDetailsRequest
+): Promise<GetAllUserDetailsResponse> => {
+  try {
+    nProgress.start()
+    const response = await axiosClient.post<GetAllUserDetailsResponse>(
+      "/api/UserDetails/get-all-details",
+      requestData
+    )
+    return response.data
+  } catch (error: any) {
+    nProgress.done()
+    console.error("API Error: ", error.response.data.message)
+    throw new Error(error.response.data.message || "An error occurred")
+  } finally {
+    nProgress.done()
   }
 }

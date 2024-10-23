@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 
+import { IconCreditCardPay } from "@tabler/icons-react"
 import { motion } from "framer-motion"
 import { useParams } from "react-router-dom"
 
@@ -7,6 +8,8 @@ import { getAdvertisementPackageById } from "@/lib/api/AdvertisementPkg"
 
 import { AuroraBackground } from "@/components/ui/AuroraBg"
 import { ArticleReading } from "@/components/ui/blog/ArticleReading"
+
+import CustomButton from "../Setting/Components/CustomBtn"
 
 interface AdvertisementPackage {
   id: number
@@ -58,13 +61,12 @@ export const PackageDetailPage = () => {
           <p className="mb-8 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
             {packageDetail?.description || "No description available"}
           </p>
-          <div className="grid grid-cols-2 gap-4">
-          </div>
+          <div className="grid grid-cols-2 gap-4"></div>
         </div>
       )
     },
     {
-      title: "Câu chuyện",
+      title: "Những lợi ích",
       content: (
         <div>
           <p className="mb-8 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
@@ -92,7 +94,7 @@ export const PackageDetailPage = () => {
       )
     },
     {
-      title: "Lời cảm ơn",
+      title: "Chính sách hoàn trả",
       content: (
         <div>
           <p className="mb-4 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
@@ -164,8 +166,8 @@ export const PackageDetailPage = () => {
               <h2 className="mb-4 max-w-4xl text-lg text-black md:text-4xl">
                 {packageDetail?.name || "Package Details"}
               </h2>
-              <p className="inline-flex max-w-sm justify-start gap-4 text-sm text-black md:text-base items-center">
-                <p className="font-semibold text-xl">Giá :</p>
+              <p className="inline-flex max-w-sm items-center justify-start gap-4 text-sm font-semibold text-black md:text-base">
+                <p className="text-xl">Giá :</p>
 
                 {packageDetail?.price.toLocaleString("vi-VN", {
                   style: "currency",
@@ -175,6 +177,13 @@ export const PackageDetailPage = () => {
               <ArticleReading data={data} />
             </div>
           )}
+          <div className="flex items-center justify-center">
+            <CustomButton
+              icon={<IconCreditCardPay />}
+              label="Mua ngay"
+              onClick={() => {}}
+            />
+          </div>
         </div>
       </motion.div>
     </AuroraBackground>
