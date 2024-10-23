@@ -28,12 +28,16 @@ import { RejectedPosts } from "./pages/Admin/ManageBlog/RejectedBlog"
 import Blog from "./pages/Blog/Blog"
 import { ViewBlog } from "./pages/Blog/ViewBlog"
 import CreateBlogModal from "./pages/Blog/components/CreateBlogModal"
+import CreatePondPage from "./pages/CreatePondPage"
 import FengShuiLookup from "./pages/FengShuiLookup"
 import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
 import PasswordForgot from "./pages/Password-forgot"
 import PasswordReset from "./pages/Password-reset"
+import PondConsultationPage from "./pages/PondConsultationPage "
+import PondDetails from "./pages/PondDetails"
 import ResultPage from "./pages/ResultPage"
+import SeeAllPond from "./pages/SeeAllPond"
 import ProfileSetting from "./pages/Setting/Profile"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
@@ -87,6 +91,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/doan-menh" element={<FengShuiLookup />} />
           <Route path="/ket-qua" element={<ResultPage />} />
+          <Route path="/tu-van-ho" element={<PondConsultationPage />} />
+          <Route path="/create-pond" element={<CreatePondPage />} />
+          <Route path="/see-all-pond" element={<SeeAllPond />} />
+          <Route path="/pond-details/:userPondId" element={<PondDetails />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="*" element={<NotFound />} />
           {/*ADMIN ROUTE*/}
