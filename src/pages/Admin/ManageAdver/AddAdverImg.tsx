@@ -1,29 +1,26 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import ImgChoosingModal from "@/pages/Blog/components/ImgChoosingModal"
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import { yupResolver } from "@hookform/resolvers/yup"
 import { IconSquareRoundedPlusFilled, IconUpload } from "@tabler/icons-react"
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { MdAddPhotoAlternate } from "react-icons/md"
+import { useParams } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
 
 import useImgChoosingModal from "@/hooks/useChooseImgModal"
 
-import { createUpdateAdvertisement } from "@/lib/api/AdvertisementPkg"
+import {
+  addImagesToAdvertisementPackage,
+  getAdvertisementPackageById
+} from "@/lib/api/AdvertisementPkg"
 import { uploadImage } from "@/lib/api/Image"
 
 import { FileUpload } from "@/components/ui/FileUpload"
-import Input from "@/components/ui/Input"
 
-interface CreateAdverFormData {
-  name: string
-  price: number
-  description: string
-  limitAd: number
-  limitContent: number
-  limitImage: number
+interface AddAdverFormData {
+  advertisementPackageId: number
   imageIds: number[]
 }
 
@@ -32,14 +29,39 @@ interface Image {
   imageUrl: string
 }
 
-export const CreateAdver: React.FC = () => {
+export const AddAdverImg: React.FC = () => {
+  const { id } = useParams<{ id: string }>()
   const imgChoosingModal = useImgChoosingModal()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showFileUpload, setShowFileUpload] = useState<boolean>(false)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
+  const [adverPkg, setAdverPkg] = useState<any>(null)
   const [hideUploadButton, setHideUploadButton] = useState<boolean>(false)
   const [hideSelectButton, setHideSelectButton] = useState<boolean>(false)
+
+  useEffect(() => {
+    window.scrollTo(0,0)
+    const fetchAdverPkg = async () => {
+      try {
+        setIsLoading(true)
+        const response = await getAdvertisementPackageById(Number(id))
+        console.log(response)
+        if (response.isSuccess) {
+          setAdverPkg(response.result)
+        } else {
+          toast.error(response.message)
+        }
+      } catch (error) {
+        console.error("Error fetching adverPkg:", error)
+        toast.error("Failed to load advertisement package data")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchAdverPkg()
+  }, [id])
 
   const handleSelectImages = (images: Image[]) => {
     setSelectedImages(images)
@@ -78,20 +100,15 @@ export const CreateAdver: React.FC = () => {
     control,
     reset,
     formState: { errors }
-  } = useForm<CreateAdverFormData>({
+  } = useForm<AddAdverFormData>({
     //resolver: yupResolver(schema),
     defaultValues: {
-      name: "",
-      price: 0,
-      description: "",
-      limitAd: 0,
-      limitContent: 0,
-      limitImage: 0,
+      advertisementPackageId: Number(id),
       imageIds: []
     }
   })
 
-  const onSubmit: SubmitHandler<CreateAdverFormData> = useCallback(
+  const onSubmit: SubmitHandler<AddAdverFormData> = useCallback(
     async (data) => {
       try {
         setIsLoading(true)
@@ -103,29 +120,30 @@ export const CreateAdver: React.FC = () => {
           console.log("New image ID to be added:", uploadedImageId)
           imageIds.push(uploadedImageId)
         }
-
-        // Prepare the payload for the API call
         const adverPayload = {
-          id: 0,
-          name: data.name,
-          price: data.price,
-          description: data.description,
-          limitAd: data.limitAd,
-          limitContent: data.limitContent,
-          limitImage: data.limitImage,
-          imageIds: imageIds
+          advertisementPackageId: Number(id),
+          imagesId: imageIds
         }
 
-        console.log(adverPayload)
-        console.log(uploadedFile)
-
         console.log("Final AdverPkg Payload:", adverPayload)
-        const result = await createUpdateAdvertisement(adverPayload)
+        const result = await addImagesToAdvertisementPackage(adverPayload)
 
         setIsLoading(false)
 
         if (result.isSuccess) {
-          toast.success("Tạo quảng cáo thành công")
+          toast.success(
+            "Thêm ảnh vào gói thành công !"
+          )
+
+          const newImages = selectedImages.map((img) => ({
+            id: img.id,
+            filePath: img.imageUrl, 
+          }));
+
+          setAdverPkg((prevPkg: any) => ({
+            ...prevPkg,
+            imageViewDTOs: [...prevPkg.imageViewDTOs, ...newImages], 
+          }));
           reset()
           setSelectedImages([])
           setHideUploadButton(false)
@@ -137,13 +155,65 @@ export const CreateAdver: React.FC = () => {
         toast.error(error.message || "An unknown error occurred.")
       }
     },
-    [selectedImages, uploadedFile]
+    [selectedImages, uploadedFile, id]
   )
-
   return (
     <div className="relative flex w-full flex-col">
-      <div className="max-w-[500px]">
-        <h2 className="mb-4 text-2xl font-semibold">Tạo gói quảng cáo</h2>
+      <div className="w-full">
+        <h2 className="mb-4 text-2xl font-semibold">Thêm ảnh </h2>
+        {adverPkg ? (
+          <div className="mb-4">
+            <p className="inline-flex items-center justify-start gap-2">
+              <strong>Tên gói:</strong> {adverPkg.name}
+            </p>
+            <p>
+              <strong>Giá:</strong>{" "}
+              {new Intl.NumberFormat("vi-VN", {
+                style: "currency",
+                currency: "VND"
+              }).format(adverPkg.price)}
+            </p>
+            <div className="flex flex-col">
+              <p className="inline-flex items-center justify-start gap-2">
+                <strong>Mô tả:</strong>
+                <p> {adverPkg.description}</p>
+              </p>
+              <p className="inline-flex items-center justify-start gap-2">
+                <strong>Hạn mức quảng cáo:</strong>
+                <p>{adverPkg.limitAd}</p>
+              </p>
+              <p className="inline-flex items-center justify-start gap-2">
+                <strong>Hạn mức nội dung:</strong>
+                <p>{adverPkg.limitContent}</p>
+              </p>
+              <p className="inline-flex items-center justify-start gap-2">
+                <strong>Hạn mức hình ảnh:</strong>
+                <p>{adverPkg.limitImage}</p>
+              </p>
+              <h4 className="mt-4">Hình ảnh hiện tại của gói:</h4>
+              {adverPkg.imageViewDTOs && adverPkg.imageViewDTOs.length > 0 ? (
+                <div className="my-4 grid grid-cols-3 gap-4">
+                  {adverPkg.imageViewDTOs.map((image: any) => (
+                    <div key={image.id} className="relative h-full w-full">
+                      <img
+                        src={image.filePath}
+                        alt="Advertisement"
+                        className="h-full w-full rounded object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>Không có hình ảnh nào</p>
+              )}
+            </div>
+          </div>
+        ) : isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <p>Không tìm thấy gói quảng cáo</p>
+        )}
+
         <div className="flex items-center justify-start gap-5">
           <CustomButton
             icon={<IconUpload size={25} />}
@@ -163,7 +233,7 @@ export const CreateAdver: React.FC = () => {
         {selectedImages.length > 0 && (
           <div className="my-5 grid grid-cols-3 gap-4">
             {selectedImages.map((image, index) => (
-              <div key={image.id} className="relative h-32 w-full">
+              <div key={image.id} className="relative h-full w-full">
                 <img
                   src={image.imageUrl}
                   alt="Selected"
@@ -185,84 +255,6 @@ export const CreateAdver: React.FC = () => {
             ))}
           </div>
         )}
-
-        <div className="flex flex-col items-center gap-5">
-          <Input
-            id="name"
-            placeholder=""
-            onChange={() => {}}
-            label="Tên gói"
-            disabled={isLoading}
-            register={register}
-            errors={errors}
-            required
-          />
-          <Input
-            id="price"
-            placeholder=""
-            type="number"
-            formatPrice
-            onChange={() => {}}
-            label="Giá"
-            validate
-            control={control}
-            disabled={isLoading}
-            register={register}
-            errors={errors}
-            required
-          />
-          <form className="mb-0 w-full">
-            <div className="mb-4 rounded-lg rounded-t-lg border-2 border-neutral-300 bg-white px-4 py-2">
-              <label htmlFor="title" className="sr-only">
-                Miêu tả
-              </label>
-              <textarea
-                id="title"
-                //rows="6"
-                className="w-full border-0 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0"
-                placeholder="Miêu tả ..."
-                required
-                {...register("description", { required: true })}
-              ></textarea>
-              {errors.description && (
-                <span className="text-red-500">Tiêu đề là bắt buộc</span>
-              )}
-            </div>
-          </form>
-          <Input
-            id="limitAd"
-            type="number"
-            placeholder=""
-            onChange={() => {}}
-            label="Giới hạn quảng cáo"
-            disabled={isLoading}
-            register={register}
-            errors={errors}
-            required
-          />
-          <Input
-            id="limitContent"
-            type="number"
-            placeholder=""
-            onChange={() => {}}
-            label="Giới hạn nội dung"
-            disabled={isLoading}
-            register={register}
-            errors={errors}
-            required
-          />
-          <Input
-            id="limitImage"
-            type="number"
-            placeholder=""
-            onChange={() => {}}
-            label="Giới hạn hình ảnh"
-            disabled={isLoading}
-            register={register}
-            errors={errors}
-            required
-          />
-        </div>
         <CustomButton
           icon={
             isLoading ? (
@@ -271,7 +263,7 @@ export const CreateAdver: React.FC = () => {
               <IconSquareRoundedPlusFilled />
             )
           }
-          label={isLoading ? "" : "Tạo"}
+          label={isLoading ? "" : "Thêm ảnh"}
           onClick={handleSubmit(onSubmit)}
           disabled={isLoading}
         />

@@ -52,6 +52,15 @@ export const createUpdateAdvertisement = async (
   }
 }
 
+interface ImageViewDTO {
+  id: number
+  filePath: string
+  altText: string | null
+  userId: string
+  userName: string
+  createdDate: string
+}
+
 interface AdvertisementPackage {
   id: number;
   name: string;
@@ -63,11 +72,10 @@ interface AdvertisementPackage {
   isActive: boolean;
   createdDate: string;
   createdBy: string;
-  imageViewDTOs: {
-    id: number;
-    filePath: string;
-  }[];
+  imageViewDTOs: ImageViewDTO[]
 }
+    
+
 
 interface GetAllAdvertisementPackagesResponse {
   statusCode: number;
@@ -91,7 +99,7 @@ interface GetAllAdvertisementPackagesRequest {
   orderImage?: number | null;
 }
 
-export const getAllAdvertisements = async (
+export const getAllAdvertisementsPkg = async (
   requestData: GetAllAdvertisementPackagesRequest
 ): Promise<GetAllAdvertisementPackagesResponse> => {
   try {
@@ -129,6 +137,44 @@ export const getAdvertisementPackageById = async (id: number): Promise<GetAdvert
     nProgress.start();
     const response = await axiosClient.get<GetAdvertisementPackageByIdResponse>(
       `/api/AdvertisementPackages/get-package-by-id/${id}`
+    );
+    return response.data;
+  } catch (error: any) {
+    nProgress.done();
+    if (error.response) {
+      console.error("API Error: ", error.response.data.message);
+      toast.error(error.response.data.message || "An error occurred");
+      throw new Error(error.response.data.message || "An error occurred");
+    } else {
+      console.error("Unknown error: ", error.message);
+      toast.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
+  } finally {
+    nProgress.done();
+  }
+};
+
+interface AddImagesToPackageRequest {
+  advertisementPackageId: number;
+  imagesId: number[];
+}
+
+// Interface for the response
+interface AddImagesToPackageResponse {
+  statusCode: number;
+  isSuccess: boolean;
+  message: string;
+}
+
+export const addImagesToAdvertisementPackage = async (
+  requestData: AddImagesToPackageRequest
+): Promise<AddImagesToPackageResponse> => {
+  try {
+    nProgress.start();
+    const response = await axiosClient.post<AddImagesToPackageResponse>(
+      "/api/AdvertisementPackages/add-images-to-packages",
+      requestData
     );
     return response.data;
   } catch (error: any) {

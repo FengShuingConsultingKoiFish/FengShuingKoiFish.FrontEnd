@@ -37,7 +37,7 @@ const Input: React.FC<InputProps> = ({
       {formatPrice && (
         <FaDongSign
           size={24}
-          className="absolute bottom-[0.5px] left-3 -translate-y-4 transform text-neutral-700"
+          className="absolute bottom-[0.5px] left-3 -translate-y-6 transform text-neutral-700"
         />
       )}
 

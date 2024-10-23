@@ -15,19 +15,18 @@ import ProtectedRoute from "./components/providers/ProtectedRoute"
 import ToasterProvider from "./components/providers/Toaster"
 import LoginModal from "./components/ui/modals/LoginModal"
 import SignupModal from "./components/ui/modals/SignupModal"
-import store, { RootState, persistor } from "./lib/redux/store"
+import { RootState } from "./lib/redux/store"
 import { AdminPage } from "./pages/Admin/AdminPage"
-import { ApprovedAdver } from "./pages/Admin/ManageAdver/ApprovedAdver"
+import { AddAdverImg } from "./pages/Admin/ManageAdver/AddAdverImg"
+import { AllAdver } from "./pages/Admin/ManageAdver/AllAdver"
 import { CreateAdver } from "./pages/Admin/ManageAdver/CreateAdver"
+import { DeleteAdverImg } from "./pages/Admin/ManageAdver/DeleteAdverImg"
 import { ManageAdverPage } from "./pages/Admin/ManageAdver/ManageAdver"
-import { PendingAdver } from "./pages/Admin/ManageAdver/PendingAdver"
-import { RejectedAdver } from "./pages/Admin/ManageAdver/RejectedAdver"
 import { ApprovedPosts } from "./pages/Admin/ManageBlog/ApprovedBlog"
 import { ManageBlogPage } from "./pages/Admin/ManageBlog/ManageBlogs"
 import { PendingPosts } from "./pages/Admin/ManageBlog/PendingBlog"
 import { RejectedPosts } from "./pages/Admin/ManageBlog/RejectedBlog"
 import Blog from "./pages/Blog/Blog"
-import { ViewBlog } from "./pages/Blog/ViewBlog"
 import CreateBlogModal from "./pages/Blog/components/CreateBlogModal"
 import FengShuiLookup from "./pages/FengShuiLookup"
 import Home from "./pages/Home"
@@ -102,11 +101,11 @@ function App() {
             <Route path="rejected" element={<RejectedPosts />} />
           </Route>
           {/* NESTED ROUTES FOR ManageAdverPage */}
-          <Route path="/admin/quang-cao" element={<ProtectedManageAdverPage />}>
+          <Route path="/admin/goi-quang-cao" element={<ProtectedManageAdverPage />}>
             <Route path="create" element={<CreateAdver />} />
-            <Route path="pending" element={<PendingAdver />} />
-            <Route path="approved" element={<ApprovedAdver />} />
-            <Route path="rejected" element={<RejectedAdver />} />
+            <Route path="all" element={<AllAdver />} />
+            <Route path="add-images/:id" element={<AddAdverImg />} />
+            <Route path="delete-images/:id" element={<DeleteAdverImg />} />
           </Route>
         </Routes>
       </div>

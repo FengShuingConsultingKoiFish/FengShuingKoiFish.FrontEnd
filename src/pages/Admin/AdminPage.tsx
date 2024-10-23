@@ -40,7 +40,7 @@ export function AdminPage() {
     },
     {
       label: "Quản lý gói quảng cáo",
-      href: "/admin/quang-cao",
+      href: "/admin/goi-quang-cao",
       icon: <IconPackage className="h-5 w-5 flex-shrink-0 text-neutral-700" />
     },
     {
