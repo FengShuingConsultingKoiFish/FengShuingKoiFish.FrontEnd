@@ -40,10 +40,13 @@ import ProfileSetting from "./pages/Setting/Profile"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
+import { ManageUserPage } from "./pages/Admin/ManageUser/ManageUser"
+import AllUser from "./pages/Admin/ManageUser/AllUser"
 
 const ProtectedAdminPage = ProtectedRoute(AdminPage)
 const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
 const ProtectedManageAdverPage = ProtectedRoute(ManageAdverPage)
+const ProtectedManageUserPage = ProtectedRoute(ManageUserPage)
 
 function App() {
   const location = useLocation()
@@ -101,11 +104,21 @@ function App() {
             <Route path="rejected" element={<RejectedPosts />} />
           </Route>
           {/* NESTED ROUTES FOR ManageAdverPage */}
-          <Route path="/admin/goi-quang-cao" element={<ProtectedManageAdverPage />}>
+          <Route
+            path="/admin/goi-quang-cao"
+            element={<ProtectedManageAdverPage />}
+          >
             <Route path="create" element={<CreateAdver />} />
             <Route path="all" element={<AllAdver />} />
             <Route path="add-images/:id" element={<AddAdverImg />} />
             <Route path="delete-images/:id" element={<DeleteAdverImg />} />
+          </Route>
+          {/* NESTED ROUTES FOR ManageAdverPage */}
+          <Route
+            path="/admin/nguoi-dung"
+            element={<ProtectedManageUserPage/>}
+          >
+            <Route path="all" element={<AllUser />} />
           </Route>
         </Routes>
       </div>

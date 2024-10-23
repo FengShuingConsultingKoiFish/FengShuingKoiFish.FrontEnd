@@ -49,7 +49,7 @@ export const AllAdver = () => {
           pageSize: pageSize,
           name: "",
           priceFilter: null,
-          orderImage: null
+          orderImage: 1
         })
         console.log(response)
         if (response.isSuccess) {
@@ -115,7 +115,7 @@ export const AllAdver = () => {
           ))}
         </ul>
       )}
-      <div className="fixed bottom-0 mt-6 inline-flex translate-x-[45rem] items-center">
+      <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] sm:translate-x-[40rem] items-center">
         <CustomButton
           icon={<IoIosArrowDropleftCircle />}
           label="Trang trước"

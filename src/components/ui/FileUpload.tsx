@@ -65,7 +65,7 @@ export const FileUpload = ({
         <motion.img
           src={previewUrl}
           alt="Uploaded image"
-          className="w-full h-auto rounded-md mt-4"
+          className="w-full max-w-[500px] rounded-md mt-4 object-cover"
           layoutId="file-preview"
         />
       );

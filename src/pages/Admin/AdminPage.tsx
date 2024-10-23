@@ -4,6 +4,7 @@ import {
   IconBrandTabler,
   IconPackage,
   IconSettings,
+  IconUsersGroup,
   IconWriting
 } from "@tabler/icons-react"
 import { motion } from "framer-motion"
@@ -42,6 +43,11 @@ export function AdminPage() {
       label: "Quản lý gói quảng cáo",
       href: "/admin/goi-quang-cao",
       icon: <IconPackage className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+    },
+    {
+      label: "Quản lý người dùng",
+      href: "/admin/nguoi-dung",
+      icon: <IconUsersGroup className="h-5 w-5 flex-shrink-0 text-neutral-700" />
     },
     {
       label: "Cài đặt",

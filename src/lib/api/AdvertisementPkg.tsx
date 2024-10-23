@@ -192,3 +192,40 @@ export const addImagesToAdvertisementPackage = async (
     nProgress.done();
   }
 };
+
+interface DeleteImagesFromPackageRequest {
+  advertisementId: number;
+  adImageIds: number[];
+}
+
+interface DeleteImagesFromPackageResponse {
+  statusCode: number;
+  isSuccess: boolean;
+  message: string;
+}
+
+export const deleteImagesFromAdvertisementPackage = async (
+  requestData: DeleteImagesFromPackageRequest
+): Promise<DeleteImagesFromPackageResponse> => {
+  try {
+    nProgress.start();
+    const response = await axiosClient.post<DeleteImagesFromPackageResponse>(
+      "/api/Advertisements/delete-images-from-advertisement",
+      requestData
+    );
+    return response.data;
+  } catch (error: any) {
+    nProgress.done();
+    if (error.response) {
+      console.error("API Error: ", error.response.data.message);
+      toast.error(error.response.data.message || "An error occurred");
+      throw new Error(error.response.data.message || "An error occurred");
+    } else {
+      console.error("Unknown error: ", error.message);
+      toast.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
+  } finally {
+    nProgress.done();
+  }
+};

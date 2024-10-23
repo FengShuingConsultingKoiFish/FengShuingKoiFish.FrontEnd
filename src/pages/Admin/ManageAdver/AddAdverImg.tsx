@@ -190,7 +190,7 @@ export const AddAdverImg: React.FC = () => {
                 <strong>Hạn mức hình ảnh:</strong>
                 <p>{adverPkg.limitImage}</p>
               </p>
-              <h4 className="mt-4">Hình ảnh hiện tại của gói:</h4>
+              <h4 className="mt-4 font-semibold text-2xl">Hình ảnh hiện tại của gói:</h4>
               {adverPkg.imageViewDTOs && adverPkg.imageViewDTOs.length > 0 ? (
                 <div className="my-4 grid grid-cols-3 gap-4">
                   {adverPkg.imageViewDTOs.map((image: any) => (
