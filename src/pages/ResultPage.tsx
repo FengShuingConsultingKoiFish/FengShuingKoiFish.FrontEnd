@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react"
 import axios from "axios"
 import { useLocation, useNavigate } from "react-router-dom"
 
-import "../styles/fengshui.css"
-
 interface ZodiacResponse {
   statusCode: number
   isSuccess: boolean
@@ -26,6 +24,10 @@ const ResultPage: React.FC = () => {
     navigate("/doan-menh")
   }
 
+  const handlePondConsultation = () => {
+    navigate("/tu-van-ho", { state: { zodiacName: zodiac } })
+  }
+
   const fetchZodiacForGuest = async () => {
     try {
       const dateParts = birthDate.split("/")
@@ -41,11 +43,6 @@ const ResultPage: React.FC = () => {
 
       const formattedBirthDate = formattedDate.toISOString().split("T")[0]
 
-      console.log("Original birthDate:", birthDate)
-      console.log("Formatted birthDate (ISO):", formattedBirthDate)
-
-      console.log("Calling guest API with birthdate (ISO):", formattedBirthDate)
-
       const response = await axios.get<ZodiacResponse>(
         `https://consultingfish.azurewebsites.net/api/Zodiac/Get-Zodiac-By-Birthdate-For-Guest?birthDate=${formattedBirthDate}`
       )
@@ -54,7 +51,6 @@ const ResultPage: React.FC = () => {
         const zodiacSign =
           response.data.result || response.data.message || "Không có kết quả"
 
-        console.log("Zodiac fetched for guest:", zodiacSign)
         setZodiac(zodiacSign)
       } else {
         console.error(
@@ -72,7 +68,6 @@ const ResultPage: React.FC = () => {
   const fetchZodiacForUser = async () => {
     const token = sessionStorage.getItem("token")
     try {
-      console.log("Calling user API")
       const response = await axios.get<ZodiacResponse>(
         "https://consultingfish.azurewebsites.net/api/Zodiac/Get-Zodiac-Sign",
         {
@@ -108,46 +103,62 @@ const ResultPage: React.FC = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-white">
-      <div className="text-center">
-        <h1 className="mb-8 text-2xl font-bold">
-          <br />
-          GIẢI MÃ PHONG THỦY
-        </h1>
-        <div className="relative inline-block h-[520px] w-[660px] rounded-3xl border-2 border-purple-300 bg-white p-8 shadow-lg">
-          <div className="mb-2 flex justify-center">
-            <img
-              src="https://png.pngtree.com/png-vector/20190723/ourlarge/pngtree-koi-fish-and-sakura-flower-logo-luck-prosperity-and-good-fortune-png-image_1570092.jpg"
-              alt="Koi Fish Logo"
-              className="h-32 w-32 rounded-full border-4 border-yellow-400"
-            />
-          </div>
-          <div className="flex text-left">
-            <div className="ml-[80px] flex-1">
-              <p className="mb-2 font-bold">Họ tên</p>
-              <p className="mb-2 font-bold">Giới tính</p>
-              <p className="mb-2 font-bold">Ngày sinh</p>
-              <p className="mb-2 font-bold">Mệnh</p>
-              <p className="mb-2 font-bold">Thông điệp</p>
+      {loading ? (
+        <p>Đang tải...</p> // Hiển thị thông báo khi đang tải
+      ) : (
+        <div className="text-center">
+          <h1 className="mb-8 text-2xl font-bold">
+            <br />
+            GIẢI MÃ PHONG THỦY
+          </h1>
+          <div className="relative inline-block h-[520px] w-[660px] rounded-3xl border-2 border-purple-300 bg-white p-8 shadow-lg">
+            <div className="mb-2 flex justify-center">
+              <img
+                src="https://png.pngtree.com/png-vector/20190723/ourlarge/pngtree-koi-fish-and-sakura-flower-logo-luck-prosperity-and-good-fortune-png-image_1570092.jpg"
+                alt="Koi Fish Logo"
+                className="h-32 w-32 rounded-full border-4 border-yellow-400"
+              />
             </div>
-            <div className="flex-1">
-              <p className="mb-2">{name || "N/A"}</p>
-              <p className="mb-2">{gender || "N/A"}</p>
-              <p className="mb-2">{birthDate || "N/A"}</p>
-              <p className="mb-2">{zodiac ? zodiac : "Không có kết quả"}</p>
-              <p className="mb-2">
-                {zodiacMessage || "Bạn cần đăng nhập để xem thông điệp"}
-              </p>
+            <div className="flex text-left">
+              <div className="ml-[80px] flex-1">
+                <p className="mb-2 font-bold">Họ tên</p>
+                <p className="mb-2 font-bold">Giới tính</p>
+                <p className="mb-2 font-bold">Ngày sinh</p>
+                <p className="mb-2 font-bold">Mệnh</p>
+                <p className="mb-2 font-bold">Thông điệp</p>
+              </div>
+              <div className="flex-1">
+                <p className="mb-2">{name || "N/A"}</p>
+                <p className="mb-2">{gender || "N/A"}</p>
+                <p className="mb-2">{birthDate || "N/A"}</p>
+                <p className="mb-2">{zodiac ? zodiac : "Không có kết quả"}</p>
+                <p className="mb-2">
+                  {zodiacMessage || "Bạn cần đăng nhập để xem thông điệp"}
+                </p>
+              </div>
             </div>
-          </div>
 
-          <button
-            className="button-glow mt-4 rounded-md bg-purple-500 px-4 py-2 text-white"
-            onClick={handleNewLookup}
-          >
-            TRA CỨU MỚI
-          </button>
+            <div className="flex justify-center gap-4">
+              <button
+                className="button-glow mt-4 rounded-md bg-purple-500 px-4 py-2 text-white"
+                onClick={handleNewLookup}
+              >
+                TRA CỨU MỚI
+              </button>
+              {useAccountInfo &&
+                zodiac && ( // Chỉ hiển thị nút Tư vấn Hồ Cá khi sử dụng tài khoản
+                  <button
+                    className="button-glow mt-4 rounded-md bg-purple-500 px-4 py-2 text-white"
+                    onClick={handlePondConsultation}
+                    disabled={!zodiac} // Disable button if zodiac is not available
+                  >
+                    Tư Vấn Hồ Cá
+                  </button>
+                )}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

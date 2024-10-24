@@ -31,7 +31,7 @@ const Navbar = () => {
   // Get current user from Redux store
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
 
-  // State to control the dropdown menu visibility
+  // State to control the dropdown menu visibility for "Dịch vụ"
   const [isServiceMenuOpen, setIsServiceMenuOpen] = useState(false)
 
   const toggleServiceMenu = () => {
@@ -48,6 +48,7 @@ const Navbar = () => {
             </Link>
 
             {currentUser?.Name !== "Admin" &&(
+
               <div className="relative flex flex-row gap-5">
                 <Item label="Giới thiệu" link=""></Item>
 
@@ -65,8 +66,16 @@ const Navbar = () => {
                       <Link
                         to="/tu-van-ho"
                         className="block px-4 py-2 hover:bg-gray-100"
+                        state={{ zodiacName: "Kim" }}
                       >
                         Tư vấn hồ
+                      </Link>
+                      {/* Thêm chức năng Tạo hồ cá */}
+                      <Link
+                        to="/create-pond"
+                        className="block px-4 py-2 hover:bg-gray-100"
+                      >
+                        Tạo hồ & Xem hồ
                       </Link>
                     </div>
                   )}
