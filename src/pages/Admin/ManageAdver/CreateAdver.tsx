@@ -225,7 +225,7 @@ export const CreateAdver: React.FC = () => {
                 {...register("description", { required: true })}
               ></textarea>
               {errors.description && (
-                <span className="text-red-500">Tiêu đề là bắt buộc</span>
+                <span className="text-red-500">Miêu tả là bắt buộc</span>
               )}
             </div>
           </form>

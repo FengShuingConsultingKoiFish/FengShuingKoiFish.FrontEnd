@@ -42,7 +42,7 @@ export function PackagePage() {
     setIsLoading(true)
     const requestData = {
       pageIndex: pageIndex,
-      pageSize: 5,
+      pageSize: 8,
       name: "",
       priceFilter: null,
       orderImage: null

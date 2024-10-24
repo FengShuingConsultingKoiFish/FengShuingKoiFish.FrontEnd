@@ -211,3 +211,67 @@ export const GetAllUserDetails = async (
     nProgress.done()
   }
 }
+
+interface GetAllBlogsForUserRequest {
+  pageIndex: number;
+  pageSize: number;
+  title: string;
+  blogStatus: number | null;
+  orderBlog: number | null;
+  orderComment: number | null;
+  orderImage: number | null;
+}
+interface ImageViewDtos {
+  id: number
+  filePath: string
+  altText?: string | null
+  userId: string
+  userName: string
+  createdDate: string
+}
+
+interface BlogDetails {
+  id: number;
+  title: string;
+  content: string;
+  userName: string
+  createdDate: string
+  status: string
+  imageViewDtos: ImageViewDtos[]
+  commentViewDtos : []
+}
+
+interface GetAllBlogsForUserResponse {
+  statusCode: number;
+  isSuccess: boolean;
+  message: string;
+  result: {
+    pageIndex: number;
+    totalPages: number;
+    totalItems: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+    datas: BlogDetails[];
+  };
+}
+
+export const GetAllBlogsForUser = async (
+  requestData: GetAllBlogsForUserRequest
+): Promise<GetAllBlogsForUserResponse> => {
+  try {
+    nProgress.start();
+    const response = await axiosClient.post<GetAllBlogsForUserResponse>(
+      "/api/Blogs/get-all-blogs-for-user",
+      requestData
+    );
+    nProgress.done();
+    return response.data;
+  } catch (error: any) {
+    nProgress.done();
+    console.error("API Error: ", error.response?.data?.message || error.message);
+    throw new Error(error.response?.data?.message || "An error occurred");
+  } finally {
+    nProgress.done();
+  }
+};
+

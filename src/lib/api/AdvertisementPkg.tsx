@@ -194,8 +194,8 @@ export const addImagesToAdvertisementPackage = async (
 };
 
 interface DeleteImagesFromPackageRequest {
-  advertisementId: number;
-  adImageIds: number[];
+  advertisementPackageId: number;
+  imageIds: number[];
 }
 
 interface DeleteImagesFromPackageResponse {
@@ -210,7 +210,7 @@ export const deleteImagesFromAdvertisementPackage = async (
   try {
     nProgress.start();
     const response = await axiosClient.post<DeleteImagesFromPackageResponse>(
-      "/api/Advertisements/delete-images-from-advertisement",
+      "/api/AdvertisementPackages/delete-images-from-package",
       requestData
     );
     return response.data;

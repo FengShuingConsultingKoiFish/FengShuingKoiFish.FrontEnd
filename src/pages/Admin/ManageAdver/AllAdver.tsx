@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react"
+
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
 import {
   IoIosArrowDropleftCircle,
   IoIosArrowDroprightCircle
 } from "react-icons/io"
-import { getAllAdvertisementsPkg } from "@/lib/api/AdvertisementPkg"
-import AdverPkgSection from "../components/AdverPkgSection"
 import { useNavigate } from "react-router-dom"
+
+import { getAllAdvertisementsPkg } from "@/lib/api/AdvertisementPkg"
+
+import AdverPkgSection from "../components/AdverPkgSection"
 
 interface ImageViewDTO {
   id: number
@@ -80,13 +83,9 @@ export const AllAdver = () => {
     }
   }
 
-  const handleAddImage = (id: number) => {
-    navigate(`/admin/goi-quang-cao/add-images/${id}`);
-  };
-
-  const handleRemoveImage = (id: number) => {
-    navigate(`/admin/goi-quang-cao/delete-images/${id}`);
-  };
+  const handleEditDetail = (id: number) => {
+    navigate(`/admin/goi-quang-cao/edit/${id}`)
+  }
 
   return (
     <div className="relative flex w-full flex-col">
@@ -109,13 +108,12 @@ export const AllAdver = () => {
               limitContent={pkg.limitContent}
               limitImage={pkg.limitImage}
               imageViewDtos={pkg.imageViewDTOs}
-              clickToAddImg={() => handleAddImage(pkg.id)} 
-              clickToRemoveImg={() => handleRemoveImage(pkg.id)} 
+              clickToEdit={() => handleEditDetail(pkg.id)}
             />
           ))}
         </ul>
       )}
-      <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] sm:translate-x-[40rem] items-center">
+      <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] items-center sm:translate-x-[40rem]">
         <CustomButton
           icon={<IoIosArrowDropleftCircle />}
           label="Trang trước"

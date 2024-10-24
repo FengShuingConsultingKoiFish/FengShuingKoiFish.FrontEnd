@@ -4,11 +4,13 @@ import { persistReducer, persistStore } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 
 import usersSlice, { setCurrentUser } from "./reducers/userSlice"
+import userBlogsSlice from "./reducers/userBlogSlice"
 
 // Configure Redux store
 
 const rootReducer = combineReducers({
-  users: usersSlice
+  users: usersSlice,
+  userBlogs: userBlogsSlice
 })
 
 const persistConfig = {
