@@ -6,6 +6,8 @@ import {
   ListboxOption,
   ListboxOptions
 } from "@headlessui/react"
+import { yupResolver } from "@hookform/resolvers/yup"
+import { IconDeviceFloppy } from "@tabler/icons-react"
 import clsx from "clsx"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -17,18 +19,21 @@ import { RiArrowDropDownLine } from "react-icons/ri"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { Navigate } from "react-router-dom"
+import { ClipLoader } from "react-spinners"
+import * as yup from "yup"
+
+import useProfileImgModal from "@/hooks/useProfileImgModal"
+
 import { uploadImage } from "@/lib/api/Image"
 import { updateUserAvatar } from "@/lib/api/Image"
 import { CreateOrUpdateUserProfile, GetUserProfile } from "@/lib/api/User"
 import { setDetailUser } from "@/lib/redux/reducers/userSlice"
+
 import Avatar from "@/components/layout/header/Avatar"
 import Input from "@/components/ui/Input"
-import CustomButton from "./CustomBtn"
-import useProfileImgModal from "@/hooks/useProfileImgModal"
-import ProfileImgChoosingModal from "./ProfileImgChoosing"
-import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
 
+import CustomButton from "./CustomBtn"
+import ProfileImgChoosingModal from "./ProfileImgChoosing"
 
 interface AccountDetailProps {
   fullName: string
@@ -61,8 +66,8 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
   const [isEditingFullName, setIsEditingFullName] = useState(false)
   const [isEditingIdentityCard, setIsEditingIdentityCard] = useState(false)
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
-  const [selectedImageId, setSelectedImageId] = useState<number | null>(null);
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null)
+  const [selectedImageId, setSelectedImageId] = useState<number | null>(null)
   const [startDate, setStartDate] = useState<Date | null>()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -71,15 +76,16 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
   const profileImgChoosingModal = useProfileImgModal()
 
   useEffect(() => {
+    console.log("value of dob:", dateOfBirth)
     if (dateOfBirth) {
-      const parsedDate = new Date(dateOfBirth);
+      const parsedDate = new Date(dateOfBirth)
       if (!isNaN(parsedDate.getTime())) {
-        setStartDate(parsedDate);
+        setStartDate(parsedDate)
       } else {
-        setStartDate(null);
+        setStartDate(null)
       }
     }
-  }, [dateOfBirth]);
+  }, [dateOfBirth])
 
   const handleAvatarClick = () => {
     if (fileInputRef.current) {
@@ -87,23 +93,23 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
     }
   }
   const handleSelectImageClick = () => {
-    profileImgChoosingModal.onOpen() 
+    profileImgChoosingModal.onOpen()
   }
 
   const handleSelectImage = (image: { id: number; imageUrl: string }) => {
-    setSelectedImageUrl(image.imageUrl);
-    setSelectedImageId(image.id);
-  };
+    setSelectedImageUrl(image.imageUrl)
+    setSelectedImageId(image.id)
+  }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file && (file.type === "image/png" || file.type === "image/jpeg")) {
-      setUploadedFile(file);
+      setUploadedFile(file)
       console.log(file)
 
       const imageUrl = URL.createObjectURL(file)
       console.log("Temporary Image URL:", imageUrl)
-      setSelectedImageUrl(imageUrl);
+      setSelectedImageUrl(imageUrl)
     } else {
       toast.error("Vui lòng chọn đúng loại ảnh")
     }
@@ -134,7 +140,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
       imageId: imageId,
       avatar: avatar
       //
-    },
+    }
     //resolver: yupResolver(schema),
   })
 
@@ -157,9 +163,8 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
 
       if (uploadedFile) {
         console.log("Uploading file:", uploadedFile)
-        imageIdToUpload = await uploadImage(uploadedFile) 
+        imageIdToUpload = await uploadImage(uploadedFile)
         console.log("Image ID after upload:", imageIdToUpload)
-
       }
 
       const profileData = {
@@ -174,7 +179,6 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
 
       const response = await CreateOrUpdateUserProfile(profileData, dispatch)
       if (response && response.isSuccess) {
-
         if (imageIdToUpload) {
           const updateAvatarResponse = await updateUserAvatar(imageIdToUpload)
           console.log("Avatar updated successfully", updateAvatarResponse)
@@ -191,7 +195,6 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
       setIsLoading(false)
     }
   }
-
 
   const people = [
     { id: 1, name: "Nam" },
@@ -220,13 +223,12 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
           style={{ display: "none" }}
           accept="image/png, image/jpeg"
         />
-         <CustomButton
-            icon={<MdAddPhotoAlternate size={25} />}
-            label="Chọn ảnh từ thư viện của bạn"
-            onClick={handleSelectImageClick}
-          />
+        <CustomButton
+          icon={<MdAddPhotoAlternate size={25} />}
+          label="Chọn ảnh từ thư viện của bạn"
+          onClick={handleSelectImageClick}
+        />
       </div>
-      
 
       {/* Detail Section */}
       <div>
@@ -261,7 +263,6 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
                 disabled={isLoading}
               />
             </div>
-            
           ) : (
             <div
               onClick={handleEditFullName}
@@ -300,7 +301,9 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
                 onClick={handleSubmit(handleSaveIdentityCard)}
                 disabled={isLoading}
               />
-              {errors.identityCard && <p className="text-red-500">{errors.identityCard.message}</p>}
+              {errors.identityCard && (
+                <p className="text-red-500">{errors.identityCard.message}</p>
+              )}
             </div>
           ) : (
             <div
@@ -324,7 +327,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
               onChange={(date) => setStartDate(date)}
               className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
               placeholderText="Chọn ngày"
-              dateFormat="dd/MM/yyyy" 
+              dateFormat="dd/MM/yyyy"
               isClearable
             />
           </div>
@@ -367,8 +370,15 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
           </Listbox>
         </div>
         <CustomButton
-          label="Lưu thay đổi"
-          onClick={onSubmit}
+          icon={
+            isLoading ? (
+              <ClipLoader size={20} color={"#fff"} />
+            ) : (
+              <IconDeviceFloppy />
+            )
+          }
+          label={isLoading ? "" : "Lưu thay đổi"}
+          onClick={handleSubmit(onSubmit)}
           disabled={isLoading}
         />
       </div>

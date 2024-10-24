@@ -1,6 +1,18 @@
 import React from "react"
 
-import { IconBan, IconCheck, IconFileText,IconClockHour2, IconHome } from "@tabler/icons-react"
+import {
+  IconBan,
+  IconCheck,
+  IconClockHour2,
+  IconFileText,
+  IconHome,
+  IconList,
+  IconPackages,
+  IconPhotoPlus,
+  IconSquareRoundedPlus,
+  IconTrash,
+  IconUser
+} from "@tabler/icons-react"
 import { MdKeyboardArrowRight } from "react-icons/md"
 import { Link, useLocation } from "react-router-dom"
 
@@ -23,6 +35,30 @@ const breadcrumbMap: {
   "/admin/blogs/rejected": {
     label: "Blog đã từ chối",
     icon: <IconBan className="mr-2 h-4 w-4" />
+  },
+  "/admin/goi-quang-cao": {
+    label: "Gói Quảng cáo",
+    icon: <IconPackages className="mr-2 h-4 w-4" />
+  },
+  "/admin/goi-quang-cao/create": {
+    label: "Tạo gói quảng cáo",
+    icon: <IconSquareRoundedPlus className="mr-2 h-4 w-4" />
+  },
+  "/admin/goi-quang-cao/all": {
+    label: "Xem tất cả gói quảng cáo",
+    icon: <IconList className="mr-2 h-4 w-4" />
+  },
+  "/admin/goi-quang-cao/add-images": {
+    label: "Thêm hình ảnh cho gói quảng cáo",
+    icon: <IconPhotoPlus className="mr-2 h-4 w-4" />
+  },
+  "/admin/goi-quang-cao/delete-images": {
+    label: "Xóa ảnh cho gói quảng cáo",
+    icon: <IconTrash className="mr-2 h-4 w-4" />
+  },
+  "/admin/nguoi-dung/all": {
+    label: "Xem tất cả người dùng",
+    icon: <IconUser className="mr-2 h-4 w-4" />
   }
 }
 
@@ -38,9 +74,22 @@ const Breadcrumb = () => {
   }, [])
 
   return (
-    <ol className="flex items-center justify-start space-x-2 whitespace-nowrap mb-3 ">
+    <ol className="mb-3 flex items-center justify-start space-x-2 whitespace-nowrap">
       {paths.map((path, index) => {
         const isLast = index === paths.length - 1
+
+        let basePath = path
+        if (path.startsWith("/admin/goi-quang-cao/add-images")) {
+          basePath = "/admin/goi-quang-cao/add-images"
+        } else if (path.startsWith("/admin/goi-quang-cao/delete-images")) {
+          basePath = "/admin/goi-quang-cao/delete-images"
+        }
+
+        const breadcrumb = breadcrumbMap[basePath]
+
+        if (!breadcrumb) {
+          return null
+        }
         return (
           <li key={path} className="inline-flex items-center">
             {!isLast ? (

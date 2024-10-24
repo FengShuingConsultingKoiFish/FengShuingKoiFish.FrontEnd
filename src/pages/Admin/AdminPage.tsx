@@ -4,6 +4,7 @@ import {
   IconBrandTabler,
   IconPackage,
   IconSettings,
+  IconUsersGroup,
   IconWriting
 } from "@tabler/icons-react"
 import { motion } from "framer-motion"
@@ -12,7 +13,7 @@ import { Link } from "react-router-dom"
 
 import { cn } from "@/lib/utils"
 
-import Breadcrumb from "@/components/ui/Breadcums"
+import Breadcrumb from "@/components/ui/Breadcrums"
 
 import {
   Sidebar,
@@ -40,8 +41,13 @@ export function AdminPage() {
     },
     {
       label: "Quản lý gói quảng cáo",
-      href: "/admin/quang-cao",
+      href: "/admin/goi-quang-cao",
       icon: <IconPackage className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+    },
+    {
+      label: "Quản lý người dùng",
+      href: "/admin/nguoi-dung",
+      icon: <IconUsersGroup className="h-5 w-5 flex-shrink-0 text-neutral-700" />
     },
     {
       label: "Cài đặt",
@@ -102,7 +108,7 @@ export const LogoIcon = () => {
 const Dashboard = () => {
   return (
     <div className="flex flex-1">
-      <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2">
+      <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-10">
         <Breadcrumb />
         <div className="flex flex-grow flex-col items-center justify-start text-black">
           <TbMoodEmpty size={140} />

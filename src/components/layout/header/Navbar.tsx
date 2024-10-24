@@ -47,7 +47,8 @@ const Navbar = () => {
               <Logo />
             </Link>
 
-            {currentUser?.Name !== "Admin" && (
+            {currentUser?.Name !== "Admin" &&(
+
               <div className="relative flex flex-row gap-5">
                 <Item label="Giới thiệu" link=""></Item>
 
@@ -82,7 +83,7 @@ const Navbar = () => {
 
                 <Item label="Kiến thức" link=""></Item>
                 <Item label="Hỏi đáp" link=""></Item>
-                <Item label="Hội viên" link=""></Item>
+                <Item label="Hội viên" link="/goi-hoi-vien"></Item>
                 <Item label="Blog" link="/blog"></Item>
               </div>
             )}

@@ -199,7 +199,7 @@ const CreateBlogModal = () => {
               required
               {...register("title", { required: true })}
             ></textarea>
-            {errors.content && (
+            {errors.title&& (
               <span className="text-red-500">Tiêu đề là bắt buộc</span>
             )}
           </div>

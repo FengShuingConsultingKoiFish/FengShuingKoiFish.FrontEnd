@@ -13,18 +13,11 @@ import Breadcrumb from "@/components/ui/Breadcrums"
 
 import { Sidebar, SidebarBody, SidebarLink } from "../components/CustomSidebar"
 
-export function ManageAdverPage() {
+export function ManageUserPage() {
   const links = [
     {
-      label: "Tạo gói quảng cáo",
-      href: "/admin/goi-quang-cao/create",
-      icon: (
-        <IconCirclePlus className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-      )
-    },
-    {
-      label: "Xem tất cả gói quảng cáo",
-      href: "/admin/goi-quang-cao/all",
+      label: "Xem tất cả người dùng",
+      href: "/admin/nguoi-dung/all",
       icon: (
         <IconList className="h-5 w-5 flex-shrink-0 text-neutral-700" />
       )

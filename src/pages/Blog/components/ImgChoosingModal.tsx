@@ -1,100 +1,90 @@
-import { useEffect, useState } from "react"
-
-import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import {
-  IoIosArrowDropleftCircle,
-  IoIosArrowDroprightCircle
-} from "react-icons/io"
-import { ClipLoader } from "react-spinners"
-
-import useImgChoosingModal from "@/hooks/useChooseImgModal"
-
-import { getImagesForMember } from "@/lib/api/Image"
-
-import BlogModal from "./BlogModal"
+import { useEffect, useState, useCallback } from "react";
+import CustomButton from "@/pages/Setting/Components/CustomBtn";
+import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
+import { ClipLoader } from "react-spinners";
+import useImgChoosingModal from "@/hooks/useChooseImgModal";
+import { getImagesForMember } from "@/lib/api/Image";
+import BlogModal from "./BlogModal";
 
 interface Image {
-  id: number
-  imageUrl: string
+  id: number;
+  imageUrl: string;
 }
 
 interface ImgChoosingModalProps {
-  onSelectImages: (selectedImages: Image[]) => void
+  onSelectImages: (selectedImages: Image[]) => void;
 }
 
-const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
-  onSelectImages
-}) => {
-  const [images, setImages] = useState<Image[]>([])
-  const [selectedImages, setSelectedImages] = useState<Image[]>([])
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [pageIndex, setPageIndex] = useState<number>(1)
-  const [totalPages, setTotalPages] = useState<number>(1)
+const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({ onSelectImages }) => {
+  const [images, setImages] = useState<Image[]>([]);
+  const [selectedImages, setSelectedImages] = useState<Image[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [pageIndex, setPageIndex] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
 
-  const imgChoosingModal = useImgChoosingModal()
+  const imgChoosingModal = useImgChoosingModal();
+
+  const fetchImages = useCallback(async () => {
+    if (imgChoosingModal.isOpen) {
+      setIsLoading(true);
+      try {
+        const requestData = {
+          pageIndex,
+          pageSize: 6,
+          name: "",
+          orderDate: null,
+        };
+        const response = await getImagesForMember(requestData);
+
+        if (response.result && Array.isArray(response.result.datas)) {
+          const mappedImages = response.result.datas.map((image) => ({
+            id: image.id,
+            imageUrl: image.filePath,
+          }));
+          setImages(mappedImages);
+          setTotalPages(response.result.totalPages);
+        } else {
+          console.error("Error: No images found.");
+        }
+      } catch (error) {
+        console.error("Error fetching images:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  }, [imgChoosingModal.isOpen, pageIndex]);
 
   useEffect(() => {
-    console.log("ImgChoosingModal open status:", imgChoosingModal.isOpen)
-    if (imgChoosingModal.isOpen) {
-      const fetchImages = async () => {
-        try {
-          console.log("Fetching images...")
-          const requestData = {
-            pageIndex: pageIndex,
-            pageSize: 6,
-            name: "",
-            orderDate: null
-          }
-          console.log(requestData)
-          const response = await getImagesForMember(requestData)
-          console.log("Images fetched:", response.result.datas)
-          if (response.result && Array.isArray(response.result.datas)) {
-            // Map the response to match the Image type with imageUrl
-            const mappedImages = response.result.datas.map((image) => ({
-              id: image.id,
-              imageUrl: image.filePath // Use filePath as imageUrl
-            }))
-            setImages(mappedImages)
-            setTotalPages(response.result.totalPages)
-          } else {
-            console.error("Error: No images found.")
-          }
-        } catch (error) {
-          console.error("Error fetching images:", error)
-        } finally {
-          setIsLoading(false)
-        }
-      }
-      fetchImages()
-    }
-  }, [imgChoosingModal.isOpen, pageIndex])
-  // Handle image selection
+    console.log("ImgChoosingModal open status:", imgChoosingModal.isOpen);
+    fetchImages();
+  }, [fetchImages]);
+
   const toggleImageSelection = (image: Image) => {
     if (selectedImages.some((img) => img.id === image.id)) {
-      setSelectedImages(selectedImages.filter((img) => img.id !== image.id))
+      setSelectedImages(selectedImages.filter((img) => img.id !== image.id));
     } else {
-      setSelectedImages([...selectedImages, image])
+      setSelectedImages([...selectedImages, image]);
     }
-  }
+  };
 
   const handleSave = () => {
-    onSelectImages(selectedImages)
-    imgChoosingModal.onClose()
-  }
+    onSelectImages(selectedImages);
+    imgChoosingModal.onClose();
+  };
 
   const handleNextPage = () => {
     if (pageIndex < totalPages) {
-      setPageIndex((prev) => prev + 1)
+      setPageIndex((prev) => prev + 1);
     }
-  }
+  };
 
   const handlePreviousPage = () => {
     if (pageIndex > 1) {
-      setPageIndex((prev) => prev - 1)
+      setPageIndex((prev) => prev - 1);
     }
-  }
+  };
 
-  if (!imgChoosingModal.isOpen) return null
+  if (!imgChoosingModal.isOpen) return null;
 
   const bodyContent =
     images.length > 0 ? (
@@ -108,8 +98,8 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
                 : "border-gray-300"
             }`}
             onClick={(e) => {
-              e.stopPropagation()
-              toggleImageSelection(image)
+              e.stopPropagation();
+              toggleImageSelection(image);
             }}
           >
             <img
@@ -122,7 +112,7 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
       </div>
     ) : (
       <p>No images found or error fetching images.</p>
-    )
+    );
 
   const paginationControls = (
     <div className="mt-4 flex justify-between">
@@ -140,7 +130,7 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
         disabled={pageIndex === totalPages || isLoading}
       />
     </div>
-  )
+  );
 
   return (
     <BlogModal
@@ -158,7 +148,7 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({
       }
       currentUser
     />
-  )
-}
+  );
+};
 
-export default ImgChoosingModal
+export default ImgChoosingModal;

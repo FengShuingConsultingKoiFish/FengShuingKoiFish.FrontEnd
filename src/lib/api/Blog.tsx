@@ -43,6 +43,9 @@ export const createUpdateBlog = async (
       throw new Error("An unknown error occurred")
     }
   }
+  finally{
+    nProgress.done()
+  }
 }
 
 interface GetAllBlogsForAdminRequest {
@@ -50,7 +53,7 @@ interface GetAllBlogsForAdminRequest {
   pageSize: number
   title?: string
   blogStatus?: number | null
-  orderBlog?: string | null
+  orderBlog?: number| null
   orderComment?: string | null
   orderImage?: string | null
 }
@@ -151,7 +154,7 @@ interface GetAllBlogsRequest {
   pageSize: number
   title?: string | null
   blogStatus?: number | null
-  orderBlog?: string | null
+  orderBlog?: number | null
   orderComment?: string | null
   orderImage?: string | null
 }
