@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react"
 
-import { IconCreditCardPay } from "@tabler/icons-react"
+import { IconCreditCardPay, IconLogin } from "@tabler/icons-react"
 import { motion } from "framer-motion"
+import toast from "react-hot-toast"
+import { useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
+import { ClipLoader } from "react-spinners"
+
+import useLoginModal from "@/hooks/useLoginModal"
 
 import { getAdvertisementPackageById } from "@/lib/api/AdvertisementPkg"
+import { RequestPayment } from "@/lib/api/Payment"
+import { RootState } from "@/lib/redux/store"
 
 import { AuroraBackground } from "@/components/ui/AuroraBg"
 import { ArticleReading } from "@/components/ui/blog/ArticleReading"
@@ -30,15 +37,18 @@ interface AdvertisementPackage {
 
 export const PackageDetailPage = () => {
   const { id } = useParams()
+  const loginModal = useLoginModal()
   const [packageDetail, setPackageDetail] =
     useState<AdvertisementPackage | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
+  const currentUser = useSelector((state: RootState) => state.users.detailUser)
 
   useEffect(() => {
     const fetchPackageDetail = async () => {
       try {
         const response = await getAdvertisementPackageById(Number(id))
+        console.log(response)
         setPackageDetail(response.result)
         setIsLoading(false)
       } catch (error) {
@@ -53,12 +63,38 @@ export const PackageDetailPage = () => {
     }
   }, [id])
 
+  const handlePurchase = async () => {
+    if (!packageDetail || !currentUser) {
+      toast.error("Missing user or package information.")
+      return
+    }
+
+    const paymentData = {
+      userId: currentUser.userId,
+      packageName: packageDetail.name,
+      fullName: currentUser.fullName,
+      description: packageDetail.description,
+      amount: packageDetail.price,
+      createdDate: new Date().toISOString()
+    }
+
+    try {
+      const response = await RequestPayment(paymentData)
+      toast.success("Đang chuyển trang thanh toán VnPay... !")
+      console.log("Payment response:", response)
+      window.location.href = response.url
+    } catch (error) {
+      toast.error("Failed to make payment request.")
+      console.error("Payment error:", error)
+    }
+  }
+
   const data = [
     {
       title: "Giới thiệu",
       content: (
         <div>
-          <p className="mb-8 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
+          <p className="mb-8 text-5xl font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
             {packageDetail?.description || "No description available"}
           </p>
           <div className="grid grid-cols-2 gap-4"></div>
@@ -158,7 +194,9 @@ export const PackageDetailPage = () => {
       >
         <div className="w-full">
           {isLoading ? (
-            <div className="text-center">Loading...</div>
+            <div className="flex h-screen items-center justify-center">
+              <ClipLoader size={40} color="#000" />
+            </div>
           ) : error ? (
             <div className="text-center text-red-500">{error}</div>
           ) : (
@@ -178,11 +216,22 @@ export const PackageDetailPage = () => {
             </div>
           )}
           <div className="flex items-center justify-center">
-            <CustomButton
-              icon={<IconCreditCardPay />}
-              label="Mua ngay"
-              onClick={() => {}}
-            />
+            {currentUser ? (
+              <CustomButton
+                icon={<IconCreditCardPay />}
+                label="Mua ngay"
+                onClick={handlePurchase}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center">
+                <p className="text-red-500">Vui lòng đăng nhập để mua gói</p>
+                <CustomButton
+                  icon={<IconLogin />}
+                  label="Đăng nhập"
+                  onClick={() => loginModal.onOpen()}
+                />
+              </div>
+            )}
           </div>
         </div>
       </motion.div>

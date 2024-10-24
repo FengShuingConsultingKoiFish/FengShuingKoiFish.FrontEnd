@@ -17,10 +17,9 @@ import LoginModal from "./components/ui/modals/LoginModal"
 import SignupModal from "./components/ui/modals/SignupModal"
 import { RootState } from "./lib/redux/store"
 import { AdminPage } from "./pages/Admin/AdminPage"
-import { AddAdverImg } from "./pages/Admin/ManageAdver/AddAdverImg"
+import { EditAdver } from "./pages/Admin/ManageAdver/EditAdver"
 import { AllAdver } from "./pages/Admin/ManageAdver/AllAdver"
 import { CreateAdver } from "./pages/Admin/ManageAdver/CreateAdver"
-import { DeleteAdverImg } from "./pages/Admin/ManageAdver/DeleteAdverImg"
 import { ManageAdverPage } from "./pages/Admin/ManageAdver/ManageAdver"
 import { ApprovedPosts } from "./pages/Admin/ManageBlog/ApprovedBlog"
 import { ManageBlogPage } from "./pages/Admin/ManageBlog/ManageBlogs"
@@ -42,6 +41,8 @@ import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
 import { ManageUserPage } from "./pages/Admin/ManageUser/ManageUser"
 import AllUser from "./pages/Admin/ManageUser/AllUser"
+import PostedBlog from "./pages/User/PostedBlog"
+import EditBlogModal from "./pages/User/components/EditBlogModal"
 
 const ProtectedAdminPage = ProtectedRoute(AdminPage)
 const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
@@ -94,6 +95,7 @@ function App() {
           <Route path="/doan-menh" element={<FengShuiLookup />} />
           <Route path="/ket-qua" element={<ResultPage />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog-cua-toi" element={<PostedBlog/>} />
           <Route path="*" element={<NotFound />} />
           {/*ADMIN ROUTE*/}
           <Route path="/admin" element={<ProtectedAdminPage />} />
@@ -110,8 +112,7 @@ function App() {
           >
             <Route path="create" element={<CreateAdver />} />
             <Route path="all" element={<AllAdver />} />
-            <Route path="add-images/:id" element={<AddAdverImg />} />
-            <Route path="delete-images/:id" element={<DeleteAdverImg />} />
+            <Route path="edit/:id" element={<EditAdver />} />
           </Route>
           {/* NESTED ROUTES FOR ManageAdverPage */}
           <Route

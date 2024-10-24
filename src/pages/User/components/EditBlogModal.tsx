@@ -1,39 +1,28 @@
 import { useCallback, useEffect, useState } from "react"
-
+import BlogModal from "@/pages/Blog/components/BlogModal"
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import { yupResolver } from "@hookform/resolvers/yup"
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { MdAddPhotoAlternate } from "react-icons/md"
 import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
-import * as yup from "yup"
-
-import useBlogModal from "@/hooks/useBlogModel"
-import useImgChoosingModal from "@/hooks/useChooseImgModal"
-
+import useEditBlogModal from "@/hooks/useEditBlogModal"
 import { createUpdateBlog } from "@/lib/api/Blog"
 import { uploadImage } from "@/lib/api/Image"
 import { AppDispatch, RootState } from "@/lib/redux/store"
-
 import Avatar from "@/components/layout/header/Avatar"
 import { FileUpload } from "@/components/ui/FileUpload"
+import EditImgChoosingModal from "./EditImgChoosingModal"
+import useEditImgChoosingModal from "@/hooks/useEditImgChoosingModal"
 
-import BlogModal from "./BlogModal"
-import ImgChoosingModal from "./ImgChoosingModal"
 
-// Define the schema with yup
-const schema = yup.object().shape({
-  email: yup.string().required("Vui lòng nhập tên hoặc email của bạn"),
-  password: yup.string().required("Mật khẩu là bắt buộc")
-})
 
-interface CreateBlogFormData {
+interface EditBlogFormData {
+  imageViewDtos: any
   id: number
   title: string
   content: string
-  imageIds: number[]
+  imageIds?: number[]
 }
 
 interface Image {
@@ -41,19 +30,11 @@ interface Image {
   imageUrl: string
 }
 
-
-const CreateBlogModal = ({
-  existingBlog
-}: {
-  existingBlog? : CreateBlogFormData  
-}) => {
-  const imgChoosingModal = useImgChoosingModal()
-  const blogModal = useBlogModal()
+const EditBlogModal = () => {
+  const editImgChoosingModal = useEditImgChoosingModal()
+  const detailBlog = useSelector((state: RootState) => state.userBlogs.detailBlog)
+  const editBlogModal = useEditBlogModal()
   const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
-  const defaultAvatar =
-    "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
-
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
   const userProfile = useSelector((state: RootState) => state.users.detailUser)
@@ -62,24 +43,42 @@ const CreateBlogModal = ({
   const [hideUploadButton, setHideUploadButton] = useState<boolean>(false)
   const [hideSelectButton, setHideSelectButton] = useState<boolean>(false)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const defaultAvatar =
+    "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors }
-  } = useForm<CreateBlogFormData>({
+  } = useForm<EditBlogFormData>({
     defaultValues: {
       title: "",
       content: "",
       imageIds: []
     }
-    //resolver: yupResolver(schema)
   })
 
+  useEffect(() => {
+    if (detailBlog) {
+      reset({
+        title: detailBlog.title,
+        content: detailBlog.content,
+        imageIds: detailBlog.imageViewDtos.map(image => image.id)
+      })
+      setSelectedImages(
+        detailBlog.imageViewDtos.map((image) => ({
+          id: image.id,
+          imageUrl: image.filePath
+        }))
+      )
+    }
+  }, [detailBlog, reset])
+
   const handleSelectImages = (images: Image[]) => {
-    setSelectedImages(images)
-  }
+    console.log("Selected images:", images); 
+    setSelectedImages(images);  
+  };
 
   const handleFileUploadClick = () => {
     setShowFileUpload(true)
@@ -87,7 +86,7 @@ const CreateBlogModal = ({
   }
 
   const handleSelectImageClick = () => {
-    imgChoosingModal.onOpen()
+    editImgChoosingModal.onOpen()
     setHideUploadButton(true)
   }
 
@@ -108,7 +107,7 @@ const CreateBlogModal = ({
     }
   }
 
-  const onSubmit: SubmitHandler<CreateBlogFormData> = useCallback(
+  const onSubmit: SubmitHandler<EditBlogFormData> = useCallback(
     async (data) => {
       try {
         setIsLoading(true)
@@ -121,37 +120,33 @@ const CreateBlogModal = ({
           imageIds.push(uploadedImageId)
         }
 
-        // Prepare the payload for the API call
         const blogPayload = {
-          id: existingBlog?.id || 0,
+          id: detailBlog?.id ?? 0,
           title: data.title,
           content: data.content,
           imageIds
         }
 
-        console.log(blogPayload)
-        console.log(uploadedFile)
-
-        console.log("Final Blog Payload:", blogPayload)
+        console.log("Update Blog Payload:", blogPayload)
         const result = await createUpdateBlog(blogPayload)
 
         setIsLoading(false)
 
         if (result.isSuccess) {
-          toast.success("Tạo blog thành công")
+          toast.success("Cập nhật blog thành công")
           reset()
           setSelectedImages([])
           setHideUploadButton(false)
           setHideSelectButton(false)
           setShowFileUpload(false)
-          blogModal.onClose()
+          editBlogModal.onClose()
         }
       } catch (error: any) {
         setIsLoading(false)
         toast.error(error.message || "An unknown error occurred.")
       }
     },
-    [selectedImages, uploadedFile, existingBlog]
+    [selectedImages, uploadedFile, detailBlog, reset, editBlogModal]
   )
 
   const bodyContent = (
@@ -197,7 +192,6 @@ const CreateBlogModal = ({
             </label>
             <textarea
               id="title"
-              //rows="6"
               className="w-full border-0 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0"
               placeholder="Tiêu đề ..."
               required
@@ -216,7 +210,6 @@ const CreateBlogModal = ({
             </label>
             <textarea
               id="content"
-              //rows="6"
               className="w-full border-0 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0"
               placeholder="Bạn đang nghĩ gì ?..."
               required
@@ -256,21 +249,18 @@ const CreateBlogModal = ({
     <>
       <BlogModal
         disabled={isLoading}
-        isOpen={blogModal.isOpen}
-        title={existingBlog ? "Chỉnh sửa bài" : "Tạo bài"}
-        actionLabel={
-          isLoading ? "Loading..." : existingBlog ? "Cập nhật" : "Đăng"
-        }
-        onClose={blogModal.onClose}
+        isOpen={editBlogModal.isOpen}
+        title="Chỉnh sửa bài"
+        actionLabel={isLoading ? "Loading..." : "Cập nhật"}
+        onClose={editBlogModal.onClose}
         onSubmit={handleSubmit(onSubmit)}
         body={bodyContent}
         currentUser={currentUser}
-        //footer={""}
       />
 
-      <ImgChoosingModal onSelectImages={handleSelectImages} />
+      <EditImgChoosingModal onSelectImages={handleSelectImages} />
     </>
   )
 }
 
-export default CreateBlogModal
+export default EditBlogModal

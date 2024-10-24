@@ -2,30 +2,30 @@ import { useEffect, useState, useCallback } from "react";
 import CustomButton from "@/pages/Setting/Components/CustomBtn";
 import { IoIosArrowDropleftCircle, IoIosArrowDroprightCircle } from "react-icons/io";
 import { ClipLoader } from "react-spinners";
-import useImgChoosingModal from "@/hooks/useChooseImgModal";
 import { getImagesForMember } from "@/lib/api/Image";
-import BlogModal from "./BlogModal";
+import BlogModal from "@/pages/Blog/components/BlogModal";
+import useEditImgChoosingModal from "@/hooks/useEditImgChoosingModal";
 
 interface Image {
   id: number;
   imageUrl: string;
 }
 
-interface ImgChoosingModalProps {
+interface EditImgChoosingModalProps {
   onSelectImages: (selectedImages: Image[]) => void;
 }
 
-const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({ onSelectImages }) => {
+const EditImgChoosingModal: React.FC<EditImgChoosingModalProps> = ({ onSelectImages }) => {
   const [images, setImages] = useState<Image[]>([]);
   const [selectedImages, setSelectedImages] = useState<Image[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pageIndex, setPageIndex] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
 
-  const imgChoosingModal = useImgChoosingModal();
+  const editImgChoosingModal = useEditImgChoosingModal();
 
   const fetchImages = useCallback(async () => {
-    if (imgChoosingModal.isOpen) {
+    if (editImgChoosingModal.isOpen) {
       setIsLoading(true);
       try {
         const requestData = {
@@ -52,10 +52,10 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({ onSelectImages }) =
         setIsLoading(false);
       }
     }
-  }, [imgChoosingModal.isOpen, pageIndex]);
+  }, [editImgChoosingModal.isOpen, pageIndex]);
 
   useEffect(() => {
-    console.log("ImgChoosingModal open status:", imgChoosingModal.isOpen);
+    console.log("EditImgChoosingModal open status:", editImgChoosingModal.isOpen);
     fetchImages();
   }, [fetchImages]);
 
@@ -69,7 +69,7 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({ onSelectImages }) =
 
   const handleSave = () => {
     onSelectImages(selectedImages);
-    imgChoosingModal.onClose();
+    editImgChoosingModal.onClose();
     setSelectedImages([])
   };
 
@@ -85,7 +85,7 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({ onSelectImages }) =
     }
   };
 
-  if (!imgChoosingModal.isOpen) return null;
+  if (!editImgChoosingModal.isOpen) return null;
 
   const bodyContent =
     images.length > 0 ? (
@@ -136,10 +136,10 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({ onSelectImages }) =
   return (
     <BlogModal
       disabled={isLoading}
-      isOpen={imgChoosingModal.isOpen}
+      isOpen={editImgChoosingModal.isOpen}
       title="Chọn ảnh"
       actionLabel={isLoading ? <ClipLoader size={20} color={"#fff"} /> : "Lưu"}
-      onClose={imgChoosingModal.onClose}
+      onClose={editImgChoosingModal.onClose}
       onSubmit={handleSave}
       body={
         <>
@@ -152,4 +152,4 @@ const ImgChoosingModal: React.FC<ImgChoosingModalProps> = ({ onSelectImages }) =
   );
 };
 
-export default ImgChoosingModal;
+export default EditImgChoosingModal;
