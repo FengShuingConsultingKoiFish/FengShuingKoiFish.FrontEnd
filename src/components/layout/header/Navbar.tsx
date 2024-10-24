@@ -47,8 +47,8 @@ const Navbar = () => {
               <Logo />
             </Link>
 
-            {location.pathname !== "/blog/create" && (
-              <div className="flex flex-row gap-5">
+            {currentUser?.Name !== "Admin" && (
+              <div className="relative flex flex-row gap-5">
                 <Item label="Giới thiệu" link=""></Item>
 
                 {/* Toggleable service menu */}
