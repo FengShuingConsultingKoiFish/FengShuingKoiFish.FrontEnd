@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 
 import axios from "axios"
 import { motion } from "framer-motion"
+import toast from "react-hot-toast"
 import { FaEdit, FaTimes } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
 
@@ -24,8 +25,8 @@ const PondCard: React.FC<{
   const { pondName, quantity, description, image, id } = pond
   const [isEditing, setIsEditing] = useState(false)
   const [updatedPond, setUpdatedPond] = useState<Pond>(pond)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null) // File selected for upload
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
   const navigate = useNavigate()
 
   const handleViewDetails = () => {
@@ -42,20 +43,58 @@ const PondCard: React.FC<{
     setIsEditing(true)
   }
 
-  const handleSave = () => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]) // Store the selected file
+    }
+  }
+
+  const handleSave = async () => {
     if (
       !updatedPond.pondName ||
       !updatedPond.quantity ||
-      !updatedPond.description ||
-      !updatedPond.image
+      !updatedPond.description
     ) {
       setErrorMessage("Các trường không được để trống!")
       return
     }
+
     if (!validateName(updatedPond.pondName, id)) {
       setErrorMessage("Tên hồ cá đã tồn tại!")
       return
     }
+
+    // Handle file upload if a file is selected
+    if (selectedFile) {
+      const formData = new FormData()
+      formData.append("File", selectedFile)
+
+      try {
+        const token = sessionStorage.getItem("token")
+        const uploadResponse = await axios.post(
+          "https://consultingfish.azurewebsites.net/api/Images/upload-image",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data"
+            }
+          }
+        )
+
+        if (uploadResponse.data.isSuccess) {
+          updatedPond.image = uploadResponse.data.result.filePath // Update image URL
+        } else {
+          setErrorMessage("Tải lên ảnh không thành công.")
+          return
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải lên ảnh:", error)
+        setErrorMessage("Có lỗi xảy ra khi tải lên ảnh.")
+        return
+      }
+    }
+
     setErrorMessage(null)
     onUpdate(updatedPond)
     setIsEditing(false)
@@ -115,9 +154,9 @@ const PondCard: React.FC<{
           <div className="mb-4 flex flex-col">
             <label className="mb-1 text-white">Hình ảnh:</label>
             <input
-              name="image"
-              value={updatedPond.image}
-              onChange={handleInputChange}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange} // File input handler
               className="rounded bg-gray-700 p-2 text-white"
             />
           </div>
@@ -165,8 +204,15 @@ const SeeAllPond: React.FC = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
+    const token = sessionStorage.getItem("token")
+
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để xem danh sách hồ cá.")
+      navigate("/")
+      return
+    }
+
     const fetchPonds = async () => {
-      const token = sessionStorage.getItem("token")
       try {
         const response = await axios.get(
           "https://consultingfish.azurewebsites.net/api/UserPond/getall",
@@ -189,7 +235,7 @@ const SeeAllPond: React.FC = () => {
     }
 
     fetchPonds()
-  }, [])
+  }, [navigate])
 
   const handleDeletePond = async (id: number) => {
     const token = sessionStorage.getItem("token")

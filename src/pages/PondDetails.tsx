@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 
 import axios from "axios"
+import toast from "react-hot-toast"
 import { FaPlus } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -51,9 +52,15 @@ const PondDetails: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchPondDetails = async () => {
-      const token = sessionStorage.getItem("token")
+    const token = sessionStorage.getItem("token")
 
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để xem chi tiết hồ.")
+      navigate("/")
+      return
+    }
+
+    const fetchPondDetails = async () => {
       try {
         const response = await axios.get(
           `https://consultingfish.azurewebsites.net/api/UserPond/viewdetails/${userPondId}`,
@@ -141,7 +148,7 @@ const PondDetails: React.FC = () => {
     }
 
     fetchPondDetails()
-  }, [userPondId])
+  }, [userPondId, navigate])
 
   if (loading) {
     return <p>Đang tải chi tiết...</p>
@@ -155,7 +162,7 @@ const PondDetails: React.FC = () => {
       <div
         key={index}
         className="flex h-48 items-center justify-center rounded bg-gray-100 p-4 shadow"
-        onClick={() => navigate(`/add-koi/${userPondId}`)} // Chuyển đến trang thêm Koi
+        onClick={() => navigate(`/add-koi/${userPondId}`)}
       >
         <FaPlus className="text-4xl text-gray-400" />
       </div>
@@ -174,7 +181,7 @@ const PondDetails: React.FC = () => {
           <h2 className="mb-2 text-xl font-semibold">Chi tiết Hồ</h2>
           <div
             className="flex h-48 items-center justify-center rounded bg-gray-100 p-4 shadow"
-            onClick={() => navigate(`/add-pond/${userPondId}`)} // Chuyển đến trang thêm Hồ
+            onClick={() => navigate(`/add-pond/${userPondId}`)}
           >
             <FaPlus className="text-4xl text-gray-400" />
           </div>
@@ -191,7 +198,7 @@ const PondDetails: React.FC = () => {
         <div
           key={koi.koiDetailId}
           className="rounded bg-gray-100 p-4 shadow"
-          onClick={() => navigate(`/add-koi/${userPondId}`)} // Chuyển đến trang thêm Koi
+          onClick={() => navigate(`/add-koi/${userPondId}`)}
         >
           <p className="text-lg font-bold">Loài Koi: {koi.koiBreedName}</p>
           <p className="text-gray-700">Tên Koi: {koi.koiName}</p>
@@ -213,7 +220,7 @@ const PondDetails: React.FC = () => {
       <div
         key={index}
         className="flex h-48 items-center justify-center rounded bg-gray-100 p-4 shadow"
-        onClick={() => navigate(`/add-koi/${userPondId}`)} // Chuyển đến trang thêm Koi
+        onClick={() => navigate(`/add-koi/${userPondId}`)}
       >
         <FaPlus className="text-4xl text-gray-400" />
       </div>
@@ -224,7 +231,6 @@ const PondDetails: React.FC = () => {
     <div className="container mx-auto p-4">
       <h1 className="mb-4 text-2xl font-bold">Chi tiết Hồ và Koi</h1>
 
-      {/* Card Chi tiết Koi */}
       <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
         <h2 className="mb-2 text-xl font-semibold">Chi tiết Koi</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -232,7 +238,6 @@ const PondDetails: React.FC = () => {
         </div>
       </div>
 
-      {/* Card Chi tiết Hồ */}
       <div className="rounded-lg bg-white p-6 shadow-md">
         <h2 className="mb-2 text-xl font-semibold">Chi tiết Hồ</h2>
         {pondDetails.length > 0 ? (

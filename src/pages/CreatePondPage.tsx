@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react"
 
 import axios from "axios"
 import { motion } from "framer-motion"
+import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
 
-// Sử dụng framer-motion để thêm hiệu ứng chuyển trang
 import SubmitButton from "@/components/global/atoms/SubmitButton"
 
 interface Pond {
@@ -17,7 +17,7 @@ interface Pond {
 const CreatePondPage: React.FC = () => {
   const [pondName, setPondName] = useState("")
   const [quantity, setQuantity] = useState<number | "">("")
-  const [pondImage, setPondImage] = useState("")
+  const [pondImage, setPondImage] = useState<File | null>(null)
   const [description, setDescription] = useState("")
   const [activeButton, setActiveButton] = useState<string>("create")
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
@@ -25,10 +25,16 @@ const CreatePondPage: React.FC = () => {
   const [existingPonds, setExistingPonds] = useState<Pond[]>([])
   const navigate = useNavigate()
 
-  // Lấy danh sách các hồ cá để kiểm tra tên trùng
   useEffect(() => {
+    const token = sessionStorage.getItem("token")
+
+    if (!token) {
+      toast.error("Vui lòng đăng nhập để tạo hồ cá.")
+      navigate("/")
+      return
+    }
+
     const fetchPonds = async () => {
-      const token = sessionStorage.getItem("token")
       try {
         const response = await axios.get(
           "https://consultingfish.azurewebsites.net/api/UserPond/getall",
@@ -47,18 +53,47 @@ const CreatePondPage: React.FC = () => {
     }
 
     fetchPonds()
-  }, [])
+  }, [navigate])
+
+  const handleImageUpload = async (file: File): Promise<string | null> => {
+    const formData = new FormData()
+    formData.append("File", file)
+
+    try {
+      const token = sessionStorage.getItem("token")
+
+      const response = await axios.post(
+        "https://consultingfish.azurewebsites.net/api/Images/upload-image",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      )
+
+      if (response.data.isSuccess) {
+        return response.data.result.filePath
+      } else {
+        setErrorMessage("Tải lên ảnh không thành công, vui lòng thử lại.")
+        return null
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải lên ảnh:", error)
+      setErrorMessage("Có lỗi xảy ra khi tải lên ảnh.")
+      return null
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Kiểm tra các trường chưa nhập
     if (!pondName || !quantity || !description || !pondImage) {
-      setErrorMessage("Vui lòng nhập đầy đủ thông tin.")
+      setErrorMessage("Vui lòng nhập đầy đủ thông tin và chọn ảnh.")
       return
     }
 
-    // Kiểm tra tên hồ cá có trùng không
     const isNameDuplicate = existingPonds.some(
       (pond) => pond.pondName === pondName
     )
@@ -70,12 +105,17 @@ const CreatePondPage: React.FC = () => {
     const token = sessionStorage.getItem("token")
 
     try {
+      const uploadedImageUrl = await handleImageUpload(pondImage)
+      if (!uploadedImageUrl) {
+        return
+      }
+
       const response = await axios.post(
         "https://consultingfish.azurewebsites.net/api/UserPond/add",
         {
           pondName,
           quantity: Number(quantity),
-          image: pondImage,
+          image: uploadedImageUrl,
           description
         },
         {
@@ -86,23 +126,21 @@ const CreatePondPage: React.FC = () => {
       )
 
       if (response.status === 200) {
-        // Hiển thị thông báo thành công
         setSuccessMessage("Hồ cá đã được tạo thành công!")
-        setErrorMessage(null) // Xóa thông báo lỗi nếu có
+        setErrorMessage(null)
 
-        // Reset form
         setPondName("")
         setQuantity("")
-        setPondImage("")
+        setPondImage(null)
         setDescription("")
 
-        // Xóa thông báo sau 3 giây
         setTimeout(() => {
           setSuccessMessage(null)
         }, 3000)
       }
     } catch (error) {
       console.error("Có lỗi xảy ra: ", error)
+      setErrorMessage("Có lỗi xảy ra khi tạo hồ cá, vui lòng thử lại.")
     }
   }
 
@@ -117,13 +155,12 @@ const CreatePondPage: React.FC = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }} // Hiệu ứng khi bắt đầu
-      animate={{ opacity: 1, y: 0 }} // Hiệu ứng khi xuất hiện
-      exit={{ opacity: 0, y: -50 }} // Hiệu ứng khi thoát
-      transition={{ duration: 0.5 }} // Thời gian hiệu ứng chuyển trang
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -50 }}
+      transition={{ duration: 0.5 }}
       className="mx-auto mt-10 max-w-3xl rounded-lg bg-yellow-50 p-10 shadow-lg"
     >
-      {/* 2 nút điều hướng */}
       <div className="mb-6 flex justify-start space-x-4">
         <button
           onClick={() => handleNavigation("create")}
@@ -187,11 +224,15 @@ const CreatePondPage: React.FC = () => {
         <div className="relative rounded-lg border-2 border-dashed border-gray-300 bg-white p-6 shadow-md">
           <label className="mb-2 block text-xl font-semibold">Hình ảnh</label>
           <input
-            type="text"
-            value={pondImage}
-            onChange={(e) => setPondImage(e.target.value)}
+            type="file"
+            onChange={(e) => {
+              if (e.target.files) {
+                setPondImage(e.target.files[0])
+              }
+            }}
             className="w-full rounded-lg border border-gray-300 p-3 shadow-inner"
-            placeholder="URL hình ảnh"
+            accept="image/*"
+            required
           />
           <span className="absolute right-4 top-2 font-bold text-gray-400">
             3/4
@@ -211,14 +252,12 @@ const CreatePondPage: React.FC = () => {
           </span>
         </div>
 
-        {/* Hiển thị lỗi nếu có */}
         {errorMessage && (
           <div className="text-center font-semibold text-red-500">
             {errorMessage}
           </div>
         )}
 
-        {/* Thông báo thành công khi tạo hồ cá */}
         {successMessage && (
           <div className="mt-6 rounded-lg bg-green-100 p-4 text-center font-semibold text-green-600">
             {successMessage}
@@ -226,7 +265,6 @@ const CreatePondPage: React.FC = () => {
         )}
 
         <div className="mt-6 flex justify-center">
-          {/* Thay thế nút submit bằng SubmitButton */}
           <div className="rounded-lg">
             <SubmitButton label="Tạo hồ cá" />
           </div>

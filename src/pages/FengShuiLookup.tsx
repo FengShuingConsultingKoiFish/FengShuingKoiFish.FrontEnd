@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
 import { GetUserProfile } from "@/lib/api/User"
-import { RootState } from "@/lib/redux/store"
+import { AppDispatch, RootState } from "@/lib/redux/store"
 
 import InputField from "@/components/global/atoms/InputField"
 import SubmitButton from "@/components/global/atoms/SubmitButton"
@@ -12,15 +12,9 @@ import ToggleSwitch from "@/components/global/atoms/ToggleSwitch"
 
 import "../styles/fengshui.css"
 
-interface UserProfile {
-  fullName: string
-  dateOfBirth: string
-  gender: string
-}
-
 const FengShuiLookup: React.FC = () => {
   const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const [name, setName] = useState("")
   const [gender, setGender] = useState("")
@@ -30,24 +24,23 @@ const FengShuiLookup: React.FC = () => {
   const [isToggled, setIsToggled] = useState(false)
   const [isReadOnly, setIsReadOnly] = useState(false)
 
+  // Lấy thông tin người dùng từ Redux
+  const userProfile = useSelector((state: RootState) => state.users.detailUser)
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
-  const userProfile: UserProfile | null = useSelector(
-    (state: RootState) => state.users.detailUser
-  )
 
-  // Gọi API để lấy thông tin người dùng khi component mount
+  // Gọi API lấy thông tin người dùng khi component mount
   useEffect(() => {
     if (!userProfile && currentUser) {
-      dispatch(GetUserProfile())
+      dispatch(GetUserProfile()) // Gọi GetUserProfile khi không có thông tin chi tiết
     }
   }, [dispatch, currentUser, userProfile])
 
   // Kiểm tra xem thông tin người dùng đã đầy đủ hay chưa
-  const isProfileComplete = (user: UserProfile): boolean => {
+  const isProfileComplete = (user: typeof userProfile): boolean => {
     return (
-      user.fullName.trim() !== "" &&
-      user.dateOfBirth.trim() !== "" &&
-      user.gender.trim() !== ""
+      user?.fullName?.trim() !== "" &&
+      user?.dateOfBirth?.trim() !== "" &&
+      user?.gender?.trim() !== ""
     )
   }
 
@@ -188,12 +181,15 @@ const FengShuiLookup: React.FC = () => {
               />
             </div>
 
-            <ToggleSwitch
-              isToggled={isToggled}
-              onToggle={handleToggle}
-              labelOn="Nhập thông tin mới"
-              labelOff="Sử dụng từ tài khoản đăng nhập"
-            />
+            {/* Chỉ hiển thị toggle khi người dùng đã đăng nhập */}
+            {currentUser && (
+              <ToggleSwitch
+                isToggled={isToggled}
+                onToggle={handleToggle}
+                labelOn="Nhập thông tin mới"
+                labelOff="Sử dụng từ tài khoản đăng nhập"
+              />
+            )}
 
             <div className="mt-8 flex justify-center">
               <SubmitButton label="Giải mã" />
