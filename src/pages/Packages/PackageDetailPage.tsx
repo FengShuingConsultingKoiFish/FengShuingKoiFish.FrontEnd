@@ -10,7 +10,7 @@ import { ClipLoader } from "react-spinners"
 import useLoginModal from "@/hooks/useLoginModal"
 
 import { getAdvertisementPackageById } from "@/lib/api/AdvertisementPkg"
-import { RequestPayment } from "@/lib/api/Payment"
+import { PurchasePackage } from "@/lib/api/Payment"
 import { RootState } from "@/lib/redux/store"
 
 import { AuroraBackground } from "@/components/ui/AuroraBg"
@@ -70,19 +70,16 @@ export const PackageDetailPage = () => {
     }
 
     const paymentData = {
-      userId: currentUser.userId,
-      packageName: packageDetail.name,
-      fullName: currentUser.fullName,
-      description: packageDetail.description,
-      amount: packageDetail.price,
-      createdDate: new Date().toISOString()
+     packageId: packageDetail.id,
+     name: packageDetail.name,
+     price: packageDetail.price
     }
 
     try {
-      const response = await RequestPayment(paymentData)
+      const response = await PurchasePackage(paymentData)
       toast.success("Đang chuyển trang thanh toán VnPay... !")
       console.log("Payment response:", response)
-      window.location.href = response.url
+      window.location.href = response.result
     } catch (error) {
       toast.error("Failed to make payment request.")
       console.error("Payment error:", error)
@@ -102,30 +99,28 @@ export const PackageDetailPage = () => {
       )
     },
     {
-      title: "Những lợi ích",
+      title: "Hình ảnh từ gói",
       content: (
         <div>
-          <p className="mb-8 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
-            I usually run out of copy, but when I see content this big, I try to
-            integrate lorem ipsum.
+          <p className="mb-8 text-xl font-normal text-neutral-800 dark:text-neutral-200">
+            Hình ảnh từ gói dịch vụ
           </p>
-          <p className="mb-8 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
-            Lorem ipsum is for people who are too lazy to write copy. But we are
-            not. Here are some more example of beautiful designs I built. Lorem
-            ipsum is for people who are too lazy to write copy. But we are not.
-            Here are some more example of beautiful designs I built. Lorem ipsum
-            is for people who are too lazy to write copy. But we are not. Here
-            are some more example of beautiful designs I built. Lorem ipsum is
-            for people who are too lazy to write copy. But we are not. Here are
-            some more example of beautiful designs I built. Lorem ipsum is for
-            people who are too lazy to write copy. But we are not. Here are some
-            more example of beautiful designs I built. Lorem ipsum is for people
-            who are too lazy to write copy. But we are not. Here are some more
-            example of beautiful designs I built. Lorem ipsum is for people who
-            are too lazy to write copy. But we are not. Here are some more
-            example of beautiful designs I built.
-          </p>
-          <div className="grid grid-cols-2 gap-4"></div>
+          {packageDetail?.imageViewDTOs &&
+          packageDetail.imageViewDTOs.length > 0 ? (
+            <div className="grid grid-cols-2 gap-4">
+              {packageDetail.imageViewDTOs.map((image) => (
+                <div key={image.id} className="relative">
+                  <img
+                    src={image.filePath}
+                    alt={`Image ${image.id}`}
+                    className="h-full w-full rounded-lg object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Không có hình ảnh nào để hiển thị.</p>
+          )}
         </div>
       )
     },

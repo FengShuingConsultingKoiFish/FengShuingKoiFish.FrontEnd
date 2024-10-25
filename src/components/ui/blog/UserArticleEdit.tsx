@@ -3,6 +3,8 @@ import React from "react"
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
 import { IconEdit, IconMessageCircle, IconShare } from "@tabler/icons-react"
 
+import Status from "../Status"
+
 interface ArticleCardProps {
   id: number
   img: string[]
@@ -10,8 +12,9 @@ interface ArticleCardProps {
   content: string
   userName: string
   createdDate: string
+  status: string
   userImg?: string
-  onEdit: () => void;
+  onEdit: () => void
 }
 
 export const UserArticle: React.FC<ArticleCardProps> = ({
@@ -21,6 +24,7 @@ export const UserArticle: React.FC<ArticleCardProps> = ({
   content,
   userName,
   createdDate,
+  status,
   onEdit
 }) => {
   // const maxContentLength = 150;
@@ -35,8 +39,14 @@ export const UserArticle: React.FC<ArticleCardProps> = ({
 
           <div className="tex-xl inline-flex items-center justify-between gap-3 font-semibold">
             <div className="inline-flex items-center gap-2">
-              <p>Ngày đăng :</p>
-              <div className="text-sm text-gray-500">{createdDate}</div>
+              <div className="flex flex-col justify-start gap-5">
+                <div>
+                  <p>Ngày đăng :</p>
+                  <div className="text-sm text-gray-500">{createdDate}</div>
+                </div>
+
+                <Status status={status} />
+              </div>
             </div>
 
             <div>
@@ -53,7 +63,7 @@ export const UserArticle: React.FC<ArticleCardProps> = ({
       {/* Body (Text Content) */}
       <div className="px-4">
         <h2 className="text-lg font-bold">{title}</h2>
-        <p className="mb-2 text-gray-700 break-words">{content}</p>
+        <p className="mb-2 break-words text-gray-700">{content}</p>
       </div>
 
       {/* Image Gallery */}
@@ -63,7 +73,7 @@ export const UserArticle: React.FC<ArticleCardProps> = ({
             <img
               src={img[0]}
               alt="Post"
-              className="h-auto w-full rounded-lg object-cover"
+              className="h-full w-full rounded-lg object-cover"
             />
           ) : (
             img.slice(0, 4).map((image, index) => (
@@ -74,7 +84,7 @@ export const UserArticle: React.FC<ArticleCardProps> = ({
                 <img
                   src={image}
                   alt={`Post image ${index + 1}`}
-                  className="h-80 w-full rounded-lg object-cover"
+                  className="h-full w-full rounded-lg object-cover"
                 />
                 {index === 3 && img.length > 4 && (
                   <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black bg-opacity-50 text-2xl font-semibold text-white">

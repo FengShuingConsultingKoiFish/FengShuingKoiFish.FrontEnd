@@ -17,14 +17,16 @@ import LoginModal from "./components/ui/modals/LoginModal"
 import SignupModal from "./components/ui/modals/SignupModal"
 import { RootState } from "./lib/redux/store"
 import { AdminPage } from "./pages/Admin/AdminPage"
-import { EditAdver } from "./pages/Admin/ManageAdver/EditAdver"
 import { AllAdver } from "./pages/Admin/ManageAdver/AllAdver"
 import { CreateAdver } from "./pages/Admin/ManageAdver/CreateAdver"
+import { EditAdver } from "./pages/Admin/ManageAdver/EditAdver"
 import { ManageAdverPage } from "./pages/Admin/ManageAdver/ManageAdver"
 import { ApprovedPosts } from "./pages/Admin/ManageBlog/ApprovedBlog"
 import { ManageBlogPage } from "./pages/Admin/ManageBlog/ManageBlogs"
 import { PendingPosts } from "./pages/Admin/ManageBlog/PendingBlog"
 import { RejectedPosts } from "./pages/Admin/ManageBlog/RejectedBlog"
+import AllUser from "./pages/Admin/ManageUser/AllUser"
+import { ManageUserPage } from "./pages/Admin/ManageUser/ManageUser"
 import Blog from "./pages/Blog/Blog"
 import CreateBlogModal from "./pages/Blog/components/CreateBlogModal"
 import FengShuiLookup from "./pages/FengShuiLookup"
@@ -36,13 +38,13 @@ import PasswordForgot from "./pages/Password-forgot"
 import PasswordReset from "./pages/Password-reset"
 import ResultPage from "./pages/ResultPage"
 import ProfileSetting from "./pages/Setting/Profile"
+import PostedBlog from "./pages/User/PostedBlog"
+import { PurchasedPackagePage } from "./pages/User/PurchasedPackage"
+import { UserPackageDetailPage } from "./pages/User/ViewPurchasedPkg"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
-import { ManageUserPage } from "./pages/Admin/ManageUser/ManageUser"
-import AllUser from "./pages/Admin/ManageUser/AllUser"
-import PostedBlog from "./pages/User/PostedBlog"
-import EditBlogModal from "./pages/User/components/EditBlogModal"
+import { UserCreateAdver } from "./pages/User/CreateAdvertisement"
 
 const ProtectedAdminPage = ProtectedRoute(AdminPage)
 const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
@@ -95,7 +97,10 @@ function App() {
           <Route path="/doan-menh" element={<FengShuiLookup />} />
           <Route path="/ket-qua" element={<ResultPage />} />
           <Route path="/blog" element={<Blog />} />
-          <Route path="/blog-cua-toi" element={<PostedBlog/>} />
+          <Route path="/blog-cua-toi" element={<PostedBlog />} />
+          <Route path="/goi-cua-toi" element={<PurchasedPackagePage />} />
+          <Route path="/goi-cua-toi/:id" element={<UserPackageDetailPage />} />
+          <Route path="/tao-goi-quang-cao" element={<UserCreateAdver />} />
           <Route path="*" element={<NotFound />} />
           {/*ADMIN ROUTE*/}
           <Route path="/admin" element={<ProtectedAdminPage />} />
@@ -115,10 +120,7 @@ function App() {
             <Route path="edit/:id" element={<EditAdver />} />
           </Route>
           {/* NESTED ROUTES FOR ManageAdverPage */}
-          <Route
-            path="/admin/nguoi-dung"
-            element={<ProtectedManageUserPage/>}
-          >
+          <Route path="/admin/nguoi-dung" element={<ProtectedManageUserPage />}>
             <Route path="all" element={<AllUser />} />
           </Route>
         </Routes>

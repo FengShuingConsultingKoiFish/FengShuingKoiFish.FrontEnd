@@ -216,3 +216,72 @@ export const getAllBlogs = async (
     }
   }
 }
+
+interface AddImagesToBlogRequest {
+  blogId?: number
+  imagesId: number[]
+}
+
+interface AddImagesToBlogResponse {
+  statusCode: number
+  isSuccess: boolean
+  message: string
+}
+
+export const addImagesToBlog = async (
+  requestData: AddImagesToBlogRequest
+): Promise<AddImagesToBlogResponse> => {
+  try {
+    nProgress.start()
+    const response = await axiosClient.post<AddImagesToBlogResponse>(
+      "/api/Blogs/add-images-to-blogs",
+      requestData
+    )
+    return response.data
+  } catch (error: any) {
+    if (error.response) {
+      console.error("API Error: ", error.response.data.message)
+      throw new Error(error.response.data.message || "An error occurred")
+    } else {
+      console.error("Unknown error: ", error.message)
+      throw new Error("An unknown error occurred")
+    }
+  } finally {
+    nProgress.done()
+  }
+}
+
+interface DeleteImagesFromBlogRequest {
+  blogId?: number
+  imageIds: number[]
+}
+
+interface DeleteImagesFromBlogResponse {
+  statusCode: number
+  isSuccess: boolean
+  message: string
+}
+
+export const deleteImagesFromBlog = async (
+  requestData: DeleteImagesFromBlogRequest
+): Promise<DeleteImagesFromBlogResponse> => {
+  try {
+    nProgress.start()
+    const response = await axiosClient.post<DeleteImagesFromBlogResponse>(
+      "/api/Blogs/delete-images-from-blog",
+      requestData
+    )
+    return response.data
+  } catch (error: any) {
+    if (error.response) {
+      console.error("API Error: ", error.response.data.message)
+      throw new Error(error.response.data.message || "An error occurred")
+    } else {
+      console.error("Unknown error: ", error.message)
+      throw new Error("An unknown error occurred")
+    }
+  } finally {
+    nProgress.done()
+  }
+}
+

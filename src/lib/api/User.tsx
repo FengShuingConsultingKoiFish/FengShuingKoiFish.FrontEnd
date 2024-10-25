@@ -213,13 +213,13 @@ export const GetAllUserDetails = async (
 }
 
 interface GetAllBlogsForUserRequest {
-  pageIndex: number;
-  pageSize: number;
-  title: string;
-  blogStatus: number | null;
-  orderBlog: number | null;
-  orderComment: number | null;
-  orderImage: number | null;
+  pageIndex: number
+  pageSize: number
+  title: string
+  blogStatus: number | null
+  orderBlog: number | null
+  orderComment: number | null
+  orderImage: number | null
 }
 interface ImageViewDtos {
   id: number
@@ -231,47 +231,66 @@ interface ImageViewDtos {
 }
 
 interface BlogDetails {
-  id: number;
-  title: string;
-  content: string;
+  id: number
+  title: string
+  content: string
   userName: string
   createdDate: string
   status: string
   imageViewDtos: ImageViewDtos[]
-  commentViewDtos : []
+  commentViewDtos: []
 }
 
 interface GetAllBlogsForUserResponse {
-  statusCode: number;
-  isSuccess: boolean;
-  message: string;
+  statusCode: number
+  isSuccess: boolean
+  message: string
   result: {
-    pageIndex: number;
-    totalPages: number;
-    totalItems: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-    datas: BlogDetails[];
-  };
+    pageIndex: number
+    totalPages: number
+    totalItems: number
+    hasPreviousPage: boolean
+    hasNextPage: boolean
+    datas: BlogDetails[]
+  }
 }
 
 export const GetAllBlogsForUser = async (
   requestData: GetAllBlogsForUserRequest
 ): Promise<GetAllBlogsForUserResponse> => {
   try {
-    nProgress.start();
+    nProgress.start()
     const response = await axiosClient.post<GetAllBlogsForUserResponse>(
       "/api/Blogs/get-all-blogs-for-user",
       requestData
-    );
-    nProgress.done();
-    return response.data;
+    )
+    nProgress.done()
+    return response.data
   } catch (error: any) {
-    nProgress.done();
-    console.error("API Error: ", error.response?.data?.message || error.message);
-    throw new Error(error.response?.data?.message || "An error occurred");
+    nProgress.done()
+    console.error("API Error: ", error.response?.data?.message || error.message)
+    throw new Error(error.response?.data?.message || "An error occurred")
   } finally {
-    nProgress.done();
+    nProgress.done()
   }
-};
+}
 
+export const getUserAvatarByUserName = async (
+  userName: string
+): Promise<any> => {
+  try {
+    const response = await axiosClient.get(
+      `/api/UserDetails/get-user-avatar-by-userName/${userName}`
+    )
+    return response.data
+  } catch (error: any) {
+    console.error(
+      "Error fetching user avatar:",
+      error.response?.data || error.message
+    )
+    throw new Error(
+      error.response?.data?.message ||
+        "An error occurred while fetching user avatar."
+    )
+  }
+}

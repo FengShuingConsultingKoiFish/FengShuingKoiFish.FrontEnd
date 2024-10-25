@@ -83,6 +83,12 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
     }
   }, [currentUser, navigate])
 
+  const handleMyPkg = useCallback(() => {
+    if(currentUser) {
+      navigate(`/goi-cua-toi`)
+    }
+  }, [currentUser, navigate])
+
   return (
     <div className="relative">
       <div
@@ -173,7 +179,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     icon={<IconArticleFilled size={20} />}
                   />
                   <MenuItem
-                    onClick={() => {}}
+                    onClick={handleMyPkg}
                     closeMenu={closeMenu}
                     label="Gói hội viên của bạn"
                     icon={<PiPackageFill size={20} />}

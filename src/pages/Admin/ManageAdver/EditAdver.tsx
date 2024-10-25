@@ -19,7 +19,7 @@ import useConfirmModal from "@/hooks/useConfirmModal"
 
 import {
   addImagesToAdvertisementPackage,
-  createUpdateAdvertisement,
+  createUpdateAdvertisementPkg,
   deleteImagesFromAdvertisementPackage,
   getAdvertisementPackageById
 } from "@/lib/api/AdvertisementPkg"
@@ -254,7 +254,7 @@ export const EditAdver: React.FC = () => {
         }
         console.log("Payload for updating advertisement:", updateDetailsPayload)
         const updateDetailsResult =
-          await createUpdateAdvertisement(updateDetailsPayload)
+          await createUpdateAdvertisementPkg(updateDetailsPayload)
 
         if (!updateDetailsResult.isSuccess) {
           throw new Error(updateDetailsResult.message)

@@ -5,18 +5,20 @@ import storage from "redux-persist/lib/storage"
 
 import usersSlice, { setCurrentUser } from "./reducers/userSlice"
 import userBlogsSlice from "./reducers/userBlogSlice"
+import userPackageSlice from "./reducers/userPackageSlice"
 
 // Configure Redux store
 
 const rootReducer = combineReducers({
   users: usersSlice,
-  userBlogs: userBlogsSlice
+  userBlogs: userBlogsSlice,
+  userPackages : userPackageSlice
 })
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["users"]
+  whitelist: ["users", "userPackages"]
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

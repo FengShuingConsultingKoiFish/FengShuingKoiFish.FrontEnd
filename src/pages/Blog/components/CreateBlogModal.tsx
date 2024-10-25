@@ -41,11 +41,10 @@ interface Image {
   imageUrl: string
 }
 
-
 const CreateBlogModal = ({
   existingBlog
 }: {
-  existingBlog? : CreateBlogFormData  
+  existingBlog?: CreateBlogFormData
 }) => {
   const imgChoosingModal = useImgChoosingModal()
   const blogModal = useBlogModal()
@@ -59,8 +58,6 @@ const CreateBlogModal = ({
   const userProfile = useSelector((state: RootState) => state.users.detailUser)
   const [showFileUpload, setShowFileUpload] = useState<boolean>(false)
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
-  const [hideUploadButton, setHideUploadButton] = useState<boolean>(false)
-  const [hideSelectButton, setHideSelectButton] = useState<boolean>(false)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
 
   const {
@@ -83,12 +80,13 @@ const CreateBlogModal = ({
 
   const handleFileUploadClick = () => {
     setShowFileUpload(true)
-    setHideSelectButton(true)
+    setUploadedFile(null)
   }
 
   const handleSelectImageClick = () => {
+    setShowFileUpload(false)
+    setUploadedFile(null)
     imgChoosingModal.onOpen()
-    setHideUploadButton(true)
   }
 
   const handleFileChange = (files: File[]) => {
@@ -141,8 +139,6 @@ const CreateBlogModal = ({
           toast.success("Tạo blog thành công")
           reset()
           setSelectedImages([])
-          setHideUploadButton(false)
-          setHideSelectButton(false)
           setShowFileUpload(false)
           blogModal.onClose()
         }
@@ -228,24 +224,20 @@ const CreateBlogModal = ({
           </div>
         </form>
         <div className="flex max-h-12 flex-row items-center gap-5">
-          {!hideUploadButton && (
+          <CustomButton
+            icon={<MdAddPhotoAlternate size={25} />}
+            label="Tải ảnh lên"
+            onClick={handleFileUploadClick}
+          />
+
+          <>
+            <p>hoặc</p>
             <CustomButton
               icon={<MdAddPhotoAlternate size={25} />}
-              label="Tải ảnh lên"
-              onClick={handleFileUploadClick}
+              label="Chọn ảnh từ thư viện của bạn"
+              onClick={handleSelectImageClick}
             />
-          )}
-
-          {!hideSelectButton && (
-            <>
-              <p>hoặc</p>
-              <CustomButton
-                icon={<MdAddPhotoAlternate size={25} />}
-                label="Chọn ảnh từ thư viện của bạn"
-                onClick={handleSelectImageClick}
-              />
-            </>
-          )}
+          </>
         </div>
         {showFileUpload && <FileUpload onChange={handleFileChange} />}
       </div>

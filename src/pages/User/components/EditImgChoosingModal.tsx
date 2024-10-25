@@ -112,7 +112,7 @@ const EditImgChoosingModal: React.FC<EditImgChoosingModalProps> = ({ onSelectIma
         ))}
       </div>
     ) : (
-      <p>No images found or error fetching images.</p>
+      <p>Không có hình ảnh nào để hiển thị</p>
     );
 
   const paginationControls = (
