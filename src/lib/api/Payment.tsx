@@ -2,20 +2,17 @@ import { axiosClient } from "./config/axios-client";
 import nProgress from "nprogress";
 import "nprogress/nprogress.css";
 
-interface RequestPaymentPayload {
-  userId: string;
-  packageName: string;
-  fullName: string;
-  description: string;
-  amount: number;
-  createdDate: string;
+interface PurchasePackagePayload {
+  packageId: number
+  name: string
+  price: number
 }
 
-export const RequestPayment = async (paymentData: RequestPaymentPayload) => {
+export const PurchasePackage = async (paymentData: PurchasePackagePayload) => {
   try {
     nProgress.start();
 
-    const response = await axiosClient.post("/api/Payments/request-payment", paymentData);
+    const response = await axiosClient.post("/api/Payments/purchase-package", paymentData);
 
     return response.data;
   } catch (error) {

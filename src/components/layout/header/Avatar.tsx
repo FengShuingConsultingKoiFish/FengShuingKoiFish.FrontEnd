@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface AvatarProps {
   userImg: any
@@ -16,6 +16,13 @@ const Avatar: React.FC<AvatarProps> = ({
   //size = 'medium'
   w,h
 }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!userImg) {
+      setIsLoading(false);
+    }
+  }, [userImg]);
  
 
   return (

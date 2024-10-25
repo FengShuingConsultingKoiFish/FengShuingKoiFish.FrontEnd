@@ -11,7 +11,7 @@ import { ClipLoader } from "react-spinners"
 
 import useImgChoosingModal from "@/hooks/useChooseImgModal"
 
-import { createUpdateAdvertisement } from "@/lib/api/AdvertisementPkg"
+import { createUpdateAdvertisementPkg } from "@/lib/api/AdvertisementPkg"
 import { uploadImage } from "@/lib/api/Image"
 
 import { FileUpload } from "@/components/ui/FileUpload"
@@ -120,7 +120,7 @@ export const CreateAdver: React.FC = () => {
         console.log(uploadedFile)
 
         console.log("Final AdverPkg Payload:", adverPayload)
-        const result = await createUpdateAdvertisement(adverPayload)
+        const result = await createUpdateAdvertisementPkg(adverPayload)
 
         setIsLoading(false)
 

@@ -1,65 +1,79 @@
+import { useEffect, useState } from "react"
 
-import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import { ClipLoader } from "react-spinners"
-import { getAllAdvertisementsPkg } from "@/lib/api/AdvertisementPkg"
-import { AuroraBackground } from "@/components/ui/AuroraBg"
-import CustomButton from "../Setting/Components/CustomBtn"
-import { PackageCard } from "./components/PackageCard"
+import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/Select"
+import { ClipLoader } from "react-spinners"
 
-interface ImageViewDTO {
-  id: number
-  filePath: string
-}
+import { getAllPurchasedPkgForUser } from "@/lib/api/PurchasedPkg"
+import { setPackageList } from "@/lib/redux/reducers/userPackageSlice"
 
-interface AdvertisementPackage {
+import { AuroraBackground } from "@/components/ui/AuroraBg"
+
+import CustomButton from "../Setting/Components/CustomBtn"
+import { PurchasedPkgSection } from "./components/PurchasedPkgSection"
+
+interface PurchasedPackage {
   id: number
-  name: string
-  price: number
-  description: string
-  limitAd: number
-  limitContent: number
-  limitImage: number
-  isActive: boolean
+  monitoredQuantity: number
+  userName: string
+  status: number
   createdDate: string
-  createdBy: string
-  imageViewDTOs: ImageViewDTO[]
+  advertisementPackageViewDTO: {
+    id: number
+    name: string
+    price: number
+    description: string
+    limitAd: number
+    limitContent: number
+    limitImage: number
+    createdDate: string
+
+    imageViewDTOs: {
+      id: number
+      filePath: string
+      altText?: string | null
+      userId: string
+      userName: string
+      createdDate: string
+    }[]
+  }
 }
 
-export function PackagePage() {
-  const [packages, setPackages] = useState<AdvertisementPackage[]>([])
+export function PurchasedPackagePage() {
   const [pageIndex, setPageIndex] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
+  const [purchasedPackages, setPurchasedPackages] = useState<
+    PurchasedPackage[]
+  >([])
+
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     window.scrollTo(0, 0)
-  })
+  }, [])
 
   const fetchPackages = async () => {
     setIsLoading(true)
     const requestData = {
       pageIndex: pageIndex,
       pageSize: 8,
-      name: "",
-      priceFilter: null,
-      orderImage: null
+      status: null,
+      orderImage: null,
+      orderDate: null
     }
 
     try {
-      const response = await getAllAdvertisementsPkg(requestData)
+      const response = await getAllPurchasedPkgForUser(requestData)
       console.log(response)
-      setPackages(response.result.datas)
-      setTotalPages(response.result.totalPages)
+
+      const advertisementPackages = response.result.datas.map(
+        (pkg) => pkg.advertisementPackageViewDTO
+      )
+      setPurchasedPackages(response.result.datas)
+      dispatch(setPackageList(advertisementPackages))
       setIsLoading(false)
     } catch (error) {
       console.error("Failed to fetch packages:", error)
@@ -68,6 +82,7 @@ export function PackagePage() {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0)
     fetchPackages()
   }, [pageIndex])
 
@@ -84,7 +99,7 @@ export function PackagePage() {
   }
 
   const handlePackageClick = (id: number) => {
-    navigate(`/goi-hoi-vien/${id}`)
+    navigate(`/goi-cua-toi/${id}`)
   }
 
   return (
@@ -100,46 +115,37 @@ export function PackagePage() {
         className="relative flex flex-col items-center justify-start gap-4 px-4 py-10"
       >
         <div className="text-center text-3xl font-bold dark:text-white md:text-5xl">
-          Khám phá các gói hội viên của chúng tôi
+          Quản lý các gói đã mua
         </div>
-        <p className="mx-auto mb-20 mt-6 max-w-lg text-center text-lg leading-8 text-gray-600">
-          Dịch vụ tận tình, chuyên nghiệp mang đến cho bạn trải nghiệm tốt nhất
-        </p>
-        {/* <div className="my-10 flex flex-row items-center justify-start gap-5 font-semibold">
-          <span>Bộ lọc</span>
-          <Select onValueChange={}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Thời gian đăng bài" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Cao đến thấp</SelectItem>
-              <SelectItem value="oldest">Thấp đến cao</SelectItem>
-            </SelectContent>
-          </Select>
-        </div> */}
+        <div className="text-center text-2xl font-bold dark:text-white md:text-2xl">
+          Bạn có thể tạo quảng cáo của mình dựa trên gói bạn đã mua tương ứng
+        </div>
+
         {isLoading ? (
           <div className="flex items-center justify-center">
             <ClipLoader size={40} color="#000" />
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
-            {packages.map((pkg) => (
-              <PackageCard
+            {purchasedPackages.map((pkg) => (
+              <PurchasedPkgSection
                 key={pkg.id}
-                name={pkg.name}
-                description={pkg.description}
-                price={pkg.price}
-                imageViewDTOs={pkg.imageViewDTOs.map((image) => ({
-                  id: image.id,
-                  imageUrl: image.filePath
-                }))}
+                id={pkg.advertisementPackageViewDTO.id}
+                name={pkg.advertisementPackageViewDTO.name}
+                price={pkg.advertisementPackageViewDTO.price}
+                description={pkg.advertisementPackageViewDTO.description}
+                limitAd={pkg.advertisementPackageViewDTO.limitAd}
+                limitContent={pkg.advertisementPackageViewDTO.limitContent}
+                limitImage={pkg.advertisementPackageViewDTO.limitImage}
+                createdDate={pkg.advertisementPackageViewDTO.createdDate}
+                imageViewDtos={pkg.advertisementPackageViewDTO.imageViewDTOs}
                 onClick={() => handlePackageClick(pkg.id)}
               />
             ))}
           </div>
         )}
 
-        <div className="mt-20 flex w-full justify-center items-center gap-4">
+        <div className="mt-20 flex w-full items-center justify-center gap-4">
           <CustomButton
             onClick={handlePreviousPage}
             disabled={pageIndex === 1 || isLoading}

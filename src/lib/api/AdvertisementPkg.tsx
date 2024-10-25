@@ -27,7 +27,7 @@ interface CreateUpdateAdvertisementPackageResponse {
   }
 }
 
-export const createUpdateAdvertisement = async (
+export const createUpdateAdvertisementPkg = async (
   advertisementPackage: AdvertisementPackageRequest
 ): Promise<CreateUpdateAdvertisementPackageResponse> => {
   try {
