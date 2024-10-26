@@ -16,6 +16,8 @@ import ToasterProvider from "./components/providers/Toaster"
 import LoginModal from "./components/ui/modals/LoginModal"
 import SignupModal from "./components/ui/modals/SignupModal"
 import { RootState } from "./lib/redux/store"
+import AddKoi from "./pages/AddKoi"
+import AddPond from "./pages/AddPond"
 import { AdminPage } from "./pages/Admin/AdminPage"
 import { AddAdverImg } from "./pages/Admin/ManageAdver/AddAdverImg"
 import { AllAdver } from "./pages/Admin/ManageAdver/AllAdver"
@@ -26,6 +28,8 @@ import { ApprovedPosts } from "./pages/Admin/ManageBlog/ApprovedBlog"
 import { ManageBlogPage } from "./pages/Admin/ManageBlog/ManageBlogs"
 import { PendingPosts } from "./pages/Admin/ManageBlog/PendingBlog"
 import { RejectedPosts } from "./pages/Admin/ManageBlog/RejectedBlog"
+import AllUser from "./pages/Admin/ManageUser/AllUser"
+import { ManageUserPage } from "./pages/Admin/ManageUser/ManageUser"
 import Blog from "./pages/Blog/Blog"
 import CreateBlogModal from "./pages/Blog/components/CreateBlogModal"
 import CreatePondPage from "./pages/CreatePondPage"
@@ -44,8 +48,6 @@ import ProfileSetting from "./pages/Setting/Profile"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
-import { ManageUserPage } from "./pages/Admin/ManageUser/ManageUser"
-import AllUser from "./pages/Admin/ManageUser/AllUser"
 
 const ProtectedAdminPage = ProtectedRoute(AdminPage)
 const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
@@ -101,6 +103,8 @@ function App() {
           <Route path="/create-pond" element={<CreatePondPage />} />
           <Route path="/see-all-pond" element={<SeeAllPond />} />
           <Route path="/pond-details/:userPondId" element={<PondDetails />} />
+          <Route path="/add-koi/:userPondId" element={<AddKoi />} />
+          <Route path="/add-pond/:userPondId" element={<AddPond />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="*" element={<NotFound />} />
           {/*ADMIN ROUTE*/}
@@ -122,10 +126,7 @@ function App() {
             <Route path="delete-images/:id" element={<DeleteAdverImg />} />
           </Route>
           {/* NESTED ROUTES FOR ManageAdverPage */}
-          <Route
-            path="/admin/nguoi-dung"
-            element={<ProtectedManageUserPage/>}
-          >
+          <Route path="/admin/nguoi-dung" element={<ProtectedManageUserPage />}>
             <Route path="all" element={<AllUser />} />
           </Route>
         </Routes>
