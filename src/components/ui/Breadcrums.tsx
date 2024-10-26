@@ -48,18 +48,14 @@ const breadcrumbMap: {
     label: "Xem tất cả gói quảng cáo",
     icon: <IconList className="mr-2 h-4 w-4" />
   },
-  "/admin/goi-quang-cao/add-images": {
-    label: "Thêm hình ảnh cho gói quảng cáo",
-    icon: <IconPhotoPlus className="mr-2 h-4 w-4" />
-  },
-  "/admin/goi-quang-cao/delete-images": {
-    label: "Xóa ảnh cho gói quảng cáo",
-    icon: <IconTrash className="mr-2 h-4 w-4" />
+  "/admin/nguoi-dung": {
+    label: "Quản lý người dùng",
+    icon: <IconUser className="mr-2 h-4 w-4" />
   },
   "/admin/nguoi-dung/all": {
     label: "Xem tất cả người dùng",
     icon: <IconUser className="mr-2 h-4 w-4" />
-  }
+  },
 }
 
 const Breadcrumb = () => {
@@ -78,14 +74,11 @@ const Breadcrumb = () => {
       {paths.map((path, index) => {
         const isLast = index === paths.length - 1
 
-        let basePath = path
-        if (path.startsWith("/admin/goi-quang-cao/add-images")) {
-          basePath = "/admin/goi-quang-cao/add-images"
-        } else if (path.startsWith("/admin/goi-quang-cao/delete-images")) {
-          basePath = "/admin/goi-quang-cao/delete-images"
+        if (path.startsWith("/admin/goi-quang-cao/edit")) {
+          path = "/admin/goi-quang-cao/edit" 
         }
 
-        const breadcrumb = breadcrumbMap[basePath]
+        const breadcrumb = breadcrumbMap[path]
 
         if (!breadcrumb) {
           return null
@@ -102,8 +95,8 @@ const Breadcrumb = () => {
               </Link>
             ) : (
               <span className="flex items-center text-sm font-semibold text-gray-800 dark:text-neutral-200">
-                {breadcrumbMap[path].icon}
-                {breadcrumbMap[path].label}
+                {breadcrumb.icon}
+                {breadcrumb.label}
               </span>
             )}
             {!isLast && <MdKeyboardArrowRight />}

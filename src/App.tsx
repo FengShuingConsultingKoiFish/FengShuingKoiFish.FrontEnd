@@ -19,10 +19,9 @@ import { RootState } from "./lib/redux/store"
 import AddKoi from "./pages/AddKoi"
 import AddPond from "./pages/AddPond"
 import { AdminPage } from "./pages/Admin/AdminPage"
-import { AddAdverImg } from "./pages/Admin/ManageAdver/AddAdverImg"
 import { AllAdver } from "./pages/Admin/ManageAdver/AllAdver"
 import { CreateAdver } from "./pages/Admin/ManageAdver/CreateAdver"
-import { DeleteAdverImg } from "./pages/Admin/ManageAdver/DeleteAdverImg"
+import { EditAdver } from "./pages/Admin/ManageAdver/EditAdver"
 import { ManageAdverPage } from "./pages/Admin/ManageAdver/ManageAdver"
 import { ApprovedPosts } from "./pages/Admin/ManageBlog/ApprovedBlog"
 import { ManageBlogPage } from "./pages/Admin/ManageBlog/ManageBlogs"
@@ -45,9 +44,15 @@ import PondDetails from "./pages/PondDetails"
 import ResultPage from "./pages/ResultPage"
 import SeeAllPond from "./pages/SeeAllPond"
 import ProfileSetting from "./pages/Setting/Profile"
+import PostedBlog from "./pages/User/PostedBlog"
+import { PurchasedPackagePage } from "./pages/User/PurchasedPackage"
+import { UserPackageDetailPage } from "./pages/User/ViewPurchasedPkg"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
+
+import { UserCreateAdver } from "./pages/User/CreateAdvertisement"
+
 
 const ProtectedAdminPage = ProtectedRoute(AdminPage)
 const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
@@ -106,6 +111,10 @@ function App() {
           <Route path="/add-koi/:userPondId" element={<AddKoi />} />
           <Route path="/add-pond/:userPondId" element={<AddPond />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/blog-cua-toi" element={<PostedBlog />} />
+          <Route path="/goi-cua-toi" element={<PurchasedPackagePage />} />
+          <Route path="/goi-cua-toi/:id" element={<UserPackageDetailPage />} />
+          <Route path="/tao-goi-quang-cao" element={<UserCreateAdver />} />
           <Route path="*" element={<NotFound />} />
           {/*ADMIN ROUTE*/}
           <Route path="/admin" element={<ProtectedAdminPage />} />
@@ -122,8 +131,7 @@ function App() {
           >
             <Route path="create" element={<CreateAdver />} />
             <Route path="all" element={<AllAdver />} />
-            <Route path="add-images/:id" element={<AddAdverImg />} />
-            <Route path="delete-images/:id" element={<DeleteAdverImg />} />
+            <Route path="edit/:id" element={<EditAdver />} />
           </Route>
           {/* NESTED ROUTES FOR ManageAdverPage */}
           <Route path="/admin/nguoi-dung" element={<ProtectedManageUserPage />}>

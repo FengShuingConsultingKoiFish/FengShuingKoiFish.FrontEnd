@@ -1,9 +1,6 @@
 import React, { useState } from "react"
 
-import {
-  IconCirclePlus,
-  IconList,
-} from "@tabler/icons-react"
+import { IconCirclePlus, IconList } from "@tabler/icons-react"
 import { motion } from "framer-motion"
 import { Link, Outlet } from "react-router-dom"
 
@@ -25,10 +22,8 @@ export function ManageAdverPage() {
     {
       label: "Xem tất cả gói quảng cáo",
       href: "/admin/goi-quang-cao/all",
-      icon: (
-        <IconList className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-      )
-    },
+      icon: <IconList className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+    }
   ]
   const [open, setOpen] = useState(false)
   return (

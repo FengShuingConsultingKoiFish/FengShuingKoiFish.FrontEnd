@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -14,6 +14,7 @@ import useBlogModal from "@/hooks/useBlogModel"
 import useImgChoosingModal from "@/hooks/useChooseImgModal"
 
 import { createUpdateBlog } from "@/lib/api/Blog"
+import { uploadImage } from "@/lib/api/Image"
 import { AppDispatch, RootState } from "@/lib/redux/store"
 
 import Avatar from "@/components/layout/header/Avatar"
@@ -21,7 +22,6 @@ import { FileUpload } from "@/components/ui/FileUpload"
 
 import BlogModal from "./BlogModal"
 import ImgChoosingModal from "./ImgChoosingModal"
-import { uploadImage } from "@/lib/api/Image"
 
 // Define the schema with yup
 const schema = yup.object().shape({
@@ -30,6 +30,7 @@ const schema = yup.object().shape({
 })
 
 interface CreateBlogFormData {
+  id: number
   title: string
   content: string
   imageIds: number[]
@@ -40,7 +41,11 @@ interface Image {
   imageUrl: string
 }
 
-const CreateBlogModal = () => {
+const CreateBlogModal = ({
+  existingBlog
+}: {
+  existingBlog?: CreateBlogFormData
+}) => {
   const imgChoosingModal = useImgChoosingModal()
   const blogModal = useBlogModal()
   const dispatch = useDispatch<AppDispatch>()
@@ -49,12 +54,10 @@ const CreateBlogModal = () => {
     "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const currentUser = useSelector((state: RootState) => state.users.currentUser);
+  const currentUser = useSelector((state: RootState) => state.users.currentUser)
   const userProfile = useSelector((state: RootState) => state.users.detailUser)
   const [showFileUpload, setShowFileUpload] = useState<boolean>(false)
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
-  const [hideUploadButton, setHideUploadButton] = useState<boolean>(false)
-  const [hideSelectButton, setHideSelectButton] = useState<boolean>(false)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
 
   const {
@@ -70,38 +73,38 @@ const CreateBlogModal = () => {
     }
     //resolver: yupResolver(schema)
   })
+
   const handleSelectImages = (images: Image[]) => {
     setSelectedImages(images)
   }
 
   const handleFileUploadClick = () => {
     setShowFileUpload(true)
-    setHideSelectButton(true)
+    setUploadedFile(null)
   }
 
   const handleSelectImageClick = () => {
+    setShowFileUpload(false)
+    setUploadedFile(null)
     imgChoosingModal.onOpen()
-    setHideUploadButton(true)
   }
 
   const handleFileChange = (files: File[]) => {
-    console.log("Selected file:", files[0]);
-    setUploadedFile(files[0]);
-  };
-  
+    console.log("Selected file:", files[0])
+    setUploadedFile(files[0])
+  }
 
   const handleFileUpload = async (file: File): Promise<number> => {
     try {
-      console.log("Uploading file:", file); 
-      const uploadedImageId = await uploadImage(file);
-      console.log("Uploaded image ID:", uploadedImageId);
-      return uploadedImageId;
+      console.log("Uploading file:", file)
+      const uploadedImageId = await uploadImage(file)
+      console.log("Uploaded image ID:", uploadedImageId)
+      return uploadedImageId
     } catch (error) {
-      toast.error("Failed to upload image");
-      throw error;
+      toast.error("Failed to upload image")
+      throw error
     }
-  };
-
+  }
 
   const onSubmit: SubmitHandler<CreateBlogFormData> = useCallback(
     async (data) => {
@@ -112,22 +115,22 @@ const CreateBlogModal = () => {
 
         if (uploadedFile) {
           const uploadedImageId = await handleFileUpload(uploadedFile)
-          console.log("New image ID to be added:", uploadedImageId);
+          console.log("New image ID to be added:", uploadedImageId)
           imageIds.push(uploadedImageId)
         }
 
         // Prepare the payload for the API call
         const blogPayload = {
-          id: 0, 
+          id: existingBlog?.id || 0,
           title: data.title,
           content: data.content,
-          imageIds: imageIds
+          imageIds
         }
 
         console.log(blogPayload)
         console.log(uploadedFile)
 
-        console.log("Final Blog Payload:", blogPayload);
+        console.log("Final Blog Payload:", blogPayload)
         const result = await createUpdateBlog(blogPayload)
 
         setIsLoading(false)
@@ -135,19 +138,16 @@ const CreateBlogModal = () => {
         if (result.isSuccess) {
           toast.success("Tạo blog thành công")
           reset()
-          setSelectedImages([]) 
-          setHideUploadButton(false)
-          setHideSelectButton(false) 
-          setShowFileUpload(false) 
-          blogModal.onClose() 
-        
+          setSelectedImages([])
+          setShowFileUpload(false)
+          blogModal.onClose()
         }
       } catch (error: any) {
         setIsLoading(false)
         toast.error(error.message || "An unknown error occurred.")
       }
     },
-    [selectedImages, uploadedFile]
+    [selectedImages, uploadedFile, existingBlog]
   )
 
   const bodyContent = (
@@ -199,7 +199,7 @@ const CreateBlogModal = () => {
               required
               {...register("title", { required: true })}
             ></textarea>
-            {errors.title&& (
+            {errors.title && (
               <span className="text-red-500">Tiêu đề là bắt buộc</span>
             )}
           </div>
@@ -224,26 +224,22 @@ const CreateBlogModal = () => {
           </div>
         </form>
         <div className="flex max-h-12 flex-row items-center gap-5">
-          {!hideUploadButton && (
+          <CustomButton
+            icon={<MdAddPhotoAlternate size={25} />}
+            label="Tải ảnh lên"
+            onClick={handleFileUploadClick}
+          />
+
+          <>
+            <p>hoặc</p>
             <CustomButton
               icon={<MdAddPhotoAlternate size={25} />}
-              label="Tải ảnh lên"
-              onClick={handleFileUploadClick}
+              label="Chọn ảnh từ thư viện của bạn"
+              onClick={handleSelectImageClick}
             />
-          )}
-
-          {!hideSelectButton && (
-            <>
-              <p>hoặc</p>
-              <CustomButton
-                icon={<MdAddPhotoAlternate size={25} />}
-                label="Chọn ảnh từ thư viện của bạn"
-                onClick={handleSelectImageClick}
-              />
-            </>
-          )}
+          </>
         </div>
-        {showFileUpload && <FileUpload onChange={handleFileChange}/>}
+        {showFileUpload && <FileUpload onChange={handleFileChange} />}
       </div>
     </div>
   )
@@ -253,9 +249,9 @@ const CreateBlogModal = () => {
       <BlogModal
         disabled={isLoading}
         isOpen={blogModal.isOpen}
-        title="Tạo bài"
+        title={existingBlog ? "Chỉnh sửa bài" : "Tạo bài"}
         actionLabel={
-          isLoading ? <ClipLoader size={20} color={"#fff"} /> : "Đăng"
+          isLoading ? "Loading..." : existingBlog ? "Cập nhật" : "Đăng"
         }
         onClose={blogModal.onClose}
         onSubmit={handleSubmit(onSubmit)}

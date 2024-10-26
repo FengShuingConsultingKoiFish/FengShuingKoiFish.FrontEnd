@@ -1,10 +1,7 @@
 import React from "react"
-
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import { AiOutlineCheck } from "react-icons/ai"
-import { TiCancel } from "react-icons/ti"
-
 import { LayoutGrid } from "./LayoutImg"
+import { IconEdit } from "@tabler/icons-react"
 
 interface ImageViewDto {
   id: number
@@ -22,8 +19,7 @@ interface AdverPkgSectionProps {
   limitAd: number
   limitContent: number
   limitImage: number
-  clickToAddImg: () => void;
-  clickToRemoveImg: () => void;
+  clickToEdit: () => void;
   imageViewDtos: ImageViewDto[]
 }
 
@@ -36,8 +32,7 @@ const AdverPkgSection: React.FC<AdverPkgSectionProps> = ({
   limitContent,
   limitImage,
   imageViewDtos,
-  clickToAddImg,
-  clickToRemoveImg
+  clickToEdit
 }) => {
   const transformedImages = imageViewDtos.map((image) => ({
     id: image.id,
@@ -47,7 +42,7 @@ const AdverPkgSection: React.FC<AdverPkgSectionProps> = ({
         <p className="text-sm text-white">Uploaded by {name}</p>
       </div>
     ),
-    className: "relative bg-white rounded-xl h-60 w-full"
+    className: "relative bg-white rounded-xl h-80 w-full"
   }))
 
   return (
@@ -73,14 +68,9 @@ const AdverPkgSection: React.FC<AdverPkgSectionProps> = ({
 
         <div className="absolute right-4 top-4 flex gap-2">
           <CustomButton
-            icon={<AiOutlineCheck />}
-            label="Thêm ảnh"
-            onClick={clickToAddImg}
-          />
-          <CustomButton
-            icon={<TiCancel />}
-            label="Xóa ảnh"
-            onClick={clickToRemoveImg}
+            icon={<IconEdit />}
+            label="Chỉnh sửa"
+            onClick={clickToEdit}
           />
         </div>
 

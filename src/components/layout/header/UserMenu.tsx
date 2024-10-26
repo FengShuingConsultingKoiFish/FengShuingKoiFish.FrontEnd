@@ -21,6 +21,7 @@ import {
 import Avatar from "./Avatar"
 import { HoverBorderGradient } from "./HoverBorder"
 import MenuItem from "./MenuItem"
+import { IconArticleFilled } from "@tabler/icons-react"
 
 interface User {
   Id: string
@@ -73,6 +74,18 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const handleMyProfile = useCallback(() => {
     if (currentUser) {
       navigate(`/Profile/${currentUser.Name}`)
+    }
+  }, [currentUser, navigate])
+
+  const handleMyPost = useCallback(() => {
+    if(currentUser) {
+      navigate(`/blog-cua-toi`)
+    }
+  }, [currentUser, navigate])
+
+  const handleMyPkg = useCallback(() => {
+    if(currentUser) {
+      navigate(`/goi-cua-toi`)
     }
   }, [currentUser, navigate])
 
@@ -156,13 +169,19 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                   <MenuItem
                     onClick={() => {}}
                     closeMenu={closeMenu}
-                    label="Lịch sử"
+                    label="Lịch sử của bạn"
                     icon={<FaHistory size={20} />}
                   />
                   <MenuItem
-                    onClick={() => {}}
+                    onClick={handleMyPost}
                     closeMenu={closeMenu}
-                    label="Gói hội viên của tôi"
+                    label="Các bài đăng của bạn"
+                    icon={<IconArticleFilled size={20} />}
+                  />
+                  <MenuItem
+                    onClick={handleMyPkg}
+                    closeMenu={closeMenu}
+                    label="Gói hội viên của bạn"
                     icon={<PiPackageFill size={20} />}
                   />
                   <MenuItem
