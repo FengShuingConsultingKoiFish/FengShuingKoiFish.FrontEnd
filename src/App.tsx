@@ -16,6 +16,8 @@ import ToasterProvider from "./components/providers/Toaster"
 import LoginModal from "./components/ui/modals/LoginModal"
 import SignupModal from "./components/ui/modals/SignupModal"
 import { RootState } from "./lib/redux/store"
+import AddKoi from "./pages/AddKoi"
+import AddPond from "./pages/AddPond"
 import { AdminPage } from "./pages/Admin/AdminPage"
 import { AllAdver } from "./pages/Admin/ManageAdver/AllAdver"
 import { CreateAdver } from "./pages/Admin/ManageAdver/CreateAdver"
@@ -48,7 +50,9 @@ import { UserPackageDetailPage } from "./pages/User/ViewPurchasedPkg"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
+
 import { UserCreateAdver } from "./pages/User/CreateAdvertisement"
+
 
 const ProtectedAdminPage = ProtectedRoute(AdminPage)
 const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
@@ -104,6 +108,8 @@ function App() {
           <Route path="/create-pond" element={<CreatePondPage />} />
           <Route path="/see-all-pond" element={<SeeAllPond />} />
           <Route path="/pond-details/:userPondId" element={<PondDetails />} />
+          <Route path="/add-koi/:userPondId" element={<AddKoi />} />
+          <Route path="/add-pond/:userPondId" element={<AddPond />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog-cua-toi" element={<PostedBlog />} />
           <Route path="/goi-cua-toi" element={<PurchasedPackagePage />} />
