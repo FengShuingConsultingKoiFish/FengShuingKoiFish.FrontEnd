@@ -22,7 +22,7 @@ interface BlogSectionProps {
   content: string
   userName: string
   createdDate: string
-  status: string
+  status: string | number
   changeStatusToVerify: any
   changeStatusToDeny: any
   imageViewDtos: ImageViewDto[]
@@ -47,7 +47,7 @@ const PostSection: React.FC<BlogSectionProps> = ({
         <p className="text-sm text-white">Uploaded by {userName}</p>
       </div>
     ),
-    className: "relative bg-white rounded-xl h-60 w-full"
+    className: "relative bg-white rounded-xl h-80 w-full"
   }))
 
   return (

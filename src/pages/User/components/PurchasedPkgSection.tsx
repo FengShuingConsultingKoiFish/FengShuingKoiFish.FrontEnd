@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3dCard"
 import { Button, MovingBorder } from "@/components/ui/MovingBorder"
+import Status from "@/components/ui/Status"
 
 interface ImageViewDtos {
   id: number
@@ -23,6 +24,7 @@ interface PurchasedPkgProps {
   limitImage: number
   createdDate: string
   imageViewDtos: ImageViewDtos[]
+  status: number
   onClick: () => void
 }
 
@@ -35,6 +37,7 @@ export function PurchasedPkgSection({
   limitContent,
   limitImage,
   imageViewDtos,
+  status,
   onClick
 }: PurchasedPkgProps) {
   const imageUrl =
@@ -43,14 +46,21 @@ export function PurchasedPkgSection({
       : "https://via.placeholder.com/150"
 
   return (
-    <CardContainer className="bg-white shadow-2xl rounded-xl" containerClassName="max-w-xs">
+    <CardContainer
+      className="rounded-xl bg-white shadow-2xl"
+      containerClassName="max-w-xs"
+    >
       <CardBody className="relative p-6">
-        <CardItem className="mb-4" translateZ={50}>  
-            <img alt={name} src={imageUrl} className="w-full h-96 object-cover" />
+        <CardItem className="mb-4" translateZ={50}>
+          <img alt={name} src={imageUrl} className="h-96 w-full object-cover" />
         </CardItem>
         <CardItem className="mb-2 flex-grow" translateZ={40}>
           <h3 className="text-xl font-bold">{name}</h3>
         </CardItem>
+        <CardItem className="mb-2 flex-grow" translateZ={40}>
+          <Status status={status} />
+        </CardItem>
+
         <CardItem translateZ={30}>
           <p className="card-item-description flex-grow text-gray-600">
             Giới hạn quảng cáo : {limitAd}

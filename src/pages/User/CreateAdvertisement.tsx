@@ -159,10 +159,10 @@ export const UserCreateAdver: React.FC = () => {
         className="relative flex w-full max-w-[1000px] flex-col items-center justify-start gap-4 px-4 py-10"
       >
         <div className="w-full">
-          <h2 className="mb-4 text-2xl font-semibold">Bạn đang thực hiện tạo quảng cáo theo gói : {currentPakage?.name}</h2>
-          <h2 className="mb-4 text-sm font-semibold"> Số lượng quảng cáo còn lại : {currentPakage?.limitAd}</h2>
-          <h2 className="mb-4 text-sm font-semibold"> Số lượng nội dung còn lại : {currentPakage?.limitContent}</h2>
-          <h2 className="mb-4 text-sm font-semibold"> Số lượng ảnh còn lại : {currentPakage?.limitImage}</h2>
+          <h2 className="mb-4 text-2xl font-semibold">Bạn đang thực hiện tạo quảng cáo theo gói : {currentPakage?.advertisementPackageViewDTO.name}</h2>
+          <h2 className="mb-4 text-sm font-semibold"> Số lượng quảng cáo còn lại : {currentPakage?.advertisementPackageViewDTO.limitAd}</h2>
+          <h2 className="mb-4 text-sm font-semibold"> Số lượng nội dung còn lại : {currentPakage?.advertisementPackageViewDTO.limitContent}</h2>
+          <h2 className="mb-4 text-sm font-semibold"> Số lượng ảnh còn lại : {currentPakage?.advertisementPackageViewDTO.limitImage}</h2>
           <div className="flex items-center justify-start gap-5">
             <CustomButton
               icon={<IconUpload size={25} />}

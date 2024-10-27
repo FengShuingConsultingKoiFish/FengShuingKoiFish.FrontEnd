@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
 
-import { getAllPurchasedPkgForUser } from "@/lib/api/PurchasedPkg"
+import { getAllPurchasedPackagesForUser } from "@/lib/api/PurchasedPkg"
 import { setPackageList } from "@/lib/redux/reducers/userPackageSlice"
 
 import { AuroraBackground } from "@/components/ui/AuroraBg"
@@ -13,31 +13,43 @@ import { AuroraBackground } from "@/components/ui/AuroraBg"
 import CustomButton from "../Setting/Components/CustomBtn"
 import { PurchasedPkgSection } from "./components/PurchasedPkgSection"
 
-interface PurchasedPackage {
+interface ImageViewDTO {
+  id: number
+  filePath: string
+  altText?: string | null
+  userId: string
+  userName: string
+  createdDate: string
+}
+
+interface UserPurchasedPkg {
   id: number
   monitoredQuantity: number
   userName: string
   status: number
   createdDate: string
-  advertisementPackageViewDTO: {
-    id: number
-    name: string
-    price: number
-    description: string
-    limitAd: number
-    limitContent: number
-    limitImage: number
-    createdDate: string
+  advertisementPackageViewDTO: AdvertisementPackageViewDTO
+}
 
-    imageViewDTOs: {
-      id: number
-      filePath: string
-      altText?: string | null
-      userId: string
-      userName: string
-      createdDate: string
-    }[]
-  }
+interface AdvertisementPackageViewDTO {
+  id: number
+  name?: string
+  price?: number
+  description?: string
+  limitAd: number
+  limitContent?: number
+  limitImage?: number
+  createdDate?: string
+  imageViewDTOs: ImageViewDTO[]
+}
+
+interface UserPurchasedPkgDetail {
+  id: number
+  monitoredQuantity: number
+  userName: string
+  status: number
+  createdDate: string
+  advertisementPackageViewDTO: AdvertisementPackageViewDTO
 }
 
 export function PurchasedPackagePage() {
@@ -45,7 +57,7 @@ export function PurchasedPackagePage() {
   const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
   const [purchasedPackages, setPurchasedPackages] = useState<
-    PurchasedPackage[]
+    UserPurchasedPkgDetail[]
   >([])
 
   const navigate = useNavigate()
@@ -53,7 +65,8 @@ export function PurchasedPackagePage() {
 
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [])
+    fetchPackages()
+  }, [pageIndex])
 
   const fetchPackages = async () => {
     setIsLoading(true)
@@ -66,25 +79,21 @@ export function PurchasedPackagePage() {
     }
 
     try {
-      const response = await getAllPurchasedPkgForUser(requestData)
-      console.log(response)
+      const response = await getAllPurchasedPackagesForUser(requestData)
+      const { result } = response
+      console.log(result)
 
-      const advertisementPackages = response.result.datas.map(
-        (pkg) => pkg.advertisementPackageViewDTO
-      )
-      setPurchasedPackages(response.result.datas)
-      dispatch(setPackageList(advertisementPackages))
+      // @ts-ignore
+      setPurchasedPackages(result.datas)
+      // @ts-ignore
+      dispatch(setPackageList(result.datas))
+      setTotalPages(result.totalPages)
       setIsLoading(false)
     } catch (error) {
       console.error("Failed to fetch packages:", error)
       setIsLoading(false)
     }
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-    fetchPackages()
-  }, [pageIndex])
 
   const handleNextPage = () => {
     if (pageIndex < totalPages) {
@@ -131,14 +140,15 @@ export function PurchasedPackagePage() {
               <PurchasedPkgSection
                 key={pkg.id}
                 id={pkg.advertisementPackageViewDTO.id}
-                name={pkg.advertisementPackageViewDTO.name}
-                price={pkg.advertisementPackageViewDTO.price}
-                description={pkg.advertisementPackageViewDTO.description}
-                limitAd={pkg.advertisementPackageViewDTO.limitAd}
-                limitContent={pkg.advertisementPackageViewDTO.limitContent}
-                limitImage={pkg.advertisementPackageViewDTO.limitImage}
-                createdDate={pkg.advertisementPackageViewDTO.createdDate}
+                name={pkg.advertisementPackageViewDTO.name || ""}
+                price={pkg.advertisementPackageViewDTO.price || 0}
+                description={pkg.advertisementPackageViewDTO.description || ""}
+                limitAd={pkg.advertisementPackageViewDTO.limitAd || 0}
+                limitContent={pkg.advertisementPackageViewDTO.limitContent || 0}
+                limitImage={pkg.advertisementPackageViewDTO.limitImage || 0}
+                createdDate={pkg.advertisementPackageViewDTO.createdDate || ""}
                 imageViewDtos={pkg.advertisementPackageViewDTO.imageViewDTOs}
+                status={pkg.status}
                 onClick={() => handlePackageClick(pkg.id)}
               />
             ))}

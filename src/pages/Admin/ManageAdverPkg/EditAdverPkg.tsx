@@ -54,8 +54,6 @@ export const EditAdver: React.FC = () => {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
   const [adverPkg, setAdverPkg] = useState<any>(null)
-  const [hideUploadButton, setHideUploadButton] = useState<boolean>(false)
-  const [hideSelectButton, setHideSelectButton] = useState<boolean>(false)
   const [newImages, setNewImages] = useState<Image[]>([])
   const [selectedImagesToDelete, setSelectedImagesToDelete] = useState<
     number[]
@@ -98,7 +96,7 @@ export const EditAdver: React.FC = () => {
   }
   const handleFileUploadClick = () => {
     setShowFileUpload(true)
-    setHideSelectButton(true)
+    setUploadedFile(null)
   }
 
   const handleFileChange = async (files: File[]) => {
@@ -121,8 +119,9 @@ export const EditAdver: React.FC = () => {
   }
 
   const handleSelectImageClick = () => {
+    setShowFileUpload(false)
+    setUploadedFile(null)
     imgChoosingModal.onOpen()
-    setHideUploadButton(true)
   }
 
   const handleFileUpload = async (file: File): Promise<number> => {
@@ -324,7 +323,7 @@ export const EditAdver: React.FC = () => {
                     </label>
                     <textarea
                       id="title"
-                      //rows="6"
+                      rows={5}
                       className="w-full border-0 px-0 text-sm text-gray-900 focus:outline-none focus:ring-0"
                       placeholder="Miêu tả ..."
                       required

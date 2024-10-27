@@ -21,6 +21,15 @@ interface ImageViewDTO {
   createdDate: string;
 }
 
+interface UserPruchasedPkgDetail {
+  id: number
+  monitoredQuantity: number
+  userName: string
+  status: number
+  createdDate: string
+  advertisementPackageViewDTO: AdvertisementPackageViewDTO
+}
+
 interface AdvertisementPackageViewDTO {
   id: number;
   name: string;
@@ -37,7 +46,7 @@ export const UserPackageDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [packageDetail, setPackageDetail] = useState<AdvertisementPackageViewDTO| null>(null);
+  const [packageDetail, setPackageDetail] = useState<UserPruchasedPkgDetail| null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const currentUser = useSelector((state: RootState) => state.users.detailUser);
@@ -51,8 +60,10 @@ export const UserPackageDetailPage = () => {
         setIsLoading(true);
         const response = await getPurchasedPackageById(Number(id));
         console.log(response)
-        const packageDetailData: AdvertisementPackageViewDTO = response.result.advertisementPackageViewDTO;
-        dispatch(setUserPackageDetail(packageDetailData)); 
+        const packageDetailData = response.result;
+        // @ts-ignore
+        dispatch(setUserPackageDetail(packageDetailData));
+        // @ts-ignore 
         setPackageDetail(packageDetailData);
         console.log("packageDetailData", packageDetailData)
 
@@ -75,7 +86,7 @@ export const UserPackageDetailPage = () => {
       content: (
         <div>
           <p className="mb-8 text-5xl font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
-            {packageDetail?.description || "No description available"}
+            {packageDetail?.advertisementPackageViewDTO.description || "No description available"}
           </p>
         </div>
       ),
@@ -87,9 +98,9 @@ export const UserPackageDetailPage = () => {
           <p className="mb-8 text-xl font-normal text-neutral-800 dark:text-neutral-200">
             Hình ảnh từ gói dịch vụ
           </p>
-          {packageDetail?.imageViewDTOs && packageDetail.imageViewDTOs.length > 0 ? (
+          {packageDetail?.advertisementPackageViewDTO.imageViewDTOs && packageDetail.advertisementPackageViewDTO.imageViewDTOs.length > 0 ? (
             <div className="grid grid-cols-2 gap-4">
-              {packageDetail.imageViewDTOs.map((image) => (
+              {packageDetail.advertisementPackageViewDTO.imageViewDTOs.map((image) => (
                 <div key={image.id} className="relative">
                   <img
                     src={image.filePath}
@@ -134,11 +145,11 @@ export const UserPackageDetailPage = () => {
           ) : (
             <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-10">
               <h2 className="mb-4 max-w-4xl text-lg text-black md:text-4xl">
-                {packageDetail?.name || "Package Details"}
+                {packageDetail?.advertisementPackageViewDTO.name || "Package Details"}
               </h2>
               <p className="inline-flex max-w-sm items-center justify-start gap-4 text-sm font-semibold text-black md:text-base">
                 <span className="text-xl">Giá :</span>
-                {packageDetail?.price.toLocaleString("vi-VN", {
+                {packageDetail?.advertisementPackageViewDTO.price.toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND",
                 })}

@@ -133,7 +133,7 @@ export const ApprovedPosts: React.FC = () => {
           </div>
         )}
 
-        <div className="fixed bottom-0 mt-6 inline-flex translate-x-[45rem] sm:translate-x-[40rem] items-center">
+        <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] items-center sm:translate-x-[40rem] md:translate-x-[30rem]">
           <CustomButton
             icon={<IoIosArrowDropleftCircle />}
             label="Trang trước"

@@ -23,6 +23,8 @@ import { Hero } from "@/components/ui/blog/Hero"
 
 import CustomButton from "../Setting/Components/CustomBtn"
 import { ClipLoader } from "react-spinners"
+import { RootState } from "@/lib/redux/store"
+import { useSelector } from "react-redux"
 
 interface ImageViewDto {
   id: number
@@ -45,6 +47,7 @@ interface Blog {
 }
 
 const Blog = () => {
+  const currentUser = useSelector((state: RootState) => state.users.currentUser)
   const [blogs, setBlogs] = useState<Blog[]>([])
   const [pageIndex, setPageIndex] = useState(1)
   const [pageSize] = useState(7)
@@ -200,6 +203,7 @@ const Blog = () => {
                       activeBlogId={activeBlogId}
                       onSubmitComment={handleCommentSubmit}
                       onToggleComment={handleCommentToggle}
+                      currentUser={currentUser}
                       apiMessage={apiMessages[blog.id]}
                     />
                   ))}

@@ -8,7 +8,7 @@ export interface ProtectedRouteProps {
   [key: string]: any;
 }
 
-const ProtectedRoute = <P extends ProtectedRouteProps>(
+const ProtectedRouteForUser = <P extends ProtectedRouteProps>(
   WrappedComponent: React.ComponentType<P>
 ) => {
   const Protected: React.FC<P> = (props) => {
@@ -16,12 +16,12 @@ const ProtectedRoute = <P extends ProtectedRouteProps>(
     const navigate = useNavigate();
 
     useEffect(() => {
-      if (!currentUser || currentUser.Name !== "Admin") {
+      if (!currentUser) {
         navigate("/401"); 
       }
     }, [currentUser, navigate]);
 
-    if (!currentUser || currentUser.Name !== "Admin") {
+    if (!currentUser) {
       return null; 
     }
 
@@ -31,4 +31,4 @@ const ProtectedRoute = <P extends ProtectedRouteProps>(
   return Protected;
 };
 
-export default ProtectedRoute;
+export default ProtectedRouteForUser;
