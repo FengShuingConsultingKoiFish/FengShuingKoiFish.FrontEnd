@@ -29,13 +29,15 @@ const PondList: React.FC<PondListProps> = ({
   return (
     <div className="w-full">
       {ponds.slice(0, visiblePonds).map((pond) => (
-        <PondCard
-          key={pond.id}
-          pond={pond}
-          onDelete={onDelete}
-          onUpdate={onUpdate}
-          validateName={validateName}
-        />
+        <div key={pond.id} id={`pond-${pond.id}`}>
+          <PondCard
+            key={pond.id}
+            pond={pond}
+            onDelete={onDelete}
+            onUpdate={onUpdate}
+            validateName={validateName}
+          />
+        </div>
       ))}
     </div>
   )

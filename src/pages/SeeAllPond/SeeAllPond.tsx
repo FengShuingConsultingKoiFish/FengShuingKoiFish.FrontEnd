@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react"
 import axios from "axios"
 import { motion } from "framer-motion"
 import toast from "react-hot-toast"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
+
+import OnclickButton from "@/components/global/atoms/OnclickButton"
 
 import "../../styles/fengshui.css"
 import PondList from "./PondList"
@@ -25,6 +27,7 @@ const SeeAllPond: React.FC = () => {
   const [activeButton, setActiveButton] = useState<string>("see-all")
   const [filter, setFilter] = useState<string>("all") // Thêm trạng thái filter
   const [searchTerm, setSearchTerm] = useState<string>("") // Thêm trạng thái tìm kiếm
+  const location = useLocation()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -60,6 +63,18 @@ const SeeAllPond: React.FC = () => {
 
     fetchPonds()
   }, [navigate])
+
+  useEffect(() => {
+    if (!loading && location.hash) {
+      // Chỉ cuộn khi dữ liệu đã tải
+      const elementId = location.hash.replace("#", "")
+      const element = document.getElementById(elementId)
+
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" })
+      }
+    }
+  }, [location.hash, loading])
 
   const handleDeletePond = async (id: number) => {
     const token = sessionStorage.getItem("token")
@@ -232,12 +247,7 @@ const SeeAllPond: React.FC = () => {
         validateName={validateName}
       />
       {visiblePonds < filteredPonds.length && (
-        <button
-          onClick={handleShowMore}
-          className="mt-6 rounded bg-blue-500 px-6 py-3 font-bold text-white shadow-lg transition-all duration-300 hover:bg-blue-400 hover:shadow-xl"
-        >
-          Xem thêm
-        </button>
+        <OnclickButton label="Xem thêm" onClick={handleShowMore} />
       )}
     </motion.div>
   )
