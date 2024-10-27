@@ -2,8 +2,6 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from "react"
 
 import { IoMdClose } from "react-icons/io"
 
-import useConfirmModal from "@/hooks/useConfirmModal"
-
 import ModalButton from "@/components/ui/modals/ModalBtn"
 
 interface ConfirmModalProps {
@@ -33,7 +31,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
 }) => {
   const [showModal, setShowModal] = useState(isOpen)
   const modalRef = useRef<HTMLDivElement>(null)
-  const confirmModal = useConfirmModal()
 
   const handleClose = useCallback(() => {
     if (disabled) {

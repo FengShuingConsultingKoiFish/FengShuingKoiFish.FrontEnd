@@ -1,8 +1,7 @@
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import { Link } from "react-router-dom"
 
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3dCard"
-import { Button, MovingBorder } from "@/components/ui/MovingBorder"
+import { Button } from "@/components/ui/MovingBorder"
 import Status from "@/components/ui/Status"
 
 interface ImageViewDtos {
@@ -29,10 +28,8 @@ interface PurchasedPkgProps {
 }
 
 export function PurchasedPkgSection({
-  id,
   name,
   price,
-  description,
   limitAd,
   limitContent,
   limitImage,

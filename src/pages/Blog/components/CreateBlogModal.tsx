@@ -1,21 +1,17 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import { yupResolver } from "@hookform/resolvers/yup"
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { MdAddPhotoAlternate } from "react-icons/md"
-import { useDispatch, useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import { ClipLoader } from "react-spinners"
-import * as yup from "yup"
+import { useSelector } from "react-redux"
 
 import useBlogModal from "@/hooks/useBlogModel"
 import useImgChoosingModal from "@/hooks/useChooseImgModal"
 
 import { createUpdateBlog } from "@/lib/api/Blog"
 import { uploadImage } from "@/lib/api/Image"
-import { AppDispatch, RootState } from "@/lib/redux/store"
+import {  RootState } from "@/lib/redux/store"
 
 import Avatar from "@/components/layout/header/Avatar"
 import { FileUpload } from "@/components/ui/FileUpload"
@@ -23,11 +19,6 @@ import { FileUpload } from "@/components/ui/FileUpload"
 import BlogModal from "./BlogModal"
 import ImgChoosingModal from "./ImgChoosingModal"
 
-// Define the schema with yup
-const schema = yup.object().shape({
-  email: yup.string().required("Vui lòng nhập tên hoặc email của bạn"),
-  password: yup.string().required("Mật khẩu là bắt buộc")
-})
 
 interface CreateBlogFormData {
   id: number
@@ -48,8 +39,6 @@ const CreateBlogModal = ({
 }) => {
   const imgChoosingModal = useImgChoosingModal()
   const blogModal = useBlogModal()
-  const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate()
   const defaultAvatar =
     "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
 

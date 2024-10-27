@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 
 import { yupResolver } from "@hookform/resolvers/yup"
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"

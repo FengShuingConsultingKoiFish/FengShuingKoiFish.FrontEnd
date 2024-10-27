@@ -1,18 +1,5 @@
 import React from "react"
 
-// Define possible statuses as a union type
-type StatusType =
-  | "Active"
-  | "Accepted"
-  | "Completed"
-  | "Denied"
-  | "Pending"
-  | "Inactive"
-  | 0
-  | 2
-  | 3
-  | undefined
-
 interface StatusProps {
   status: string | number
 }

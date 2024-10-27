@@ -22,15 +22,6 @@ interface ImageViewDTO {
   createdDate: string
 }
 
-interface UserPurchasedPkg {
-  id: number
-  monitoredQuantity: number
-  userName: string
-  status: number
-  createdDate: string
-  advertisementPackageViewDTO: AdvertisementPackageViewDTO
-}
-
 interface AdvertisementPackageViewDTO {
   id: number
   name?: string

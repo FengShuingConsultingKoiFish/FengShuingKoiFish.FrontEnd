@@ -1,7 +1,7 @@
 
 import { useCallback, useState } from "react"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { ClipLoader } from "react-spinners"
 import * as yup from "yup"
@@ -115,7 +115,6 @@ const SignupModal: React.FC = () => {
         placeholder=""
         onChange={()=>{}}
         label="Email"
-        domain=""
         disabled={isLoading}
         register={register}
         errors={errors}

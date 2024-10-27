@@ -1,4 +1,3 @@
-"use client";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -6,7 +5,6 @@ import { cn } from "@/lib/utils";
 
 export function PlaceholdersAndVanishInput({
   placeholders,
-  onChange,
   onSubmit,
 }: {
   placeholders: string[];
@@ -147,12 +145,6 @@ export function PlaceholdersAndVanishInput({
       });
     };
     animateFrame(start);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !animating) {
-      vanishAndSubmit();
-    }
   };
 
   const vanishAndSubmit = () => {

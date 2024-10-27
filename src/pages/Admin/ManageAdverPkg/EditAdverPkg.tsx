@@ -52,7 +52,6 @@ export const EditAdver: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [showFileUpload, setShowFileUpload] = useState<boolean>(false)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
-  const [selectedImages, setSelectedImages] = useState<Image[]>([])
   const [adverPkg, setAdverPkg] = useState<any>(null)
   const [newImages, setNewImages] = useState<Image[]>([])
   const [selectedImagesToDelete, setSelectedImagesToDelete] = useState<

@@ -4,10 +4,10 @@ import ConfirmModal from "@/pages/Admin/components/ConfirmModal"
 import BlogModal from "@/pages/Blog/components/BlogModal"
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
 import { IconAlertTriangleFilled, IconTrash } from "@tabler/icons-react"
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { MdAddPhotoAlternate } from "react-icons/md"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { ClipLoader } from "react-spinners"
 
 import useConfirmModal from "@/hooks/useConfirmModal"
@@ -43,7 +43,6 @@ const EditBlogModal = ({ onSuccess }: { onSuccess: () => void }) => {
     (state: RootState) => state.userBlogs.detailBlog
   )
   const editBlogModal = useEditBlogModal()
-  const dispatch = useDispatch<AppDispatch>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
   const userProfile = useSelector((state: RootState) => state.users.detailUser)

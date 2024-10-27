@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { ClipLoader } from "react-spinners"
 import { getAllAdvertisementsPkg } from "@/lib/api/AdvertisementPkg"
@@ -7,13 +7,6 @@ import { AuroraBackground } from "@/components/ui/AuroraBg"
 import CustomButton from "../Setting/Components/CustomBtn"
 import { PackageCard } from "./components/PackageCard"
 import { useNavigate } from "react-router-dom"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/Select"
 
 interface ImageViewDTO {
   id: number

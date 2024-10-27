@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 
 import { motion } from "framer-motion"
-import toast from "react-hot-toast"
 import { FaArrowLeft } from "react-icons/fa"
 import { Link, useParams } from "react-router-dom"
 import { ClipLoader } from "react-spinners"

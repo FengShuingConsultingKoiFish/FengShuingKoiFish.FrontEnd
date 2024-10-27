@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import { IconEdit, IconMessageCircle, IconShare } from "@tabler/icons-react"
+import { IconEdit, IconMessageCircle} from "@tabler/icons-react"
 
 import { getUserAvatarByUserName } from "@/lib/api/User"
 
@@ -36,7 +36,6 @@ export const UserArticle: React.FC<ArticleCardProps> = ({
   img,
   title,
   content,
-  userName,
   createdDate,
   commentViewDtos = [],
   activeBlogId,

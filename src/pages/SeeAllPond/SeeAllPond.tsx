@@ -235,7 +235,7 @@ const SeeAllPond: React.FC = () => {
         </button>
       </div>
 
-      <h1 className="mb-8 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-4xl text-5xl font-extrabold text-transparent">
+      <h1 className="mb-8 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-5xl font-extrabold text-transparent">
         Danh sách hồ cá
       </h1>
 

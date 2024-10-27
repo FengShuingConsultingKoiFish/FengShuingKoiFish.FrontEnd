@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { IconPencilPlus } from "@tabler/icons-react";
 import { motion } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
 import { getPurchasedPackageById } from "@/lib/api/PurchasedPkg";
-import { RootState } from "@/lib/redux/store";
 import { AuroraBackground } from "@/components/ui/AuroraBg";
 import { ArticleReading } from "@/components/ui/blog/ArticleReading";
 import CustomButton from "../Setting/Components/CustomBtn";
@@ -49,7 +48,6 @@ export const UserPackageDetailPage = () => {
   const [packageDetail, setPackageDetail] = useState<UserPruchasedPkgDetail| null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const currentUser = useSelector((state: RootState) => state.users.detailUser);
 
   useEffect(() => {
     window.scrollTo(0, 0);

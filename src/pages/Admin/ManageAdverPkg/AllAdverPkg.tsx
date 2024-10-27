@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
 import {

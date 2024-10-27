@@ -1,11 +1,9 @@
-import React, { useState } from "react"
+import { useState } from "react"
 
 import {
   IconBan,
   IconCheck,
-  IconCirclePlus,
   IconClockHour2,
-  IconList
 } from "@tabler/icons-react"
 import { Link, Outlet } from "react-router-dom"
 

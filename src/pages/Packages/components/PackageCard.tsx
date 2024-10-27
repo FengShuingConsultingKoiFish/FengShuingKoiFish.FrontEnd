@@ -17,7 +17,6 @@ interface CardProps {
 
 export function PackageCard({
   name,
-  description,
   price,
   imageViewDTOs,
   onClick

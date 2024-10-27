@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
 
@@ -22,7 +22,6 @@ const UploadModal: React.FC<UploadModalProps> = ({
   isOpen,
   onClose,
   onSelectImages,
-  disabled
 }) => {
   const [images, setImages] = useState<Image[]>([])
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
@@ -31,17 +30,6 @@ const UploadModal: React.FC<UploadModalProps> = ({
   useEffect(() => {
     setShowModal(isOpen)
   }, [isOpen])
-
-  const handleClose = useCallback(() => {
-    if (disabled) {
-      return
-    }
-
-    setShowModal(false)
-    setTimeout(() => {
-      onClose()
-    }, 300)
-  }, [disabled, onClose])
 
 
   if (!isOpen) {
@@ -58,7 +46,9 @@ const UploadModal: React.FC<UploadModalProps> = ({
             name: "",
             orderDate: 1
           }
+          //@ts-ignore
           const response = await getImagesForMember(requestData)
+          //@ts-ignore
           setImages(response.result.images)
         } catch (error) {
           console.error("Error fetching images", error)

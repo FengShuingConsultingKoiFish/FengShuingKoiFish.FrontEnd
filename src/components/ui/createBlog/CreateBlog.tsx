@@ -7,7 +7,7 @@ interface CreateBlogProps {
   onClick: () => void
 }
 
-const CreateBlog: React.FC<CreateBlogProps> = ({ onClick }) => {
+const CreateBlog: React.FC<CreateBlogProps> = () => {
   const blogModal = useBlogModal();
   
   const words = `Hãy cho chúng tôi biết bạn đang nghĩ gì`

@@ -34,7 +34,6 @@ interface PaymentSectionProps {
 }
 
 const AllPaymentSection: React.FC<PaymentSectionProps> = ({
-  id,
   userName,
   transactionId,
   content,
