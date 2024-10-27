@@ -27,7 +27,7 @@ export const Hero: React.FC<HeroProps> = ({
   direction = "up"
 }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
-  const [loading, setLoading] = useState<boolean>(false)
+  const [, setLoading] = useState<boolean>(false)
   const [loadedImages, setLoadedImages] = useState<string[]>([])
 
   const words = [

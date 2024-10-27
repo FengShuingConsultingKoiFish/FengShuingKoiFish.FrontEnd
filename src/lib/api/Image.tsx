@@ -1,4 +1,4 @@
-import axios from "axios";
+
 import { axiosClient } from "./config/axios-client";
 
 
@@ -19,11 +19,6 @@ interface ImageUploadResponse {
   };
   }
 
-  interface ImageUpdateRequest {
-    id: number;
-    altText?: string;
-  }
-  
   interface ImageUpdateResponse {
     statusCode: number;
     isSuccess: boolean;

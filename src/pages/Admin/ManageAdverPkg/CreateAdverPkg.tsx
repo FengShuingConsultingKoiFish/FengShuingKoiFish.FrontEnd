@@ -37,8 +37,8 @@ export const CreateAdver: React.FC = () => {
   const [showFileUpload, setShowFileUpload] = useState<boolean>(false)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
-  const [hideUploadButton, setHideUploadButton] = useState<boolean>(false)
-  const [hideSelectButton, setHideSelectButton] = useState<boolean>(false)
+  const [, setHideUploadButton] = useState<boolean>(false)
+  const [, setHideSelectButton] = useState<boolean>(false)
 
   const handleSelectImages = (images: Image[]) => {
     setSelectedImages(images)

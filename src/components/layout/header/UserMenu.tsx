@@ -40,7 +40,6 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   //const [userProfile, setUserProfile] = useState<any>(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const defaultAvatar =
     "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
 

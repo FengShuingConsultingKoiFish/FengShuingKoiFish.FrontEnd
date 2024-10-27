@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 
 import {
   IconBan,
@@ -7,7 +7,6 @@ import {
   IconRosetteDiscountCheck,
   IconTrash
 } from "@tabler/icons-react"
-import { motion } from "framer-motion"
 import { Link, Outlet, useLocation } from "react-router-dom"
 
 import { cn } from "@/lib/utils"

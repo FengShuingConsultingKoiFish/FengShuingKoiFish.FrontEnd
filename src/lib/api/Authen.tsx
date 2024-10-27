@@ -2,7 +2,6 @@ import { jwtDecode } from "jwt-decode"
 import { Dispatch } from "redux"
 import { setCurrentUser } from "../redux/reducers/userSlice"
 import { axiosClient } from "./config/axios-client"
-import toast from "react-hot-toast"
 
 // Define the user type according to your backend response
 interface User {

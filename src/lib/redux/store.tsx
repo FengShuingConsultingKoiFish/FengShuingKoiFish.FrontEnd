@@ -3,7 +3,7 @@ import { combineReducers } from "redux"
 import { persistReducer, persistStore } from "redux-persist"
 import storage from "redux-persist/lib/storage"
 
-import usersSlice, { setCurrentUser } from "./reducers/userSlice"
+import usersSlice from "./reducers/userSlice"
 import userBlogsSlice from "./reducers/userBlogSlice"
 import userPackageSlice from "./reducers/userPackageSlice"
 

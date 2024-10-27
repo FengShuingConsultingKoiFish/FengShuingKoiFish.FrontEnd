@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 import { useSelector } from "react-redux"
-import { Link, useLocation } from "react-router-dom"
+import { Link } from "react-router-dom"
 
 import useLoginModal from "@/hooks/useLoginModal"
 import useSignupModal from "@/hooks/useSignupModal"
@@ -19,7 +19,6 @@ import UserMenu from "./UserMenu"
 const Navbar = () => {
   const loginModal = useLoginModal()
   const signupModal = useSignupModal()
-  const location = useLocation()
 
   interface currentUser {
     Id: string
