@@ -48,7 +48,7 @@ import PasswordReset from "./pages/Password-reset"
 import PondConsultationPage from "./pages/PondConsultationPage "
 import PondDetails from "./pages/PondDetails"
 import ResultPage from "./pages/ResultPage"
-import SeeAllPond from "./pages/SeeAllPond"
+import SeeAllPond from "./pages/SeeAllPond/SeeAllPond"
 import ProfileSetting from "./pages/Setting/Profile"
 import { UserCreateAdver } from "./pages/User/CreateAdvertisement"
 import PostedBlog from "./pages/User/PostedBlog"
@@ -57,6 +57,13 @@ import { UserPackageDetailPage } from "./pages/User/ViewPurchasedPkg"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
+
+
+const ProtectedAdminPage = ProtectedRoute(AdminPage)
+const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
+const ProtectedManageAdverPage = ProtectedRoute(ManageAdverPage)
+const ProtectedManageUserPage = ProtectedRoute(ManageUserPage)
+
 import { PaymentDetailPage } from "./pages/History/ViewPaymentHistoryDetail"
 import { ManagePaymentPage } from "./pages/Admin/ManagePayment/ManagePayment"
 import { AllPayment } from "./pages/Admin/ManagePayment/AllPayment"
@@ -73,6 +80,7 @@ const ProtectedPurchasedPkgDetailPage = ProtectedRouteForUser(
 const ProtectedMyBlog = ProtectedRouteForUser(PostedBlog)
 const ProtectedCreateAdver = ProtectedRouteForUser(UserCreateAdver)
 const ProtectedPaymentDetail = ProtectedRouteForUser(PaymentDetailPage)
+
 
 
 

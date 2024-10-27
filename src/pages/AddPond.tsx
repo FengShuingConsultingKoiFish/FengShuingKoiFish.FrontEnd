@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 
 import axios from "axios"
+import { FaArrowLeft } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
 interface PondCharacteristic {
@@ -19,12 +20,19 @@ const AddPond: React.FC = () => {
   >([])
   const [selectedPondId, setSelectedPondId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState<string>("")
 
-  // Gọi API để lấy danh sách các loại hồ
+  // Fetch pond characteristics and validate token
   useEffect(() => {
-    const fetchPondCharacteristics = async () => {
-      const token = sessionStorage.getItem("token")
+    const token = sessionStorage.getItem("token")
 
+    // Redirect to login if token is missing
+    if (!token) {
+      navigate("/") // Redirects to login page
+      return
+    }
+
+    const fetchPondCharacteristics = async () => {
       try {
         const response = await axios.get(
           "https://consultingfish.azurewebsites.net/api/Pond/Get-All-PondCharacteristics",
@@ -47,7 +55,7 @@ const AddPond: React.FC = () => {
     }
 
     fetchPondCharacteristics()
-  }, [])
+  }, [navigate])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -64,13 +72,11 @@ const AddPond: React.FC = () => {
 
     const token = sessionStorage.getItem("token")
     const payload = {
-      pondId: parseInt(userPondId), // Kiểm tra kỹ trường này trong API
+      pondId: parseInt(userPondId),
       pondDetails: [{ pondId: selectedPondId }]
     }
 
     try {
-      console.log("Payload gửi đi:", payload) // Debug payload
-
       const response = await axios.post(
         "https://consultingfish.azurewebsites.net/api/UserPond/adddetails",
         payload,
@@ -85,30 +91,64 @@ const AddPond: React.FC = () => {
       if (response.data.isSuccess) {
         navigate(`/pond-details/${userPondId}`)
       } else {
-        console.error("Lỗi từ API:", response.data)
         setError(response.data.message || "Có lỗi xảy ra.")
       }
     } catch (err) {
       if (axios.isAxiosError(err) && err.response) {
-        console.error("Chi tiết lỗi từ API:", err.response.data)
         setError(err.response.data.message || "Có lỗi xảy ra khi thêm hồ.")
       } else {
-        console.error("Lỗi không xác định:", err)
         setError("Có lỗi xảy ra khi thêm hồ.")
       }
     }
   }
 
-  return (
-    <div className="mb-4">
-      <h2 className="mb-2 text-xl font-semibold">Thêm Hồ</h2>
-      {error && <p className="text-red-500">{error}</p>}
+  // Filter pond characteristics based on search term
+  const filteredPondCharacteristics = pondCharacteristics.filter((pond) =>
+    pond.name.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
+  return (
+    <div className="relative mb-4 p-4">
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(`/pond-details/${userPondId}`)}
+        className="absolute left-4 top-4 text-gray-600 hover:text-gray-800"
+      >
+        <FaArrowLeft className="text-2xl" />
+      </button>
+
+      {/* Title */}
+      <h2 className="mb-6 text-center text-2xl font-semibold">Thêm Hồ</h2>
+      {error && <p className="text-center text-red-500">{error}</p>}
+
+      {/* Search Bar */}
+      <div className="mb-4 flex justify-center">
+        <input
+          type="text"
+          placeholder="Tìm kiếm loại hồ..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full max-w-md rounded border border-gray-300 p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      {/* Add Button */}
+      <button
+        type="button"
+        className="absolute right-4 top-4 rounded bg-blue-500 px-4 py-2 text-white"
+        onClick={handleSubmit}
+      >
+        Thêm
+      </button>
+
+      {/* Pond Characteristics List */}
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {pondCharacteristics.map((pond) => (
+        {filteredPondCharacteristics.map((pond) => (
           <div
             key={pond.id}
-            className={`cursor-pointer rounded border p-4 ${selectedPondId === pond.id ? "border-blue-500" : "border-gray-300"}`}
+            className={`cursor-pointer rounded border p-4 ${
+              selectedPondId === pond.id ? "border-blue-500" : "border-gray-300"
+            }`}
             onClick={() => setSelectedPondId(pond.id)}
           >
             <img
@@ -121,14 +161,6 @@ const AddPond: React.FC = () => {
           </div>
         ))}
       </div>
-
-      <button
-        type="button"
-        className="mt-2 rounded bg-blue-500 px-4 py-2 text-white"
-        onClick={handleSubmit}
-      >
-        Thêm
-      </button>
     </div>
   )
 }
