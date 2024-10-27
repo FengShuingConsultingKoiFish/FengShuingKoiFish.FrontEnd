@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
 import {
   IoIosArrowDropleftCircle,
@@ -87,10 +87,6 @@ export const AllPayment = () => {
     if (pageIndex < totalPages) {
       setPageIndex((prev) => prev + 1)
     }
-  }
-
-  const handleEditDetail = (id: number) => {
-    navigate(`/admin/goi-quang-cao/edit/${id}`)
   }
 
   return (

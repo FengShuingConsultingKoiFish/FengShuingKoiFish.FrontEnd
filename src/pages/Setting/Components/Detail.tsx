@@ -6,7 +6,6 @@ import {
   ListboxOption,
   ListboxOptions
 } from "@headlessui/react"
-import { yupResolver } from "@hookform/resolvers/yup"
 import { IconDeviceFloppy } from "@tabler/icons-react"
 import clsx from "clsx"
 import DatePicker from "react-datepicker"
@@ -18,9 +17,7 @@ import { MdAddPhotoAlternate, MdEdit } from "react-icons/md"
 import { RiArrowDropDownLine } from "react-icons/ri"
 import { useDispatch } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
-import { Navigate } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
-import * as yup from "yup"
 
 import useProfileImgModal from "@/hooks/useProfileImgModal"
 
@@ -65,7 +62,6 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
   const [identityCard, setIdentityCard] = useState(defaultIdentity)
   const [isEditingFullName, setIsEditingFullName] = useState(false)
   const [isEditingIdentityCard, setIsEditingIdentityCard] = useState(false)
-  const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null)
   const [selectedImageId, setSelectedImageId] = useState<number | null>(null)
   const [startDate, setStartDate] = useState<Date | null>()
@@ -132,7 +128,6 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
     register,
     handleSubmit,
     formState: { errors },
-    reset
   } = useForm({
     defaultValues: {
       fullName: fullName,

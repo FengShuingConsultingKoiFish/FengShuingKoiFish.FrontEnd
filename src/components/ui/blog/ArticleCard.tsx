@@ -50,7 +50,6 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   const [comment, setComment] = useState("")
   const [avatarUrls, setAvatarUrls] = useState<{ [key: string]: string }>({})
   const [visibleComments, setVisibleComments] = useState(2)
-  const [comments, setComments] = useState<CommentViewDto[]>(commentViewDtos);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value)

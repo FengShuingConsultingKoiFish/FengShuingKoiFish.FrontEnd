@@ -24,7 +24,6 @@ interface AdverPkgSectionProps {
 }
 
 const AdverPkgSection: React.FC<AdverPkgSectionProps> = ({
-  id,
   name,
   price,
   description,

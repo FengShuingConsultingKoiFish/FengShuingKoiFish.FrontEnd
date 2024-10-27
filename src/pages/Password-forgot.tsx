@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { Link, useNavigate } from "react-router-dom"
 import { ClipLoader } from "react-spinners"

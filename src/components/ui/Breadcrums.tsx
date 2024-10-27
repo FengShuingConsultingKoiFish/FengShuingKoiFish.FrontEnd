@@ -10,9 +10,7 @@ import {
   IconHome,
   IconList,
   IconPackages,
-  IconPhotoPlus,
   IconSquareRoundedPlus,
-  IconTrash,
   IconUser
 } from "@tabler/icons-react"
 import { MdKeyboardArrowRight } from "react-icons/md"

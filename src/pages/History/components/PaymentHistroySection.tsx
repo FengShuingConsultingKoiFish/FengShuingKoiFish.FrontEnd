@@ -29,7 +29,6 @@ const Content: React.FC<PaymentProps> = ({
   createdDate,
   content,
   advertisementPackageViewDTO,
-  userName,
   orderId
 }) => {
   const navigate = useNavigate()

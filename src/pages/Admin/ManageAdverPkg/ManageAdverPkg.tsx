@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { IconCirclePlus, IconList } from "@tabler/icons-react"
 import { Link, Outlet } from "react-router-dom"
 import { cn } from "@/lib/utils"

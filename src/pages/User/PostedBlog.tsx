@@ -7,7 +7,6 @@ import {
 import { useDispatch } from "react-redux"
 import { ClipLoader } from "react-spinners"
 
-import useBlogModal from "@/hooks/useBlogModel"
 import useEditBlogModal from "@/hooks/useEditBlogModal"
 
 import { GetAllBlogsForUser } from "@/lib/api/User"
@@ -23,7 +22,6 @@ import {
 } from "@/components/ui/Select"
 import { UserArticle } from "@/components/ui/blog/UserArticleEdit"
 
-import CreateBlogModal from "../Blog/components/CreateBlogModal"
 import CustomButton from "../Setting/Components/CustomBtn"
 import EditBlogModal from "./components/EditBlogModal"
 
@@ -62,7 +60,6 @@ const PostedBlog = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [orderBlog, setOrderBlog] = useState<1 | 2>(1)
   const [blogStatus, setBlogStatus] = useState<BlogStatus | null>(null)
-  const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null)
   const editBlogModal = useEditBlogModal()
   const [activeBlogId, setActiveBlogId] = useState<number | null>(null);
   const dispatch = useDispatch()

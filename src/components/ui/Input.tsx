@@ -1,7 +1,7 @@
-import { Control, Controller, FieldError, FieldErrors } from "react-hook-form"
+import { Control, Controller, FieldErrors } from "react-hook-form"
 import { UseFormRegister } from "react-hook-form"
 import { FaDongSign } from "react-icons/fa6"
-import { NumericFormat, NumericFormatProps } from "react-number-format"
+import { NumericFormat } from "react-number-format"
 
 interface InputProps {
   id: string
@@ -46,7 +46,7 @@ const Input: React.FC<InputProps> = ({
           control={control}
           name={id}
           rules={{ required, validate }}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
+          render={({ field: { onChange, value } }) => (
             <NumericFormat
               id={id}
               disabled={disabled}

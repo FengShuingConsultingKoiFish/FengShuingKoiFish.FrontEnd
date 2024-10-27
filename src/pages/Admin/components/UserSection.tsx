@@ -1,8 +1,5 @@
 import React from "react"
 
-import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import { TiCancel } from "react-icons/ti"
-
 import Avatar from "@/components/layout/header/Avatar"
 
 interface UserSectionProps {
@@ -17,7 +14,6 @@ interface UserSectionProps {
 }
 
 const UserSection: React.FC<UserSectionProps> = ({
-  userId,
   userName,
   fullName,
   identityCard,
