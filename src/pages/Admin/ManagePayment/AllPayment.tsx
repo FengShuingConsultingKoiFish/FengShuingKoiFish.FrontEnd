@@ -56,7 +56,7 @@ export const AllPayment = () => {
         const response = await getAllPaymentsForAdmin({
           pageIndex: pageIndex,
           pageSize: pageSize,
-          orderDate: null,
+          orderDate: 1,
           transactionId: null,
           orderImage: null
         })

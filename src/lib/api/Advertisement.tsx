@@ -109,7 +109,7 @@ interface Advertisement {
   price: number;
   createdDate: string;
   status: string;
-  imageViewDTOs: Array<{
+  imageViewDtos: Array<{
     id: number;
     filePath: string;
     altText: string | null;
@@ -138,10 +138,10 @@ interface GetAdvertisementsRequest {
   pageIndex: number;
   pageSize: number;
   title?: string;
-  advertisementStatus?: string | number;
-  orderAdvertisement?: string | null;
-  orderComment?: string | null;
-  orderImage?: string | null;
+  advertisementStatus?: number | number;
+  orderAdvertisement?: number | null;
+  orderComment?: number | null;
+  orderImage?: number | null;
 }
 
 export const getAllAdvertisementsForAdmin = async (
@@ -193,6 +193,49 @@ export const updateAdvertisementStatus = async (
       throw new Error(error.response.data.message || "An error occurred");
     } else {
       console.error("Unknown error: ", error.message);
+      throw new Error("An unknown error occurred");
+    }
+  } finally {
+    nProgress.done();
+  }
+};
+
+interface AdvertisementUserResponse {
+  statusCode: number;
+  isSuccess: boolean;
+  message: string;
+  errors: any;
+  result: {
+    pageIndex: number;
+    totalPages: number;
+    totalItems: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+    datas: Advertisement[];
+  };
+}
+
+export const getAllAdvertisementsForUser = async (
+  requestData: GetAdvertisementsRequest
+): Promise<AdvertisementUserResponse> => {
+  try {
+    nProgress.start();
+
+    const response = await axiosClient.post<AdvertisementUserResponse>(
+      "/api/Advertisements/get-all-advertisements-for-user",
+      requestData
+    );
+
+    return response.data;
+  } catch (error: any) {
+    nProgress.done();
+    if (error.response) {
+      console.error("API Error: ", error.response.data.message);
+      toast.error(error.response.data.message || "An error occurred");
+      throw new Error(error.response.data.message || "An error occurred");
+    } else {
+      console.error("Unknown error: ", error.message);
+      toast.error("An unknown error occurred");
       throw new Error("An unknown error occurred");
     }
   } finally {

@@ -54,7 +54,7 @@ const HistoryView = () => {
       const requestData = {
         pageIndex: 1,
         pageSize: 10,
-        orderDate: null,
+        orderDate: 1,
         transactionId: null,
         orderImage: null
       }

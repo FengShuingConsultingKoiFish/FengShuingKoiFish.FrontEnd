@@ -10,7 +10,7 @@ import { MdDashboard } from "react-icons/md"
 import { PiPackageFill } from "react-icons/pi"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-
+import { FaAd } from "react-icons/fa";
 import { GetUserProfile } from "@/lib/api/User"
 import { AppDispatch, RootState } from "@/lib/redux/store"
 
@@ -94,6 +94,12 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const handleMyHistory = useCallback(() => {
     if(currentUser) {
       navigate(`/lich-su-giao-dich`)
+    }
+  }, [currentUser, navigate])
+
+  const handleMyAdvertisement = useCallback(() => {
+    if(currentUser) {
+      navigate(`/quang-cao-cua-toi`)
     }
   }, [currentUser, navigate])
 
@@ -191,6 +197,12 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     closeMenu={closeMenu}
                     label="Gói hội viên của bạn"
                     icon={<PiPackageFill size={20} />}
+                  />
+                  <MenuItem
+                    onClick={handleMyAdvertisement}
+                    closeMenu={closeMenu}
+                    label="Gói quảng cáo của bạn"
+                    icon={<FaAd size={20} />}
                   />
                   <MenuItem
                     onClick={() => {}}

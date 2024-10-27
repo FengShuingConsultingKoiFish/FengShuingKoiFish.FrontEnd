@@ -18,21 +18,20 @@ const SuccessPage: React.FC = () => {
   if (token && email && isLoading) {
     verifyEmail(token, email)
       .then(() => {
-        setIsVerified(true) // Set verification to true if successful
+        setIsVerified(true) 
       })
       .catch(() => {
-        navigate("/error") // Navigate to error page on failure
+        navigate("/error") 
       })
       .finally(() => {
-        setIsLoading(false) // Stop the loading state
+        setIsLoading(false)
       })
   }
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <h1>Verifying your email...</h1>
+        <h1>Đang xác thực ...</h1>
       </div>
     )
   }

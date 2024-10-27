@@ -32,6 +32,8 @@ import { ApprovedPosts } from "./pages/Admin/ManageBlog/ApprovedBlog"
 import { ManageBlogPage } from "./pages/Admin/ManageBlog/ManageBlogs"
 import { PendingPosts } from "./pages/Admin/ManageBlog/PendingBlog"
 import { RejectedPosts } from "./pages/Admin/ManageBlog/RejectedBlog"
+import { AllPayment } from "./pages/Admin/ManagePayment/AllPayment"
+import { ManagePaymentPage } from "./pages/Admin/ManagePayment/ManagePayment"
 import AllUser from "./pages/Admin/ManageUser/AllUser"
 import { ManageUserPage } from "./pages/Admin/ManageUser/ManageUser"
 import Blog from "./pages/Blog/Blog"
@@ -39,6 +41,7 @@ import CreateBlogModal from "./pages/Blog/components/CreateBlogModal"
 import CreatePondPage from "./pages/CreatePondPage"
 import FengShuiLookup from "./pages/FengShuiLookup"
 import HistoryView from "./pages/History/PaymentHistory"
+import { PaymentDetailPage } from "./pages/History/ViewPaymentHistoryDetail"
 import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
 import { PackageDetailPage } from "./pages/Packages/PackageDetailPage"
@@ -51,22 +54,16 @@ import ResultPage from "./pages/ResultPage"
 import SeeAllPond from "./pages/SeeAllPond/SeeAllPond"
 import ProfileSetting from "./pages/Setting/Profile"
 import { UserCreateAdver } from "./pages/User/CreateAdvertisement"
+import { MyAdvertisementPage } from "./pages/User/MyAdvertisement"
 import PostedBlog from "./pages/User/PostedBlog"
 import { PurchasedPackagePage } from "./pages/User/PurchasedPackage"
 import { UserPackageDetailPage } from "./pages/User/ViewPurchasedPkg"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
+import PaymentFailedPage from "./pages/Verification/PaymentFail"
 import SuccessPage from "./pages/Verification/SuccessPage"
+import PaymentSuccessPage from "./pages/Verification/VerifyPayment"
 
-
-const ProtectedAdminPage = ProtectedRoute(AdminPage)
-const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
-const ProtectedManageAdverPage = ProtectedRoute(ManageAdverPage)
-const ProtectedManageUserPage = ProtectedRoute(ManageUserPage)
-
-import { PaymentDetailPage } from "./pages/History/ViewPaymentHistoryDetail"
-import { ManagePaymentPage } from "./pages/Admin/ManagePayment/ManagePayment"
-import { AllPayment } from "./pages/Admin/ManagePayment/AllPayment"
 const ProtectedAdminPage = ProtectedRouteForAdmin(AdminPage)
 const ProtectedManageBlogPage = ProtectedRouteForAdmin(ManageBlogPage)
 const ProtectedManageAdverPkgPage = ProtectedRouteForAdmin(ManageAdverPkgPage)
@@ -80,9 +77,6 @@ const ProtectedPurchasedPkgDetailPage = ProtectedRouteForUser(
 const ProtectedMyBlog = ProtectedRouteForUser(PostedBlog)
 const ProtectedCreateAdver = ProtectedRouteForUser(UserCreateAdver)
 const ProtectedPaymentDetail = ProtectedRouteForUser(PaymentDetailPage)
-
-
-
 
 function App() {
   const location = useLocation()
@@ -98,9 +92,11 @@ function App() {
   const excludeLayoutPaths = [
     "/password-forgot",
     "/password-reset",
-    "/verification/success",
+    "/Verification/Success",
     "*",
-    "/401"
+    "/401",
+    "/giao-dich-thanh-cong",
+    "/thanh-toan-that-bai"
   ]
   const shouldExcludeLayout = excludeLayoutPaths.includes(location.pathname)
 
@@ -118,7 +114,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/password-forgot" element={<PasswordForgot />} />
           <Route path="/password-reset" element={<PasswordReset />} />
-          <Route path="/verification/success" element={<SuccessPage />} />
+          <Route path="/Verification/Success" element={<SuccessPage />} />
           <Route path="/profile/:name" element={<UserProfilePage />} />
           <Route path="/setting/profile" element={<ProfileSetting />} />
           <Route path="/blog" element={<Blog />} />
@@ -139,7 +135,18 @@ function App() {
           <Route path="/blog-cua-toi" element={<ProtectedMyBlog />} />
           <Route path="/goi-cua-toi" element={<ProtectedPurchasedPkgPage />} />
           <Route path="/lich-su-giao-dich" element={<HistoryView />} />
-          <Route path="/chi-tiet-giao-dich/:id" element={<ProtectedPaymentDetail />} />
+          <Route path="/quang-cao-cua-toi" element={<MyAdvertisementPage />} />
+          <Route
+            path="/giao-dich-thanh-cong"
+            element={<PaymentSuccessPage />}
+          />
+          <Route path="/thanh-toan-that-bai" element={<PaymentFailedPage />} />
+
+          <Route
+            path="/chi-tiet-giao-dich/:id"
+            element={<ProtectedPaymentDetail />}
+          />
+
           <Route
             path="/goi-cua-toi/:id"
             element={<ProtectedPurchasedPkgDetailPage />}
@@ -174,7 +181,10 @@ function App() {
             <Route path="all" element={<AllUser />} />
           </Route>
           {/* NESTED ROUTES FOR ManagePaymentPage */}
-          <Route path="/admin/giao-dich" element={<ProtectedManagePaymentPage />}>
+          <Route
+            path="/admin/giao-dich"
+            element={<ProtectedManagePaymentPage />}
+          >
             <Route path="all" element={<AllPayment />} />
           </Route>
         </Routes>

@@ -37,10 +37,13 @@ const PasswordForgot = () => {
         const result = await ForgotPassword(data.email)
         setIsLoading(false)
         console.log(result)
+        //@ts-ignore
         if ("result" in result && result.result.isSuccess) {
+          //@ts-ignore
           toast.success(result.result.message)
           navigate("/")
         } else {
+          //@ts-ignore
           toast.error(result.message || "Something went wrong")
         }
       } catch (error: any) {
@@ -79,6 +82,7 @@ const PasswordForgot = () => {
               <Input
                 id="email"
                 placeholder=""
+                onChange={() => {}}
                 type="email"
                 label="Email của bạn"
                 disabled={isLoading}

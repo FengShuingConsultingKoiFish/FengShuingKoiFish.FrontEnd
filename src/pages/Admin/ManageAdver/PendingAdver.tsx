@@ -51,7 +51,7 @@ export const PendingAdver: React.FC = () => {
         pageSize,
         title: "",
         advertisementStatus: 1,
-        orderAdvertisement: null,
+        orderAdvertisement: 1,
         orderComment: null,
         orderImage: null
       }

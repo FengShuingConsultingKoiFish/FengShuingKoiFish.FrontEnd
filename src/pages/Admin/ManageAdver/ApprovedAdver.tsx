@@ -51,7 +51,7 @@ export const ApprovedAdver: React.FC = () => {
         pageSize,
         title: "",
         advertisementStatus: 2,
-        orderAdvertisement: null,
+        orderAdvertisement: 1,
         orderComment: null,
         orderImage: null
       }
