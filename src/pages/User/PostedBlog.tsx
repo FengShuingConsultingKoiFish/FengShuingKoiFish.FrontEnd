@@ -64,9 +64,8 @@ const PostedBlog = () => {
   const [blogStatus, setBlogStatus] = useState<BlogStatus | null>(null)
   const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null)
   const editBlogModal = useEditBlogModal()
+  const [activeBlogId, setActiveBlogId] = useState<number | null>(null);
   const dispatch = useDispatch()
-
-
 
   const fetchBlogs = async () => {
     try {
@@ -93,7 +92,7 @@ const PostedBlog = () => {
   }
 
   useEffect(() => {
-    window.scrollTo(0,0)
+    window.scrollTo(0, 0)
     fetchBlogs()
   }, [pageIndex, orderBlog, blogStatus])
 
@@ -132,46 +131,55 @@ const PostedBlog = () => {
     editBlogModal.onOpen()
   }
 
+  const handleViewCommentToggle = (blogId: number) => {
+    setActiveBlogId((prevBlogId) => (prevBlogId === blogId ? null : blogId)); 
+  };
+
   return (
     <div className="">
       <Container>
         <div className="my-10 flex flex-col items-center justify-center gap-5 font-semibold">
           <div className="text-3xl font-semibold">Các bài đăng của bạn</div>
           <span>Bộ lọc</span>
-          <div className="flex flex-row justify-center gap-4">
-            <Select
-              onValueChange={handleOrderChange}
-              value={orderBlog === 1 ? "newest" : "oldest"}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Thời gian đăng bài" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest">Mới nhất</SelectItem>
-                <SelectItem value="oldest">Cũ nhất</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select
-              onValueChange={handleBlogStatusChange}
-              value={blogStatus === null ? "all" : blogStatus?.toString()}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Trạng thái bài viết" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                <SelectItem value={BlogStatus.Pending.toString()}>
-                  Chờ duyệt
-                </SelectItem>
-                <SelectItem value={BlogStatus.Approved.toString()}>
-                  Đã duyệt
-                </SelectItem>
-                <SelectItem value={BlogStatus.Rejected.toString()}>
-                  Từ chối
-                </SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="flex flex-row justify-center gap-10">
+            <div className="inline-flex items-center gap-2">
+              <p>Thời gian đăng bài :</p>
+              <Select
+                onValueChange={handleOrderChange}
+                value={orderBlog === 1 ? "newest" : "oldest"}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Thời gian đăng bài" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Mới nhất</SelectItem>
+                  <SelectItem value="oldest">Cũ nhất</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="inline-flex items-center gap-2">
+              <p>Trạng thái :</p>
+              <Select
+                onValueChange={handleBlogStatusChange}
+                value={blogStatus === null ? "all" : blogStatus?.toString()}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Trạng thái bài viết" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tất cả</SelectItem>
+                  <SelectItem value={BlogStatus.Pending.toString()}>
+                    Chờ duyệt
+                  </SelectItem>
+                  <SelectItem value={BlogStatus.Approved.toString()}>
+                    Đã duyệt
+                  </SelectItem>
+                  <SelectItem value={BlogStatus.Rejected.toString()}>
+                    Từ chối
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
 
@@ -195,6 +203,9 @@ const PostedBlog = () => {
                   content={blog.content}
                   userName={blog.userName}
                   createdDate={blog.createdDate}
+                  commentViewDtos={blog.commentViewDtos}
+                  onToggleViewComment={handleViewCommentToggle}
+                  activeBlogId={activeBlogId}
                   status={blog.status}
                   onEdit={() => handleEditBlog(blog)}
                 />

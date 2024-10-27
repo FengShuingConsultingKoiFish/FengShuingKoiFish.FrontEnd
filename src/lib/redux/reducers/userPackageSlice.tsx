@@ -9,6 +9,15 @@ interface ImageViewDTO {
   userName: string;
 }
 
+interface UserPruchasedPkgDetail {
+  id: number
+  monitoredQuantity: number
+  userName: string
+  status: number 
+  createdDate: string
+  advertisementPackageViewDTO: AdvertisementPackageViewDTO
+}
+
 interface AdvertisementPackageViewDTO {
   id: number;
   name?: string;
@@ -22,8 +31,8 @@ interface AdvertisementPackageViewDTO {
 }
 
 interface UserPackageState {
-  packageList: AdvertisementPackageViewDTO[];
-  packageDetail: AdvertisementPackageViewDTO | null;
+  packageList: UserPruchasedPkgDetail[];
+  packageDetail: UserPruchasedPkgDetail | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -39,11 +48,11 @@ const userPackageSlice = createSlice({
   name: "userPackages",
   initialState,
   reducers: {
-    setPackageList: (state, action: PayloadAction<AdvertisementPackageViewDTO[]>) => {
+    setPackageList: (state, action: PayloadAction<UserPruchasedPkgDetail[]>) => {
         state.packageList = action.payload;
       },
     
-    setUserPackageDetail: (state, action: PayloadAction<AdvertisementPackageViewDTO>) => {
+    setUserPackageDetail: (state, action: PayloadAction<UserPruchasedPkgDetail>) => {
       state.packageDetail = action.payload;
     },
     
@@ -54,6 +63,11 @@ const userPackageSlice = createSlice({
     clearPackageDetail: (state) => {
       state.packageDetail = null;
     },
+
+    clearUserPackages: (state) => {
+      state.packageList = [];
+      state.packageDetail = null;
+    },
   }
 });
 
@@ -61,7 +75,8 @@ export const {
   setPackageList,
   setUserPackageDetail,
   setError,
-  clearPackageDetail
+  clearPackageDetail,
+  clearUserPackages
 } = userPackageSlice.actions;
 
 

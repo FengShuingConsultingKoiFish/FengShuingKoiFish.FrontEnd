@@ -27,8 +27,9 @@ interface ArticleCardProps {
   createdDate: string
   userImg?: string
   commentViewDtos?: CommentViewDto[]
-  activeBlogId: number | null // Track active blog for commenting
-  onToggleComment: (blogId: number) => void // Function to toggle comment input
+  activeBlogId: number | null
+  currentUser: any
+  onToggleComment: (blogId: number) => void
   onSubmitComment: (blogId: number, comment: string) => void
   apiMessage?: string
 }
@@ -42,8 +43,9 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   createdDate,
   commentViewDtos = [],
   activeBlogId,
+  currentUser,
   onToggleComment,
-  onSubmitComment,
+  onSubmitComment
 }) => {
   const [comment, setComment] = useState("")
   const [avatarUrls, setAvatarUrls] = useState<{ [key: string]: string }>({})
@@ -55,7 +57,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
 
   const handleCommentSubmit = () => {
     onSubmitComment(id, comment)
-    setComment("") 
+    setComment("")
   }
 
   useEffect(() => {
@@ -147,14 +149,14 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             className="flex items-center space-x-1 text-gray-500 hover:text-blue-500"
           >
             <IconMessageCircle />
-            <span>Comment</span>
+            <span>Bình luận</span>
           </button>
         </div>
 
         <div className="flex items-center space-x-2">
           <button className="flex items-center space-x-1 text-gray-500 hover:text-blue-500">
             <IconShare />
-            <span>Share</span>
+            <span>Chia sẻ</span>
           </button>
         </div>
       </div>
@@ -162,58 +164,69 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
       {/* Only show the comment box if this blog is active */}
       {activeBlogId === id && (
         <div className="mb-0 w-full p-4">
-          <div className="mb-4 inline-flex w-full items-center justify-start gap-4 rounded-lg rounded-t-lg border border-gray-200 bg-white px-4 py-2">
-            <textarea
-              placeholder="Add a comment..."
-              value={comment}
-              onChange={handleCommentChange}
-              className="w-full flex-1 rounded-lg border p-2"
-              rows={2}
-            />
-            <CustomButton
-              icon={<IconCaretUpFilled />}
-              label="Đăng"
-              onClick={handleCommentSubmit}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Display Comments with Show More Logic */}
-      {commentViewDtos.length > 0 && (
-        <div className="p-4 text-black">
-          {commentViewDtos.slice(0, visibleComments).map((comment) => (
-            <div
-              key={comment.id}
-              className="flex flex-col items-start gap-4 border-t py-2"
-            >
-              <div className="inline-flex items-center">
-                <Avatar
-                  userImg={avatarUrls[comment.userName]}
-                  w="40px"
-                  h="40px"
+          {currentUser ? (
+            <>
+              {/* Comment Input Box */}
+              <div className="mb-4 inline-flex w-full items-center justify-start gap-4 rounded-lg rounded-t-lg border border-gray-200 bg-white px-4 py-2">
+                <textarea
+                  placeholder="Thêm bình luận..."
+                  value={comment}
+                  onChange={handleCommentChange}
+                  className="w-full flex-1 rounded-lg border p-2"
+                  rows={2}
                 />
-                <div className="flex w-fit flex-col items-start justify-start rounded-full bg-gray-200 px-5 py-1">
-                  <p className="font-semibold">{comment.userName}</p>
-                  <p className="text-sm text-gray-600">{comment.content}</p>
-                </div>
+                <CustomButton
+                  icon={<IconCaretUpFilled />}
+                  label="Đăng"
+                  onClick={handleCommentSubmit}
+                />
               </div>
 
-              <p className="inline-flex justify-start gap-1 text-xs text-gray-400">
-                <span>Đăng vào :</span>
-                {comment.createdDate}
-              </p>
-            </div>
-          ))}
+              {/* Display Comments */}
+              {commentViewDtos.length > 0 ? (
+                <div className="p-4 text-black">
+                  {commentViewDtos.slice(0, visibleComments).map((comment) => (
+                    <div
+                      key={comment.id}
+                      className="flex flex-col items-start gap-4 border-t py-2"
+                    >
+                      <div className="inline-flex items-center">
+                        <Avatar
+                          userImg={avatarUrls[comment.userName]}
+                          w="40px"
+                          h="40px"
+                        />
+                        <div className="flex w-fit flex-col items-start justify-start rounded-full bg-gray-200 px-5 py-1">
+                          <p className="font-semibold">{comment.userName}</p>
+                          <p className="text-sm text-gray-600">{comment.content}</p>
+                        </div>
+                      </div>
 
-          {/* Show More Button */}
-          {visibleComments < commentViewDtos.length && (
-            <button
-              onClick={handleShowMore}
-              className="text-blue-500 hover:underline"
-            >
-              Show more comments
-            </button>
+                      <p className="inline-flex justify-start gap-1 text-xs text-gray-400">
+                        <span>Đăng vào :</span>
+                        {comment.createdDate}
+                      </p>
+                    </div>
+                  ))}
+
+                  {/* Show More Button */}
+                  {visibleComments < commentViewDtos.length && (
+                    <button
+                      onClick={handleShowMore}
+                      className="text-blue-500 hover:underline"
+                    >
+                      Xem thêm ...
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center text-gray-500">Không có bình luận nào</div>
+              )}
+            </>
+          ) : (
+            <div className="font-semibold text-center text-gray-500">
+              Bạn phải đăng nhập để xem và bình luận bài viết này !
+            </div>
           )}
         </div>
       )}

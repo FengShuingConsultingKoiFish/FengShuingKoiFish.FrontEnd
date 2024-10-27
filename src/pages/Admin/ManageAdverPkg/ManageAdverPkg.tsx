@@ -1,38 +1,23 @@
 import React, { useState } from "react"
-
-import {
-  IconBan,
-  IconCheck,
-  IconCirclePlus,
-  IconClockHour2,
-  IconList
-} from "@tabler/icons-react"
+import { IconCirclePlus, IconList } from "@tabler/icons-react"
 import { Link, Outlet } from "react-router-dom"
-
 import { cn } from "@/lib/utils"
-
 import Breadcrumb from "@/components/ui/Breadcrums"
-
 import { Sidebar, SidebarBody, SidebarLink } from "../components/CustomSidebar"
 
-export function ManageAdverPage() {
+export function ManageAdverPkgPage() {
   const links = [
     {
-      label: "Các quảng cáo đang đợi",
-      href: "/admin/quang-cao/pending",
+      label: "Tạo gói quảng cáo",
+      href: "/admin/goi-quang-cao/create",
       icon: (
-        <IconClockHour2 className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+        <IconCirclePlus className="h-5 w-5 flex-shrink-0 text-neutral-700" />
       )
     },
     {
-      label: "Các quảng cáo được duyệt",
-      href: "/admin/quang-cao/approved",
-      icon: <IconCheck className="h-5 w-5 flex-shrink-0 text-neutral-700" />
-    },
-    {
-      label: "Các quảng cáo bị từ chối",
-      href: "/admin/quang-cao/rejected",
-      icon: <IconBan className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+      label: "Xem tất cả gói quảng cáo",
+      href: "/admin/goi-quang-cao/all",
+      icon: <IconList className="h-5 w-5 flex-shrink-0 text-neutral-700" />
     }
   ]
   const [open, setOpen] = useState(false)
