@@ -59,10 +59,10 @@ import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
 
 
-const ProtectedAdminPage = ProtectedRoute(AdminPage)
-const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
-const ProtectedManageAdverPage = ProtectedRoute(ManageAdverPage)
-const ProtectedManageUserPage = ProtectedRoute(ManageUserPage)
+//const ProtectedAdminPage = ProtectedRoute(AdminPage)
+//const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
+//const ProtectedManageAdverPage = ProtectedRoute(ManageAdverPage)
+//const ProtectedManageUserPage = ProtectedRoute(ManageUserPage)
 
 import { PaymentDetailPage } from "./pages/History/ViewPaymentHistoryDetail"
 import { ManagePaymentPage } from "./pages/Admin/ManagePayment/ManagePayment"
