@@ -1,50 +1,21 @@
+// src/PondDetails.tsx
 import React, { useEffect, useState } from "react"
 
 import axios from "axios"
 import { FaPlus, FaTimes } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
-interface KoiDetail {
-  koiDetailId: number
-  koiBreedName: string
-  koiName: string
-  koiBreedId?: number
-  colors?: string
-  pattern?: string
-  description?: string
-  image?: string
-}
+import ConfirmModal from "@/components/global/atoms/ConfirmModal"
 
-interface PondDetail {
-  pondDetailId: number
-  pondName: string
-  pondId?: number
-  description?: string
-  image?: string
-}
+import {
+  BreedInfo,
+  KoiDetail,
+  PondCharacteristic,
+  PondDetail,
+  PondInfo
+} from "./interfaces"
 
-interface PondInfo {
-  id: number
-  quantity: number
-  pondName: string
-}
-
-interface PondCharacteristic {
-  id: number
-  pondCategoryId: number
-  name: string
-  description: string
-  image: string
-}
-
-interface BreedInfo {
-  id: number
-  name: string
-  colors?: string
-  pattern?: string
-  description?: string
-  image?: string
-}
+// Import ConfirmModal
 
 const PondDetails: React.FC = () => {
   const { userPondId } = useParams<{ userPondId: string }>()
@@ -62,8 +33,14 @@ const PondDetails: React.FC = () => {
   >([])
 
   useEffect(() => {
+    const token = sessionStorage.getItem("token")
+
+    if (!token) {
+      navigate("/")
+      return
+    }
+
     const fetchPondCharacteristics = async () => {
-      const token = sessionStorage.getItem("token")
       try {
         const response = await axios.get(
           "https://consultingfish.azurewebsites.net/api/Pond/Get-All-PondCharacteristics",
@@ -80,8 +57,6 @@ const PondDetails: React.FC = () => {
     }
 
     const fetchPondDetails = async () => {
-      const token = sessionStorage.getItem("token")
-
       try {
         const pondResponse = await axios.get(
           `https://consultingfish.azurewebsites.net/api/UserPond/getall`,
@@ -148,7 +123,7 @@ const PondDetails: React.FC = () => {
 
     fetchPondCharacteristics()
     fetchPondDetails()
-  }, [userPondId])
+  }, [userPondId, navigate])
 
   const handleDeleteKoi = async () => {
     if (!itemToDelete || deleteType !== "koi") return
@@ -205,9 +180,6 @@ const PondDetails: React.FC = () => {
     )
     const pondId = pondCharacteristic?.id
 
-    console.log("Deleting pond with userPondId:", userPondId)
-    console.log("Deleting pond with pondId:", pondId)
-
     if (!pondId) {
       console.error("pondId không tồn tại cho hồ này.")
       return
@@ -241,6 +213,12 @@ const PondDetails: React.FC = () => {
       console.error("Error deleting pond:", err)
       alert("Có lỗi xảy ra khi xóa hồ.")
     }
+  }
+
+  const handleConfirmDelete = () => {
+    if (deleteType === "koi") handleDeleteKoi()
+    else if (deleteType === "pond") handleDeletePond()
+    setShowConfirmModal(false) // Đóng modal sau khi xóa
   }
 
   const openConfirmModal = (id: number, type: "koi" | "pond") => {
@@ -291,6 +269,12 @@ const PondDetails: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
+      <button
+        className="mb-4 rounded bg-blue-500 px-4 py-2 text-white"
+        onClick={() => navigate("/see-all-pond")}
+      >
+        Trở lại
+      </button>
       <h1 className="mb-4 text-2xl font-bold">Chi tiết Hồ và Koi</h1>
 
       <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
@@ -333,30 +317,13 @@ const PondDetails: React.FC = () => {
         </div>
       </div>
 
-      {showConfirmModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-md rounded-lg bg-white p-6 text-center">
-            <h2 className="mb-4 text-lg font-bold">Xác nhận xóa</h2>
-            <p>Bạn có chắc chắn muốn xóa mục này?</p>
-            <div className="mt-6 flex justify-center space-x-4">
-              <button
-                className="rounded bg-red-500 px-4 py-2 text-white"
-                onClick={
-                  deleteType === "koi" ? handleDeleteKoi : handleDeletePond
-                }
-              >
-                Xóa
-              </button>
-              <button
-                className="rounded bg-gray-300 px-4 py-2 text-gray-700"
-                onClick={() => setShowConfirmModal(false)}
-              >
-                Hủy
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Sử dụng ConfirmModal */}
+      <ConfirmModal
+        isVisible={showConfirmModal}
+        message="Bạn có chắc chắn muốn xóa mục này?"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowConfirmModal(false)}
+      />
     </div>
   )
 }

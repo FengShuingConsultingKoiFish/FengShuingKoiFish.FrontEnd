@@ -42,17 +42,15 @@ import PasswordReset from "./pages/Password-reset"
 import PondConsultationPage from "./pages/PondConsultationPage "
 import PondDetails from "./pages/PondDetails"
 import ResultPage from "./pages/ResultPage"
-import SeeAllPond from "./pages/SeeAllPond"
+import SeeAllPond from "./pages/SeeAllPond/SeeAllPond"
 import ProfileSetting from "./pages/Setting/Profile"
+import { UserCreateAdver } from "./pages/User/CreateAdvertisement"
 import PostedBlog from "./pages/User/PostedBlog"
 import { PurchasedPackagePage } from "./pages/User/PurchasedPackage"
 import { UserPackageDetailPage } from "./pages/User/ViewPurchasedPkg"
 import UserProfilePage from "./pages/UserProfile"
 import UnauthorizedPage from "./pages/Verification/NotAuthorize"
 import SuccessPage from "./pages/Verification/SuccessPage"
-
-import { UserCreateAdver } from "./pages/User/CreateAdvertisement"
-
 
 const ProtectedAdminPage = ProtectedRoute(AdminPage)
 const ProtectedManageBlogPage = ProtectedRoute(ManageBlogPage)
