@@ -258,19 +258,52 @@ const PondCard: React.FC<PondCardProps> = ({
             </p>
 
             {isModalOpen && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="w-1/3 rounded-lg bg-white p-6">
-                  <h3 className="mb-4 text-2xl font-bold">Chi tiết điểm</h3>
-                  <p className="mb-4">{scoreDetail}</p>
-                  <button
-                    onClick={closeModal}
-                    className="mt-4 rounded bg-red-500 px-4 py-2 text-white"
-                  >
-                    Đóng
-                  </button>
+              <div className="absolute left-0 top-0 z-50 flex w-full justify-center bg-black bg-opacity-50">
+                <div
+                  className="relative mt-10 w-full max-w-md overflow-y-auto rounded-lg bg-white p-8 shadow-lg"
+                  style={{
+                    maxHeight: "80vh"
+                  }}
+                >
+                  <h3 className="mb-4 text-center text-3xl font-bold text-gray-700">
+                    Chi tiết Điểm Số
+                  </h3>
+                  <div className="flex flex-col items-start space-y-4">
+                    <p className="text-lg text-gray-600">
+                      <span className="font-semibold text-blue-600">
+                        Tên hồ cá:
+                      </span>{" "}
+                      {pond.pondName}
+                    </p>
+                    <p className="text-lg text-gray-600">
+                      <span className="font-semibold text-blue-600">
+                        Số lượng cá:
+                      </span>{" "}
+                      {pond.quantity}
+                    </p>
+
+                    <p className="whitespace-pre-wrap text-lg text-gray-600">
+                      <span className="font-semibold text-blue-600">
+                        Điểm chi tiết:
+                        <br />
+                      </span>{" "}
+                      {scoreDetail
+                        ? scoreDetail.replace(/,/g, ",\n")
+                        : "Không có"}
+                    </p>
+                  </div>
+                  <div className="mt-6 flex justify-center">
+                    <button
+                      onClick={closeModal}
+                      className="rounded bg-red-500 px-6 py-3 font-semibold text-white transition duration-300 hover:bg-red-400"
+                    >
+                      Đóng
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
+
             {/* Hàng nút */}
             <div className="mt-14 flex items-center space-x-4">
               <OnclickButton label="Xem chi tiết" onClick={handleViewDetails} />

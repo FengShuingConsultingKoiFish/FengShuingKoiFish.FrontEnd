@@ -325,6 +325,13 @@ const PondDetails: React.FC = () => {
         onConfirm={handleConfirmDelete}
         onCancel={() => setShowConfirmModal(false)}
       />
+
+      <div className="mt-8 flex justify-center">
+        <OnclickButton
+          label="Xác nhận"
+          onClick={() => navigate(`/see-all-pond#pond-${userPondId}`)}
+        />
+      </div>
     </div>
   )
 }
