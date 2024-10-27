@@ -1,4 +1,4 @@
-import { Dispatch, createAsyncThunk } from "@reduxjs/toolkit"
+import { Dispatch } from "@reduxjs/toolkit"
 import axios from "axios"
 import nProgress from "nprogress"
 import "nprogress/nprogress.css"
@@ -9,7 +9,6 @@ import { toastWarn } from "@/components/providers/Toaster"
 import {
   clearCurrentUser,
   setDetailUser,
-  setUsersList
 } from "../redux/reducers/userSlice"
 import { axiosClient } from "./config/axios-client"
 
@@ -92,7 +91,6 @@ export const ResetPassword = async (
 
 export const CreateOrUpdateUserProfile = async (
   userProfile: UserProfile,
-  dispatch: Dispatch
 ): Promise<Response | void> => {
   try {
     nProgress.start()

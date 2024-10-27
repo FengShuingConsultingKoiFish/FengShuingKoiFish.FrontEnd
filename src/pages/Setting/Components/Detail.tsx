@@ -174,7 +174,7 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
 
       console.log("Profile data to update:", profileData)
 
-      const response = await CreateOrUpdateUserProfile(profileData, dispatch)
+      const response = await CreateOrUpdateUserProfile(profileData)
       if (response && response.isSuccess) {
         if (imageIdToUpload) {
           const updateAvatarResponse = await updateUserAvatar(imageIdToUpload)

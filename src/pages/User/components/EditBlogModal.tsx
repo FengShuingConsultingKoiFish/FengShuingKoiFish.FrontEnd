@@ -17,7 +17,7 @@ import useEditImgChoosingModal from "@/hooks/useEditImgChoosingModal"
 import { addImagesToBlog, createUpdateBlog } from "@/lib/api/Blog"
 import { deleteImagesFromBlog } from "@/lib/api/Blog"
 import { uploadImage } from "@/lib/api/Image"
-import { AppDispatch, RootState } from "@/lib/redux/store"
+import { RootState } from "@/lib/redux/store"
 
 import Avatar from "@/components/layout/header/Avatar"
 import { FileUpload } from "@/components/ui/FileUpload"
@@ -48,7 +48,7 @@ const EditBlogModal = ({ onSuccess }: { onSuccess: () => void }) => {
   const userProfile = useSelector((state: RootState) => state.users.detailUser)
   const [showFileUpload, setShowFileUpload] = useState<boolean>(false)
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
-  const [newlySelectedImages, setNewlySelectedImages] = useState<Image[]>([])
+  const [, setNewlySelectedImages] = useState<Image[]>([])
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const defaultAvatar =
     "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"

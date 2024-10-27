@@ -16,7 +16,7 @@ const Avatar: React.FC<AvatarProps> = ({
   //size = 'medium'
   w,h
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!userImg) {

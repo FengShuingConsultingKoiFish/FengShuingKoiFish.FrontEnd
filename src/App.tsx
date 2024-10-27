@@ -1,9 +1,8 @@
 import { useEffect } from "react"
 
-import { Provider, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import {
   Route,
-  BrowserRouter as Router,
   Routes,
   useLocation,
   useNavigate

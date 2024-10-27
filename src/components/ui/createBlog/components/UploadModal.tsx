@@ -25,7 +25,7 @@ const UploadModal: React.FC<UploadModalProps> = ({
 }) => {
   const [images, setImages] = useState<Image[]>([])
   const [selectedImages, setSelectedImages] = useState<Image[]>([])
-  const [showModal, setShowModal] = useState(isOpen)
+  const [, setShowModal] = useState(isOpen)
 
   useEffect(() => {
     setShowModal(isOpen)

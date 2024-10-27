@@ -4,7 +4,6 @@ import {
   IoIosArrowDropleftCircle,
   IoIosArrowDroprightCircle
 } from "react-icons/io"
-import { useNavigate } from "react-router-dom"
 import { getAllPaymentsForAdmin } from "@/lib/api/Payment"
 import AllPaymentSection from "../components/AllPaymentSection"
 
@@ -42,7 +41,6 @@ interface AllPayment {
 }
 
 export const AllPayment = () => {
-  const navigate = useNavigate()
   const [payments, setPayments] = useState<AllPayment[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [pageIndex, setPageIndex] = useState(1)

@@ -1,29 +1,20 @@
 import React, { useEffect } from "react"
 
 import { RiArrowLeftSFill } from "react-icons/ri"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 
-import { GetUserProfile } from "@/lib/api/User"
 import { RootState } from "@/lib/redux/store"
 
 import Container from "@/components/ui/Container"
 
 import AccountDetail from "./Components/Detail"
 
-interface User {
-  fullName: string
-  identityCard: string
-  dateOfBirth: Date
-  gender: string
-  imageId: string
-}
 
 interface ProfileSettingProps {}
 
 const ProfileSetting: React.FC<ProfileSettingProps> = () => {
   //const dispatch = useDispatch()
-  const currentUser = useSelector((state: RootState) => state.users.currentUser)
 
   const userProfile = useSelector((state: RootState) => state.users.detailUser)
   const defaultAvatar =

@@ -1,8 +1,5 @@
-import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import { Link } from "react-router-dom"
 
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3dCard"
-import { Button, MovingBorder } from "@/components/ui/MovingBorder"
 import Status from "@/components/ui/Status"
 
 interface ImageViewDtos {
@@ -14,10 +11,6 @@ interface ImageViewDtos {
   createdDate: string
 }
 
-interface CommentViewDtos {
-    id: number
-    content: string
-}
 
 
 interface AdvertisementProps {
@@ -32,14 +25,12 @@ interface AdvertisementProps {
 }
 
 export function MyAdvertisementSection({
-  id,
   userName,
   title,
   description,
   createdDate,
   status,
   imageViewDtos,
-  onClick
 }: AdvertisementProps) {
   const imageUrl =
     imageViewDtos.length > 0

@@ -51,7 +51,7 @@ const ToasterProvider: React.FC = () => {
     );
 };
 export const toastWarn = (message: string) => {
-    toast.custom((t) => (
+    toast.custom(() => (
       <div
         style={{
           display: "flex",

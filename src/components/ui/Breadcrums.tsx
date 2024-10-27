@@ -87,7 +87,7 @@ const Breadcrumb = () => {
 
   const pathSegments = location.pathname.split("/").filter(Boolean)
 
-  const paths = pathSegments.reduce((acc: string[], segment, index) => {
+  const paths = pathSegments.reduce((acc: string[], _segment, index) => {
     const path = `/${pathSegments.slice(0, index + 1).join("/")}`
     acc.push(path)
     return acc
