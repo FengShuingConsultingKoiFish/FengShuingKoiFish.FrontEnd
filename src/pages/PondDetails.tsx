@@ -25,7 +25,7 @@ const PondDetails: React.FC = () => {
   const [pondDetails, setPondDetails] = useState<PondDetail[]>([])
   const [quantity, setQuantity] = useState<number | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
+  const [, setError] = useState<string | null>(null)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<number | null>(null)
   const [deleteType, setDeleteType] = useState<"koi" | "pond" | null>(null)

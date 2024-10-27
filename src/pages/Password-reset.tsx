@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 
-import { yupResolver } from "@hookform/resolvers/yup"
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useForm } from "react-hook-form"
 import toast from "react-hot-toast"
 import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
-import * as yup from "yup"
 
 import useLoginModal from "@/hooks/useLoginModal"
 
@@ -30,19 +28,6 @@ const PasswordReset = () => {
     token: string
   }
 
-  // Define the form schema with Yup
-  const schema = yup.object().shape({
-    email: yup.string().notRequired(),
-    token: yup.string().notRequired(),
-    newPassword: yup
-      .string()
-      .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
-      .required("Mật khẩu là bắt buộc"),
-    confirmedNewPassword: yup
-      .string()
-      .oneOf([yup.ref("password")], "Mật khẩu không khớp")
-      .required("Hãy nhập lại mật khẩu")
-  })
 
   const {
     register,
