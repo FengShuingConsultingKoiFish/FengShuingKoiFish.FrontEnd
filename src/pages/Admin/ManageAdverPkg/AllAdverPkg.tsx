@@ -34,7 +34,7 @@ interface AdvertisementPackage {
   imageViewDTOs: ImageViewDTO[]
 }
 
-export const AllAdver = () => {
+export const AllAdverPkg = () => {
   const navigate = useNavigate()
   const [advertisementPackages, setAdvertisementPackages] = useState<
     AdvertisementPackage[]
@@ -113,7 +113,7 @@ export const AllAdver = () => {
           ))}
         </ul>
       )}
-      <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] items-center sm:translate-x-[40rem]">
+      <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] items-center sm:translate-x-[40rem] md:translate-x-[30rem]">
         <CustomButton
           icon={<IoIosArrowDropleftCircle />}
           label="Trang trước"

@@ -1,9 +1,20 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
 import { IconEdit, IconMessageCircle, IconShare } from "@tabler/icons-react"
 
+import { getUserAvatarByUserName } from "@/lib/api/User"
+
+import Avatar from "@/components/layout/header/Avatar"
+
 import Status from "../Status"
+
+interface CommentViewDto {
+  id: number
+  userName: string
+  content: string
+  createdDate: string
+}
 
 interface ArticleCardProps {
   id: number
@@ -14,6 +25,9 @@ interface ArticleCardProps {
   createdDate: string
   status: string
   userImg?: string
+  commentViewDtos?: CommentViewDto[]
+  activeBlogId: number | null 
+  onToggleViewComment: (blogId: number) => void
   onEdit: () => void
 }
 
@@ -24,12 +38,45 @@ export const UserArticle: React.FC<ArticleCardProps> = ({
   content,
   userName,
   createdDate,
+  commentViewDtos = [],
+  activeBlogId,
   status,
+  onToggleViewComment,
   onEdit
 }) => {
   // const maxContentLength = 150;
   // const truncatedContent =
   //   content.length > maxContentLength ? `${content.slice(0, maxContentLength)}...` : content;
+  const [avatarUrls, setAvatarUrls] = useState<{ [key: string]: string }>({})
+  const [visibleComments, setVisibleComments] = useState(2)
+
+  useEffect(() => {
+    const fetchAvatars = async () => {
+      const avatars: { [key: string]: string } = {}
+      for (const comment of commentViewDtos) {
+        if (!avatarUrls[comment.userName]) {
+          try {
+            const avatarUrl = await getUserAvatarByUserName(comment.userName)
+            avatars[comment.userName] = avatarUrl.result
+          } catch (error) {
+            console.error(
+              `Error fetching avatar for ${comment.userName}:`,
+              error
+            )
+          }
+        }
+      }
+      if (Object.keys(avatars).length > 0) {
+        setAvatarUrls((prevAvatars) => ({ ...prevAvatars, ...avatars }))
+      }
+    }
+
+    fetchAvatars()
+  }, [commentViewDtos])
+
+  const handleShowMore = () => {
+    setVisibleComments((prev) => prev + 2)
+  }
 
   return (
     <div className="my-5 flex flex-col rounded-lg border bg-white shadow-2xl">
@@ -93,6 +140,61 @@ export const UserArticle: React.FC<ArticleCardProps> = ({
                 )}
               </div>
             ))
+          )}
+        </div>
+      )}
+
+      <div className="flex justify-center space-x-40 border-t p-4">
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => onToggleViewComment(id)}
+            className="flex items-center space-x-1 text-gray-500 hover:text-blue-500"
+          >
+            <IconMessageCircle />
+            <span>Xem bình luận</span>
+          </button>
+        </div>
+      </div>
+      {activeBlogId === id && commentViewDtos.length === 0 && (
+        <div className="p-4 text-center text-gray-500">
+          Không có bình luận nào
+        </div>
+      )}
+      {/* Display Comments with Show More Logic */}
+      {commentViewDtos.length > 0 && (
+        <div className="p-4 text-black">
+          {commentViewDtos.slice(0, visibleComments).map((comment) => (
+            <div
+              key={comment.id}
+              className="flex flex-col items-start gap-4 border-t py-2"
+            >
+              <div className="inline-flex items-center">
+                <Avatar
+                  userImg={avatarUrls[comment.userName]}
+                  w="40px"
+                  h="40px"
+                />
+                <div className="flex w-fit flex-col items-start justify-start rounded-full bg-gray-200 px-5 py-1">
+                  <p className="font-semibold">{comment.userName}</p>
+                  <p className="text-sm text-gray-600">{comment.content}</p>
+                </div>
+              </div>
+
+              <p className="inline-flex justify-start gap-1 text-xs text-gray-400">
+                <span>Đăng vào :</span>
+                {comment.createdDate}
+              </p>
+            </div>
+          ))}
+
+          {/* Show More Button */}
+          {visibleComments < commentViewDtos.length && (
+            <button
+              onClick={handleShowMore}
+              className="text-blue-500 hover:underline"
+            >
+              Xem thêm ...
+            </button>
           )}
         </div>
       )}

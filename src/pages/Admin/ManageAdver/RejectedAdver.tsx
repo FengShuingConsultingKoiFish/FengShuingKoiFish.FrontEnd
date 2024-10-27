@@ -6,7 +6,8 @@ import {
   IoIosArrowDroprightCircle
 } from "react-icons/io"
 
-import { getAllBlogsForAdmin, updateBlogStatus } from "@/lib/api/Blog"
+import { getAllAdvertisementsForAdmin } from "@/lib/api/Advertisement"
+import { updateAdvertisementStatus } from "@/lib/api/Advertisement"
 
 import CustomButton from "../../Setting/Components/CustomBtn"
 import PostSection from "../components/BlogSection"
@@ -20,49 +21,50 @@ interface ImageViewDto {
   createdDate: string
 }
 
-interface Blog {
+interface Advertisement {
   id: number
   title: string
-  content: string
+  description: string
   userName: string
   createdDate: string
-  status: string
+  status: number | string
   imageViewDtos: ImageViewDto[]
   commentViewDtos?: []
 }
 
-export const PendingPosts: React.FC = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([])
+export const RejectedAdver: React.FC = () => {
+  const [advertisements, setAdvertisements] = useState<Advertisement[]>([])
   const [pageIndex, setPageIndex] = useState(1)
   const [pageSize] = useState(5)
   const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    fetchBlogs()
+    fetchAdvertisements()
   }, [pageIndex])
 
-  const fetchBlogs = async () => {
+  const fetchAdvertisements = async () => {
     setIsLoading(true)
     try {
       const requestData = {
         pageIndex,
         pageSize,
         title: "",
-        blogStatus: 1,
-        orderBlog: 1,
+        advertisementStatus: 3,
+        orderAdvertisement: null,
         orderComment: null,
         orderImage: null
       }
-      const response = await getAllBlogsForAdmin(requestData)
+      const response = await getAllAdvertisementsForAdmin(requestData)
       if (response.isSuccess) {
-        setBlogs(response.result.datas)
+        // @ts-ignore
+        setAdvertisements(response.result.datas)
         setTotalPages(response.result.totalPages)
       } else {
         console.error(response.message)
       }
     } catch (error) {
-      console.error("Error fetching blogs:", error)
+      console.error("Error fetching advertisements:", error)
     } finally {
       setIsLoading(false)
     }
@@ -82,9 +84,9 @@ export const PendingPosts: React.FC = () => {
 
   const handleVerify = async (id: number) => {
     try {
-      await updateBlogStatus({ id, status: 2 })
-      toast.success("Duyệt bài thành công !")
-      fetchBlogs()
+      await updateAdvertisementStatus({ id, status: 2 })
+      toast.success("Duyệt quảng cáo thành công !")
+      fetchAdvertisements()
     } catch (error) {
       console.error("Error updating status:", error)
     }
@@ -92,9 +94,9 @@ export const PendingPosts: React.FC = () => {
 
   const handleDeny = async (id: number) => {
     try {
-      await updateBlogStatus({ id, status: 3 })
-      toast.success("Đã hủy bài thành công")
-      fetchBlogs()
+      await updateAdvertisementStatus({ id, status: 3 })
+      toast.success("Đã hủy quảng cáo thành công")
+      fetchAdvertisements()
     } catch (error) {
       console.error("Error updating status:", error)
     }
@@ -103,29 +105,29 @@ export const PendingPosts: React.FC = () => {
   return (
     <div className="relative flex w-full flex-col">
       <div className="">
-        <h2 className="mb-4 text-2xl font-semibold">Các Blog đang đợi</h2>
+        <h2 className="mb-4 text-2xl font-semibold">Các Quảng Cáo đã duyệt</h2>
 
         {isLoading ? (
           <p>Đang tải...</p>
         ) : (
           <div>
-            {blogs.length === 0 ? (
-              <p>Không có blog nào đang chờ xử lý.</p>
+            {advertisements.length === 0 ? (
+              <p>Hiện tại chưa có quảng cáo nào được duyệt.</p>
             ) : (
               <div className="grid grid-cols-1 gap-6">
-                {blogs.map((blog) => (
+                {advertisements.map((ad) => (
                   <PostSection
-                    key={blog.id}
-                    id={blog.id}
-                    title={blog.title}
-                    content={blog.content}
-                    userName={blog.userName}
-                    createdDate={blog.createdDate}
-                    status={blog.status}
-                    changeStatusToVerify={() => handleVerify(blog.id)}
-                    changeStatusToDeny={() => handleDeny(blog.id)}
-                    imageViewDtos={blog.imageViewDtos}
-                    commentViewDtos={blog.commentViewDtos || []}
+                    key={ad.id}
+                    id={ad.id}
+                    title={ad.title}
+                    content={ad.description}
+                    userName={ad.userName}
+                    createdDate={ad.createdDate}
+                    status={ad.status}
+                    changeStatusToVerify={() => handleVerify(ad.id)}
+                    changeStatusToDeny={() => handleDeny(ad.id)}
+                    imageViewDtos={ad.imageViewDtos}
+                    commentViewDtos={ad.commentViewDtos || []}
                   />
                 ))}
               </div>
@@ -133,7 +135,7 @@ export const PendingPosts: React.FC = () => {
           </div>
         )}
 
-        <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] items-center sm:translate-x-[40rem] md:translate-x-[30rem]">
+        <div className="fixed inset-x-0 bottom-0 mt-6 flex items-center justify-center">
           <CustomButton
             icon={<IoIosArrowDropleftCircle />}
             label="Trang trước"
@@ -153,4 +155,4 @@ export const PendingPosts: React.FC = () => {
   )
 }
 
-export default PendingPosts
+export default RejectedAdver

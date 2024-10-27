@@ -22,6 +22,7 @@ import Avatar from "./Avatar"
 import { HoverBorderGradient } from "./HoverBorder"
 import MenuItem from "./MenuItem"
 import { IconArticleFilled } from "@tabler/icons-react"
+import { clearUserPackages } from "@/lib/redux/reducers/userPackageSlice"
 
 interface User {
   Id: string
@@ -66,6 +67,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const handleLogout = useCallback(() => {
     // Clear user from Redux store
     dispatch(clearCurrentUser())
+    dispatch(clearUserPackages())
     setIsOpen(false)
     toast.success("Đăng xuất thành công!")
     navigate("/")
@@ -86,6 +88,12 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const handleMyPkg = useCallback(() => {
     if(currentUser) {
       navigate(`/goi-cua-toi`)
+    }
+  }, [currentUser, navigate])
+
+  const handleMyHistory = useCallback(() => {
+    if(currentUser) {
+      navigate(`/lich-su-giao-dich`)
     }
   }, [currentUser, navigate])
 
@@ -167,9 +175,9 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     icon={<CgProfile size={20} />}
                   />
                   <MenuItem
-                    onClick={() => {}}
+                    onClick={handleMyHistory}
                     closeMenu={closeMenu}
-                    label="Lịch sử của bạn"
+                    label="Lịch sử giao dịch của bạn"
                     icon={<FaHistory size={20} />}
                   />
                   <MenuItem

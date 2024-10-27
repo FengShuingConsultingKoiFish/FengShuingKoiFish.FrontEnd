@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react"
 
 import {
+  IconBadgeAdFilled,
   IconBrandTabler,
+  IconCreditCard,
   IconPackage,
   IconSettings,
   IconUsersGroup,
@@ -48,6 +50,16 @@ export function AdminPage() {
       label: "Quản lý người dùng",
       href: "/admin/nguoi-dung",
       icon: <IconUsersGroup className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+    },
+    {
+      label: "Quản lý các gói quảng cáo",
+      href: "/admin/quang-cao",
+      icon: <IconBadgeAdFilled className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+    },
+    {
+      label: "Quản lý các giao dịch",
+      href: "/admin/giao-dich",
+      icon: <IconCreditCard className="h-5 w-5 flex-shrink-0 text-neutral-700" />
     },
     {
       label: "Cài đặt",

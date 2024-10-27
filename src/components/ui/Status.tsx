@@ -1,5 +1,4 @@
-
-import React from "react";
+import React from "react"
 
 // Define possible statuses as a union type
 type StatusType =
@@ -12,51 +11,52 @@ type StatusType =
   | 0
   | 2
   | 3
-  | undefined;
-
+  | undefined
 
 interface StatusProps {
-  status: string;
+  status: string | number
 }
 
 const Status: React.FC<StatusProps> = ({ status }) => {
-  let statusClass: string;
-  let label: string;
+  let statusClass: string
+  let label: string
 
   switch (status) {
     case "Active":
-      statusClass = "bg-green-500";
-      label = "Hoạt động";
-      break;
+    case 1:
+      statusClass = "bg-green-500"
+      label = "Hoạt động"
+      break
     case "Approved":
-      statusClass = "bg-green-500";
-      label = "Đã duyệt";
-      break;
+      statusClass = "bg-green-500"
+      label = "Đã duyệt"
+      break
     case "Rejected":
-      statusClass = "bg-red-500";
-      label = "Đã từ chối";
-      break;
+      statusClass = "bg-red-500"
+      label = "Đã từ chối"
+      break
     case "Pending":
-      statusClass = "bg-yellow-500";
-      label = "Đang đợi duyệt";
-      break;
+      statusClass = "bg-yellow-500"
+      label = "Đang đợi duyệt"
+      break
     case "Inactive":
-      statusClass = "bg-red-500";
-      label = "Inactive";
-      break;
+    case 2:
+      statusClass = "bg-red-500"
+      label = "Không khả dụng"
+      break
 
     default:
-      statusClass = "bg-gray-500";
-      label = "Unknown";
+      statusClass = "bg-gray-500"
+      label = "Unknown"
   }
 
   return (
     <div
-      className={`px-4 py-2 rounded-full text-white text-center font-bold ${statusClass} w-fit`}
+      className={`rounded-full px-4 py-2 text-center font-bold text-white ${statusClass} w-fit`}
     >
       {label}
     </div>
-  );
-};
+  )
+}
 
-export default Status;
+export default Status

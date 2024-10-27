@@ -1,9 +1,11 @@
 import React from "react"
 
 import {
+  IconAdFilled,
   IconBan,
   IconCheck,
   IconClockHour2,
+  IconCreditCard,
   IconFileText,
   IconHome,
   IconList,
@@ -52,9 +54,33 @@ const breadcrumbMap: {
     label: "Quản lý người dùng",
     icon: <IconUser className="mr-2 h-4 w-4" />
   },
+  "/admin/quang-cao": {
+    label: "Quản lý quảng cáo",
+    icon: <IconAdFilled className="mr-2 h-4 w-4" />
+  },
   "/admin/nguoi-dung/all": {
     label: "Xem tất cả người dùng",
     icon: <IconUser className="mr-2 h-4 w-4" />
+  },
+  "/admin/quang-cao/pending": {
+    label: "Các quảng cáo đang đợi",
+    icon: <IconClockHour2 className="mr-2 h-4 w-4" />
+  },
+  "/admin/quang-cao/approved": {
+    label: "Các quảng cáo đã duyệt",
+    icon: <IconCheck className="mr-2 h-4 w-4" />
+  },
+  "/admin/quang-cao/rejected": {
+    label: "Các quảng cáo bị từ chối",
+    icon: <IconBan className="mr-2 h-4 w-4" />
+  },
+  "/admin/giao-dich": {
+    label: "Giao dịch",
+    icon: <IconCreditCard className="mr-2 h-4 w-4" />
+  },
+  "/admin/giao-dich/all": {
+    label: "Tất cả giao dịch",
+    icon: <IconList className="mr-2 h-4 w-4" />
   },
 }
 
