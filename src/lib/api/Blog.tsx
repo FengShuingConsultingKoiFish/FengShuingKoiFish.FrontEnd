@@ -54,8 +54,8 @@ interface GetAllBlogsForAdminRequest {
   title?: string
   blogStatus?: number | null
   orderBlog?: number| null
-  orderComment?: string | null
-  orderImage?: string | null
+  orderComment?: number | null
+  orderImage?: number| null
 }
 
 interface ImageViewDto {

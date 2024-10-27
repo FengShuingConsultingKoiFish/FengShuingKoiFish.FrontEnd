@@ -88,11 +88,14 @@ const PasswordReset = () => {
         console.log(data.token)
         console.log(data.confirmedNewPassword)
         console.log(data.newPassword)
+       //@ts-ignore
         if ("result" in result && result.result.isSuccess) {
+          //@ts-ignore
           toast.success(result.result.message)
           navigate("/")
           loginModal.onOpen()
         } else {
+          //@ts-ignore
           toast.error(result.message || "Something went wrong")
         }
       } catch (error: any) {
@@ -157,6 +160,7 @@ const PasswordReset = () => {
                   placeholder=""
                   type="email"
                   label="Email của bạn"
+                  onChange={()=>{}}
                   disabled={true}
                   register={register}
                   errors={errors}
@@ -164,6 +168,7 @@ const PasswordReset = () => {
                 />
                 <Input
                   id="newPassword"
+                  onChange={()=>{}}
                   placeholder=""
                   type="password"
                   label="Mật khẩu mới"
@@ -174,6 +179,7 @@ const PasswordReset = () => {
                 />
                 <Input
                   id="confirmedNewPassword"
+                  onChange={()=>{}}
                   placeholder=""
                   type="password"
                   label="Nhập lại mật khẩu"

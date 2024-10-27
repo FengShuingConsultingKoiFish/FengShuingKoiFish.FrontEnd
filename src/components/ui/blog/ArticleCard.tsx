@@ -50,6 +50,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   const [comment, setComment] = useState("")
   const [avatarUrls, setAvatarUrls] = useState<{ [key: string]: string }>({})
   const [visibleComments, setVisibleComments] = useState(2)
+  const [comments, setComments] = useState<CommentViewDto[]>(commentViewDtos);
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value)
@@ -64,7 +65,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
     const fetchAvatars = async () => {
       const avatars: { [key: string]: string } = {}
       for (const comment of commentViewDtos) {
-        if (!avatarUrls[comment.userName]) {
+        if (comment.userName && !avatarUrls[comment.userName]) {
           try {
             const avatarUrl = await getUserAvatarByUserName(comment.userName)
             avatars[comment.userName] = avatarUrl.result
@@ -196,14 +197,14 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
                           w="40px"
                           h="40px"
                         />
-                        <div className="flex w-fit flex-col items-start justify-start rounded-full bg-gray-200 px-5 py-1">
+                        <div className="flex w-fit flex-col items-start justify-start rounded-full bg-gray-200 px-7 py-1">
                           <p className="font-semibold">{comment.userName}</p>
                           <p className="text-sm text-gray-600">{comment.content}</p>
                         </div>
                       </div>
 
                       <p className="inline-flex justify-start gap-1 text-xs text-gray-400">
-                        <span>Đăng vào :</span>
+                        <span>Đã đăng vào :</span>
                         {comment.createdDate}
                       </p>
                     </div>

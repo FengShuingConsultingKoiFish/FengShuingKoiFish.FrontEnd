@@ -193,3 +193,32 @@ export const getAllPaymentsForAdmin = async (
     nProgress.done()
   }
 }
+
+interface ResponsePayment {
+  statusCode: number;
+  message: string;
+}
+
+export const getResponsePayment = async (url: string): Promise<ResponsePayment> => {
+  try {
+    nProgress.start();
+
+    const response = await axiosClient.get<ResponsePayment>(
+      `/api/Payments/response-payment${url}`
+    );
+
+    return {
+      statusCode: response.status,
+      message: "Success",
+    };
+  } catch (error: any) {
+    console.error("Error in response payment request:", error);
+    if (error.response) {
+      throw new Error(error.response.data.message || "An error occurred");
+    } else {
+      throw new Error("An unknown error occurred");
+    }
+  } finally {
+    nProgress.done();
+  }
+};

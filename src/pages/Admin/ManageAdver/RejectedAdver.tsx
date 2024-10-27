@@ -51,7 +51,7 @@ export const RejectedAdver: React.FC = () => {
         pageSize,
         title: "",
         advertisementStatus: 3,
-        orderAdvertisement: null,
+        orderAdvertisement: 1,
         orderComment: null,
         orderImage: null
       }

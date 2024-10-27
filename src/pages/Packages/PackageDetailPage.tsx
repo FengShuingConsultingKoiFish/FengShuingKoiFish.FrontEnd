@@ -129,48 +129,35 @@ export const PackageDetailPage = () => {
       content: (
         <div>
           <p className="mb-4 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
-            Deployed 5 new components on Aceternity today
-          </p>
-          <div className="mb-8">
-            <div className="flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
-              ✅ Card grid component
-            </div>
-            <div className="flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
-              ✅ Startup template Aceternity
-            </div>
-            <div className="flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
-              ✅ Random file upload lol
-            </div>
-            <div className="flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
-              ✅ Himesh Reshammiya Music CD
-            </div>
-            <div className="flex items-center gap-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
-              ✅ Salman Bhai Fan Club registrations open
-            </div>
-            Lorem ipsum is for people who are too lazy to write copy. But we are
-            not. Here are some more example of beautiful designs I built. Lorem
-            ipsum is for people who are too lazy to write copy. But we are not.
-            Here are some more example of beautiful designs I built. Lorem ipsum
-            is for people who are too lazy to write copy. But we are not. Here
-            are some more example of beautiful designs I built. Lorem ipsum is
-            for people who are too lazy to write copy. But we are not. Here are
-            some more example of beautiful designs I built. Lorem ipsum is for
-            people who are too lazy to write copy. But we are not. Here are some
-            more example of beautiful designs I built. Lorem ipsum is for people
-            who are too lazy to write copy. But we are not. Here are some more
-            example of beautiful designs I built. Lorem ipsum is for people who
-            are too lazy to write copy. But we are not. Here are some more
-            example of beautiful designs I built. Lorem ipsum is for people who
-            are too lazy to write copy. But we are not. Here are some more
-            example of beautiful designs I built. Lorem ipsum is for people who
-            are too lazy to write copy. But we are not. Here are some more
-            example of beautiful designs I built. Lorem ipsum is for people who
-            are too lazy to write copy. But we are not. Here are some more
-            example of beautiful designs I built. Lorem ipsum is for people who
-            are too lazy to write copy. But we are not. Here are some more
-            example of beautiful designs I built.
-          </div>
-          <div className="grid grid-cols-2 gap-4"></div>
+        Chính sách hoàn trả dành cho khách hàng khi mua gói quảng cáo Cá Koi.
+      </p>
+      <div className="mb-8">
+        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-4">Điều kiện áp dụng hoàn trả:</h2>
+        <ul className="list-disc pl-5 space-y-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
+          <li>Khách hàng có quyền yêu cầu hoàn trả trong vòng 7 ngày kể từ khi mua gói quảng cáo Cá Koi.</li>
+          <li>Chỉ những giao dịch có lỗi kỹ thuật hoặc không thể hiển thị đúng nội dung quảng cáo mới đủ điều kiện hoàn trả.</li>
+          <li>Yêu cầu hoàn trả phải được gửi qua email hoặc liên hệ trực tiếp đến bộ phận chăm sóc khách hàng của chúng tôi.</li>
+        </ul>
+      </div>
+      <div className="mb-8">
+        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-4">Các trường hợp không áp dụng hoàn trả:</h2>
+        <ul className="list-disc pl-5 space-y-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
+          <li>Hoàn trả không áp dụng cho các giao dịch đã được sử dụng hết dung lượng hoặc thời gian quảng cáo.</li>
+          <li>Không hoàn trả trong trường hợp khách hàng thay đổi ý định sau khi mua.</li>
+          <li>Gói quảng cáo đã được hiển thị theo thỏa thuận không thuộc diện được hoàn trả.</li>
+        </ul>
+      </div>
+      <div className="mb-8">
+        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-4">Quy trình hoàn trả:</h2>
+        <ul className="list-disc pl-5 space-y-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
+          <li>Sau khi nhận yêu cầu hoàn trả hợp lệ, chúng tôi sẽ xác minh và tiến hành xử lý hoàn tiền trong vòng 5 - 7 ngày làm việc.</li>
+          <li>Tiền sẽ được hoàn lại theo phương thức thanh toán ban đầu của khách hàng.</li>
+          <li>Mọi thắc mắc về quá trình hoàn trả, vui lòng liên hệ với bộ phận hỗ trợ để được giải đáp.</li>
+        </ul>
+      </div>
+      <p className="text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
+        Chúng tôi cam kết cung cấp dịch vụ tốt nhất và đảm bảo quyền lợi của khách hàng khi sử dụng gói quảng cáo Cá Koi. 
+      </p>
         </div>
       )
     }
