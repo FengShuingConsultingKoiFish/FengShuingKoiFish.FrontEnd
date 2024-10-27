@@ -6,6 +6,7 @@ import { FaPlus, FaTimes } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
 import ConfirmModal from "@/components/global/atoms/ConfirmModal"
+import OnclickButton from "@/components/global/atoms/OnclickButton"
 
 import {
   BreedInfo,
@@ -218,7 +219,7 @@ const PondDetails: React.FC = () => {
   const handleConfirmDelete = () => {
     if (deleteType === "koi") handleDeleteKoi()
     else if (deleteType === "pond") handleDeletePond()
-    setShowConfirmModal(false) // Đóng modal sau khi xóa
+    setShowConfirmModal(false)
   }
 
   const openConfirmModal = (id: number, type: "koi" | "pond") => {
@@ -237,7 +238,7 @@ const PondDetails: React.FC = () => {
     return koi ? (
       <div
         key={koi.koiDetailId}
-        className="relative cursor-default rounded bg-gray-100 p-4 shadow"
+        className="relative cursor-default rounded bg-gray-100 p-4 shadow transition-transform hover:scale-105"
       >
         <FaTimes
           className="absolute right-2 top-2 cursor-pointer text-red-500"
@@ -259,7 +260,7 @@ const PondDetails: React.FC = () => {
     ) : (
       <div
         key={index}
-        className="flex h-48 cursor-pointer items-center justify-center rounded bg-gray-100 p-4 shadow"
+        className="flex h-48 cursor-pointer items-center justify-center rounded bg-gray-100 p-4 shadow transition-transform hover:scale-105"
         onClick={() => navigate(`/add-koi/${userPondId}`)}
       >
         <FaPlus className="text-4xl text-gray-400" />
@@ -269,13 +270,13 @@ const PondDetails: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <button
-        className="mb-4 rounded bg-blue-500 px-4 py-2 text-white"
+      <OnclickButton
+        label="Trở lại"
         onClick={() => navigate("/see-all-pond")}
-      >
-        Trở lại
-      </button>
-      <h1 className="mb-4 text-2xl font-bold">Chi tiết Hồ và Koi</h1>
+      />
+      <h1 className="mb-4 text-center text-2xl font-bold text-gray-500">
+        Chi tiết Hồ và Koi
+      </h1>
 
       <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
         <h2 className="mb-2 text-xl font-semibold">Chi tiết Koi</h2>
@@ -290,7 +291,7 @@ const PondDetails: React.FC = () => {
           {pondDetails.map((pond: PondDetail) => (
             <div
               key={pond.pondDetailId}
-              className="relative rounded bg-gray-100 p-4 shadow"
+              className="relative rounded bg-gray-100 p-4 shadow transition-transform hover:scale-105"
             >
               <FaTimes
                 className="absolute right-2 top-2 cursor-pointer text-red-500"
@@ -309,7 +310,7 @@ const PondDetails: React.FC = () => {
           ))}
         </div>
         <div
-          className="mt-4 flex h-48 cursor-pointer items-center justify-center rounded bg-gray-100 p-4 shadow"
+          className="mt-4 flex h-48 cursor-pointer items-center justify-center rounded bg-gray-100 p-4 shadow transition-transform hover:scale-105"
           onClick={() => navigate(`/add-pond/${userPondId}`)}
         >
           <FaPlus className="text-4xl text-gray-400" />

@@ -131,7 +131,9 @@ const ResultPage: React.FC = () => {
                 <p className="mb-2">{name || "N/A"}</p>
                 <p className="mb-2">{gender || "N/A"}</p>
                 <p className="mb-2">{birthDate || "N/A"}</p>
-                <p className="mb-2">{zodiac ? zodiac : "Không có kết quả"}</p>
+                <p className="mb-2">
+                  {zodiac ? zodiac : "Cần nhập đủ thông tin"}
+                </p>
                 <p className="mb-2">
                   {zodiacMessage || "Bạn cần đăng nhập để xem thông điệp"}
                 </p>

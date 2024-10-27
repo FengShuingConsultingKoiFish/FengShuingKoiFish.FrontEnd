@@ -17,7 +17,7 @@ import { FaCalendar } from "react-icons/fa"
 import { MdAddPhotoAlternate, MdEdit } from "react-icons/md"
 import { RiArrowDropDownLine } from "react-icons/ri"
 import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { Navigate } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
 import * as yup from "yup"
@@ -74,6 +74,8 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
   const [selectedGender, setSelectedGender] = useState(gender || "Nam")
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const profileImgChoosingModal = useProfileImgModal()
+  const location = useLocation() // Đọc location để kiểm tra redirect
+  const redirect = new URLSearchParams(location.search).get("redirect")
 
   useEffect(() => {
     console.log("value of dob:", dateOfBirth)
@@ -186,6 +188,9 @@ const AccountDetail: React.FC<AccountDetailProps> = ({
         const updatedProfile = await GetUserProfile(dispatch)
         if (updatedProfile?.result) {
           dispatch(setDetailUser(updatedProfile.result)) // Update Redux store with new profile
+        }
+        if (redirect === "fengshui") {
+          navigate("/doan-menh")
         }
       }
     } catch (error) {

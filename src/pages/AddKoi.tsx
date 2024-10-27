@@ -4,6 +4,8 @@ import axios from "axios"
 import { FaArrowLeft } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
+import OnclickButton from "@/components/global/atoms/OnclickButton"
+
 interface KoiBreed {
   id: number
   name: string
@@ -21,13 +23,13 @@ const AddKoi: React.FC = () => {
   const [selectedKoiId, setSelectedKoiId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState<string>("")
+  const [visibleItems, setVisibleItems] = useState<number>(6)
 
   useEffect(() => {
     const token = sessionStorage.getItem("token")
 
-    // Check if the token exists; if not, redirect to the login page
     if (!token) {
-      navigate("/") // Redirects to login or home page if not authenticated
+      navigate("/")
       return
     }
 
@@ -56,23 +58,16 @@ const AddKoi: React.FC = () => {
     fetchKoiBreeds()
   }, [navigate])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
+  const handleSubmit = async (koiBreedId: number) => {
     if (!userPondId) {
       setError("UserPond ID không hợp lệ.")
       return
     }
 
-    if (selectedKoiId === null) {
-      setError("Vui lòng chọn một giống Koi trước khi thêm.")
-      return
-    }
-
     const token = sessionStorage.getItem("token")
     const payload = {
-      pondId: parseInt(userPondId), // Ensure pondId is an integer
-      koiDetails: [{ koiBreedId: selectedKoiId }]
+      pondId: parseInt(userPondId),
+      koiDetails: [{ koiBreedId }]
     }
 
     try {
@@ -98,15 +93,18 @@ const AddKoi: React.FC = () => {
         setError(err.response.data.message || "Có lỗi xảy ra khi thêm Koi.")
       } else {
         console.error("Lỗi không xác định:", err)
-        setError("Có lỗi xảy ra khi thêm Koi.")
+        setError("Có lỗi xảy ra khi thêm Koi1.")
       }
     }
   }
 
-  // Filter Koi list based on search term
-  const filteredKoiBreeds = koiBreeds.filter((koi) =>
-    koi.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredKoiBreeds = koiBreeds
+    .filter((koi) => koi.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .slice(0, visibleItems)
+
+  const handleShowMore = () => {
+    setVisibleItems((prev) => prev + 6)
+  }
 
   return (
     <div className="relative mb-4 p-4">
@@ -133,25 +131,28 @@ const AddKoi: React.FC = () => {
         />
       </div>
 
-      {/* Add Button */}
-      <button
-        type="button"
-        className="absolute right-4 top-4 rounded bg-blue-500 px-4 py-2 text-white"
-        onClick={handleSubmit}
-      >
-        Thêm
-      </button>
-
       {/* Koi Breeds List */}
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredKoiBreeds.map((koi) => (
+        {filteredKoiBreeds.map((koi, index) => (
           <div
             key={koi.id}
-            className={`cursor-pointer rounded border p-4 ${
-              selectedKoiId === koi.id ? "border-blue-500" : "border-gray-300"
+            className={`relative transform cursor-pointer rounded border p-4 transition-all hover:scale-105 hover:shadow-lg ${
+              selectedKoiId === koi.id
+                ? "scale-105 border-blue-500 shadow-lg"
+                : "border-gray-300"
+            } ${
+              index % 3 === 0
+                ? "bg-yellow-100"
+                : index % 3 === 1
+                  ? "bg-green-100"
+                  : "bg-blue-100"
             }`}
             onClick={() => setSelectedKoiId(koi.id)}
           >
+            {/* Overlay when selected */}
+            {selectedKoiId === koi.id && (
+              <div className="pointer-events-none absolute inset-0 rounded bg-black bg-opacity-30"></div>
+            )}
             <img
               src={koi.image}
               alt={koi.name}
@@ -161,9 +162,29 @@ const AddKoi: React.FC = () => {
             <p>Màu sắc: {koi.colors}</p>
             <p>Hoa văn: {koi.pattern}</p>
             <p>Mô tả: {koi.description}</p>
+
+            {/* Add Button for Selected Koi */}
+            {selectedKoiId === koi.id && (
+              <div className="mt-2 flex justify-center">
+                <OnclickButton
+                  label="Thêm"
+                  onClick={() => handleSubmit(koi.id)} // Attach onClick handler
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
+
+      {/* Show More Button */}
+      {visibleItems < koiBreeds.length && (
+        <div className="flex justify-center">
+          <OnclickButton
+            label="Xem Thêm"
+            onClick={handleShowMore} // Attach onClick handler
+          />
+        </div>
+      )}
     </div>
   )
 }

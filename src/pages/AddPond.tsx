@@ -4,6 +4,10 @@ import axios from "axios"
 import { FaArrowLeft } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
+import OnclickButton from "@/components/global/atoms/OnclickButton"
+
+// Adjust the path as needed
+
 interface PondCharacteristic {
   id: number
   name: string
@@ -21,14 +25,12 @@ const AddPond: React.FC = () => {
   const [selectedPondId, setSelectedPondId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState<string>("")
+  const [visibleItems, setVisibleItems] = useState<number>(6)
 
-  // Fetch pond characteristics and validate token
   useEffect(() => {
     const token = sessionStorage.getItem("token")
-
-    // Redirect to login if token is missing
     if (!token) {
-      navigate("/") // Redirects to login page
+      navigate("/")
       return
     }
 
@@ -57,23 +59,16 @@ const AddPond: React.FC = () => {
     fetchPondCharacteristics()
   }, [navigate])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
+  const handleSubmit = async (pondId: number) => {
     if (!userPondId) {
       setError("UserPond ID không hợp lệ.")
-      return
-    }
-
-    if (selectedPondId === null) {
-      setError("Vui lòng chọn một loại hồ trước khi thêm.")
       return
     }
 
     const token = sessionStorage.getItem("token")
     const payload = {
       pondId: parseInt(userPondId),
-      pondDetails: [{ pondId: selectedPondId }]
+      pondDetails: [{ pondId }]
     }
 
     try {
@@ -102,14 +97,18 @@ const AddPond: React.FC = () => {
     }
   }
 
-  // Filter pond characteristics based on search term
   const filteredPondCharacteristics = pondCharacteristics.filter((pond) =>
     pond.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  const visiblePonds = filteredPondCharacteristics.slice(0, visibleItems)
+
+  const handleShowMore = () => {
+    setVisibleItems((prev) => prev + 6)
+  }
+
   return (
     <div className="relative mb-4 p-4">
-      {/* Back Button */}
       <button
         onClick={() => navigate(`/pond-details/${userPondId}`)}
         className="absolute left-4 top-4 text-gray-600 hover:text-gray-800"
@@ -117,11 +116,9 @@ const AddPond: React.FC = () => {
         <FaArrowLeft className="text-2xl" />
       </button>
 
-      {/* Title */}
       <h2 className="mb-6 text-center text-2xl font-semibold">Thêm Hồ</h2>
       {error && <p className="text-center text-red-500">{error}</p>}
 
-      {/* Search Bar */}
       <div className="mb-4 flex justify-center">
         <input
           type="text"
@@ -132,25 +129,26 @@ const AddPond: React.FC = () => {
         />
       </div>
 
-      {/* Add Button */}
-      <button
-        type="button"
-        className="absolute right-4 top-4 rounded bg-blue-500 px-4 py-2 text-white"
-        onClick={handleSubmit}
-      >
-        Thêm
-      </button>
-
-      {/* Pond Characteristics List */}
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredPondCharacteristics.map((pond) => (
+        {visiblePonds.map((pond, index) => (
           <div
             key={pond.id}
-            className={`cursor-pointer rounded border p-4 ${
-              selectedPondId === pond.id ? "border-blue-500" : "border-gray-300"
+            className={`relative transform cursor-pointer rounded border p-4 transition-all hover:scale-105 hover:shadow-lg ${
+              selectedPondId === pond.id
+                ? "scale-105 border-blue-500 shadow-lg"
+                : "border-gray-300"
+            } ${
+              index % 3 === 0
+                ? "bg-yellow-100"
+                : index % 3 === 1
+                  ? "bg-green-100"
+                  : "bg-blue-100"
             }`}
             onClick={() => setSelectedPondId(pond.id)}
           >
+            {selectedPondId === pond.id && (
+              <div className="pointer-events-none absolute inset-0 rounded bg-black bg-opacity-30"></div>
+            )}
             <img
               src={pond.image}
               alt={pond.name}
@@ -158,9 +156,28 @@ const AddPond: React.FC = () => {
             />
             <h3 className="text-lg font-bold">{pond.name}</h3>
             <p>Mô tả: {pond.description}</p>
+
+            {/* Conditionally Render the SubmitButton */}
+            {selectedPondId === pond.id && (
+              <div className="mt-2 flex justify-center">
+                <OnclickButton
+                  label="Thêm"
+                  onClick={() => handleSubmit(pond.id)} // Attach onClick handler
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
+
+      {visibleItems < filteredPondCharacteristics.length && (
+        <div className="flex justify-center">
+          <OnclickButton
+            label="Xem Thêm"
+            onClick={handleShowMore} // Attach onClick handler
+          />
+        </div>
+      )}
     </div>
   )
 }

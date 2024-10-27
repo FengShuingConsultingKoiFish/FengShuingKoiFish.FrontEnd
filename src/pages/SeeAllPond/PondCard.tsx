@@ -12,6 +12,7 @@ interface Pond {
   description: string
   image: string
   score: number
+  scoreDetail?: string
 }
 
 interface PondCardProps {
@@ -32,6 +33,8 @@ const PondCard: React.FC<PondCardProps> = ({
   const [updatedPond, setUpdatedPond] = useState<Pond>(pond)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [scoreDetail, setScoreDetail] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate()
 
   const handleViewDetails = () => {
@@ -115,6 +118,45 @@ const PondCard: React.FC<PondCardProps> = ({
   ) => {
     setUpdatedPond({ ...updatedPond, [e.target.name]: e.target.value })
   }
+  const handleScoreDetail = async () => {
+    try {
+      const token = sessionStorage.getItem("token")
+      const response = await axios.get(
+        "https://consultingfish.azurewebsites.net/api/UserPond/getall",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+
+      if (response.data.isSuccess && response.data.result) {
+        const selectedPond = response.data.result.find(
+          (p: Pond) => p.id === pond.id
+        )
+        if (selectedPond) {
+          const roundedScoreDetail = selectedPond.scoreDetail
+            ? selectedPond.scoreDetail.replace(/\d+\.\d+/g, (match: string) =>
+                Math.round(parseFloat(match)).toString()
+              )
+            : "Không có"
+          setScoreDetail(roundedScoreDetail)
+          setIsModalOpen(true)
+        } else {
+          setScoreDetail("Không có chi tiết điểm số cho hồ cá này.")
+        }
+      } else {
+        setScoreDetail("Không thể lấy danh sách hồ cá.")
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy chi tiết điểm số:", error)
+      setScoreDetail("Có lỗi xảy ra khi lấy chi tiết điểm số.")
+    }
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
 
   return (
     <div
@@ -129,7 +171,7 @@ const PondCard: React.FC<PondCardProps> = ({
       }}
     >
       {isEditing ? (
-        <div className="w-full p-64">
+        <div className="w-full p-80">
           <div className="mb-4 flex flex-col">
             <label className="#4F4F4F mb-1">Tên hồ cá:</label>
             <input
@@ -204,10 +246,33 @@ const PondCard: React.FC<PondCardProps> = ({
             </p>
             <p className="mb-4 text-xl text-yellow-300 transition-transform duration-300 hover:scale-105">
               Điểm số:{" "}
-              {score === 0 ? "Chưa có điểm (Hãy cập nhật hồ cá)" : score}
+              {score === 0
+                ? "Chưa có điểm (Hãy cập nhật hồ cá)"
+                : Math.round(score)}
+              <button
+                onClick={handleScoreDetail}
+                className="ml-4 rounded bg-blue-500 px-2 py-1 text-white transition-all duration-300 hover:bg-blue-400"
+              >
+                Chi tiết
+              </button>
             </p>
+
+            {isModalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="w-1/3 rounded-lg bg-white p-6">
+                  <h3 className="mb-4 text-2xl font-bold">Chi tiết điểm</h3>
+                  <p className="mb-4">{scoreDetail}</p>
+                  <button
+                    onClick={closeModal}
+                    className="mt-4 rounded bg-red-500 px-4 py-2 text-white"
+                  >
+                    Đóng
+                  </button>
+                </div>
+              </div>
+            )}
             {/* Hàng nút */}
-            <div className="mt-4 flex items-center space-x-4">
+            <div className="mt-14 flex items-center space-x-4">
               <OnclickButton label="Xem chi tiết" onClick={handleViewDetails} />
               <button
                 onClick={handleEdit}
