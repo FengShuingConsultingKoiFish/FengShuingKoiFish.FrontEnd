@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom"
 import { GetUserProfile } from "@/lib/api/User"
 import { AppDispatch, RootState } from "@/lib/redux/store"
 
+import ConfirmModal1 from "@/components/global/atoms/ConfirmModal1"
 import InputField from "@/components/global/atoms/InputField"
 import SubmitButton from "@/components/global/atoms/SubmitButton"
 import ToggleSwitch from "@/components/global/atoms/ToggleSwitch"
@@ -23,35 +24,30 @@ const FengShuiLookup: React.FC = () => {
   const [day, setDay] = useState("")
   const [isToggled, setIsToggled] = useState(false)
   const [isReadOnly, setIsReadOnly] = useState(false)
+  const [showModal, setShowModal] = useState(false)
 
-  // Lấy thông tin người dùng từ Redux
   const userProfile = useSelector((state: RootState) => state.users.detailUser)
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
 
-  // Gọi API lấy thông tin người dùng khi component mount
   useEffect(() => {
     if (!userProfile && currentUser) {
-      dispatch(GetUserProfile()) // Gọi GetUserProfile khi không có thông tin chi tiết
+      GetUserProfile(dispatch)
     }
   }, [dispatch, currentUser, userProfile])
 
-  // Kiểm tra xem thông tin người dùng đã đầy đủ hay chưa
-  const isProfileComplete = (user: typeof userProfile): boolean => {
-    return (
-      user?.fullName?.trim() !== "" &&
-      user?.dateOfBirth?.trim() !== "" &&
-      user?.gender?.trim() !== ""
-    )
-  }
-
-  // Hàm xử lý khi bật/tắt toggle
   const handleToggle = () => {
     const newToggleState = !isToggled
     setIsToggled(newToggleState)
 
     if (newToggleState) {
-      if (userProfile && isProfileComplete(userProfile)) {
-        // Nếu thông tin đầy đủ, điền vào form
+      if (
+        !userProfile?.fullName?.trim() ||
+        !userProfile?.dateOfBirth?.trim() ||
+        !userProfile?.gender?.trim()
+      ) {
+        // Hiển thị thông báo khi thiếu thông tin
+        setShowModal(true)
+      } else {
         setName(userProfile.fullName)
         setGender(userProfile.gender)
 
@@ -61,22 +57,30 @@ const FengShuiLookup: React.FC = () => {
         setYear(year)
 
         setIsReadOnly(true)
-      } else {
-        // Nếu thông tin chưa đầy đủ, chuyển đến trang cài đặt
-        navigate("/Setting/profile")
       }
     } else {
-      // Reset form khi tắt toggle
       setName("")
       setGender("")
       setDay("")
       setMonth("")
       setYear("")
       setIsReadOnly(false)
+      setShowModal(false) // Ẩn thông báo khi tắt toggle
     }
   }
 
-  // Hàm xử lý khi submit form
+  // Hàm chuyển hướng đến trang profile
+  const goToProfile = () => {
+    setShowModal(false) // Đóng modal
+    navigate("/Setting/profile?redirect=fengshui")
+  }
+
+  // Hàm đóng modal và reset trạng thái toggle
+  const handleCloseModal = () => {
+    setShowModal(false)
+    setIsToggled(false) // Tắt toggle khi đóng modal
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -100,8 +104,8 @@ const FengShuiLookup: React.FC = () => {
       <div
         className="relative flex flex-col items-center justify-center text-white"
         style={{
-          width: "1600px",
-          height: "822px",
+          width: "100%",
+          height: "1000px",
           backgroundImage: `url('https://cdn-media.sforum.vn/storage/app/media/wp-content/uploads/2023/12/hinh-nen-vu-tru-72.jpg')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -116,6 +120,16 @@ const FengShuiLookup: React.FC = () => {
         </p>
         <div className="relative w-full max-w-md rounded-lg bg-white bg-opacity-10 p-8">
           <h2 className="mb-4 text-2xl font-bold">GIẢI MÃ CUỘC ĐỜI BẠN</h2>
+
+          <ConfirmModal1
+            isOpen={showModal}
+            onClose={handleCloseModal} // Đóng modal và tắt toggle
+            onConfirm={goToProfile}
+            message="Bạn cần cập nhật thông tin trước khi đoán mệnh."
+            confirmText="Đi đến cập nhật"
+            cancelText="Hủy"
+          />
+
           <form className="space-y-4" onSubmit={handleSubmit}>
             <InputField
               label="Họ Và Tên"
@@ -180,8 +194,6 @@ const FengShuiLookup: React.FC = () => {
                 disabled={isReadOnly}
               />
             </div>
-
-            {/* Chỉ hiển thị toggle khi người dùng đã đăng nhập */}
             {currentUser && (
               <ToggleSwitch
                 isToggled={isToggled}

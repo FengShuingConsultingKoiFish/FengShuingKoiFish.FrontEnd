@@ -159,7 +159,7 @@ const SeeAllPond: React.FC = () => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 50 }}
-      className="flex min-h-screen flex-col items-center bg-yellow-50 p-10"
+      className="white flex min-h-screen flex-col items-center p-10"
     >
       <div className="mb-6 flex justify-start space-x-4">
         <button

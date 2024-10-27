@@ -49,7 +49,11 @@ const ProfileSetting: React.FC<ProfileSettingProps> = () => {
             <AccountDetail
               fullName={userProfile?.fullName || ""}
               identityCard={userProfile?.identityCard || ""}
-              dateOfBirth={userProfile?.dateOfBirth ? new Date(userProfile.dateOfBirth) : null}
+              dateOfBirth={
+                userProfile?.dateOfBirth
+                  ? new Date(userProfile.dateOfBirth)
+                  : null
+              }
               gender={userProfile?.gender || ""}
               imageId=""
               avatar={userProfile?.avatar || defaultAvatar}
