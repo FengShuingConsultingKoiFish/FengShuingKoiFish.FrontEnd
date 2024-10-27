@@ -17,6 +17,8 @@ import ToasterProvider from "./components/providers/Toaster"
 import LoginModal from "./components/ui/modals/LoginModal"
 import SignupModal from "./components/ui/modals/SignupModal"
 import { RootState } from "./lib/redux/store"
+import AddKoi from "./pages/AddKoi"
+import AddPond from "./pages/AddPond"
 import { AdminPage } from "./pages/Admin/AdminPage"
 import { ApprovedAdver } from "./pages/Admin/ManageAdver/ApprovedAdver"
 import { ManageAdverPage } from "./pages/Admin/ManageAdver/ManageAdver"
@@ -58,7 +60,6 @@ import SuccessPage from "./pages/Verification/SuccessPage"
 import { PaymentDetailPage } from "./pages/History/ViewPaymentHistoryDetail"
 import { ManagePaymentPage } from "./pages/Admin/ManagePayment/ManagePayment"
 import { AllPayment } from "./pages/Admin/ManagePayment/AllPayment"
-
 const ProtectedAdminPage = ProtectedRouteForAdmin(AdminPage)
 const ProtectedManageBlogPage = ProtectedRouteForAdmin(ManageBlogPage)
 const ProtectedManageAdverPkgPage = ProtectedRouteForAdmin(ManageAdverPkgPage)
@@ -72,6 +73,7 @@ const ProtectedPurchasedPkgDetailPage = ProtectedRouteForUser(
 const ProtectedMyBlog = ProtectedRouteForUser(PostedBlog)
 const ProtectedCreateAdver = ProtectedRouteForUser(UserCreateAdver)
 const ProtectedPaymentDetail = ProtectedRouteForUser(PaymentDetailPage)
+
 
 
 function App() {
@@ -123,6 +125,8 @@ function App() {
           <Route path="/create-pond" element={<CreatePondPage />} />
           <Route path="/see-all-pond" element={<SeeAllPond />} />
           <Route path="/pond-details/:userPondId" element={<PondDetails />} />
+          <Route path="/add-koi/:userPondId" element={<AddKoi />} />
+          <Route path="/add-pond/:userPondId" element={<AddPond />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog-cua-toi" element={<ProtectedMyBlog />} />
           <Route path="/goi-cua-toi" element={<ProtectedPurchasedPkgPage />} />
