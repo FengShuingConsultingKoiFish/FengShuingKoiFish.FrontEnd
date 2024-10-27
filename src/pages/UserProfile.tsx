@@ -1,11 +1,9 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
-import nProgress from "nprogress"
 import "nprogress/nprogress.css"
 import { FaBirthdayCake, FaIdCard, FaUserTie } from "react-icons/fa"
-import { IoMdFemale, IoMdMale } from "react-icons/io"
 import { TbGenderBigender } from "react-icons/tb"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
 import { RootState } from "@/lib/redux/store"
@@ -15,15 +13,13 @@ import Avatar from "@/components/layout/header/Avatar"
 import CustomButton from "./Setting/Components/CustomBtn"
 
 const UserProfilePage = () => {
-  const dispatch = useDispatch()
   const navigate = useNavigate()
   const defaultAvatar =
     "https://t4.ftcdn.net/jpg/02/29/75/83/360_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg"
 
   const [isHovered, setIsHovered] = useState(false) // State to handle hover effect
-  const fileInputRef = useRef<HTMLInputElement>(null)
   //const [userProfile, setUserProfile] = useState<any>(null)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorMessage] = useState<string | null>(null)
 
   useEffect(() => {
     window.scrollTo(0, 0)
