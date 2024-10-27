@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from "axios";
 
-export const BASE_URL = "https://localhost:7166";
-//export const BASE_URL = "https://consultingfish.azurewebsites.net";
+//export const BASE_URL = "https://localhost:7166";
+export const BASE_URL = "https://consultingfish.azurewebsites.net";
 
 export const axiosClient = axios.create({
   baseURL: BASE_URL,
