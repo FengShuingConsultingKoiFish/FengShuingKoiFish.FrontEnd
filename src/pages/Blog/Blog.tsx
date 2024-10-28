@@ -80,8 +80,7 @@ const Blog = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [orderBlog, setOrderBlog] = useState<1 | 2>(1)
-
-  const [comments, setComments] = useState<{ [key: number]: string }>({}) 
+  const [, setComments] = useState<{ [key: number]: string }>({}) 
   const [apiMessages, setApiMessages] = useState<{ [key: number]: string }>({}) 
   const [activeBlogId, setActiveBlogId] = useState<number | null>(null);
 
