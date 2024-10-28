@@ -7,7 +7,7 @@ import {
 } from "react-icons/io"
 
 import { getAllBlogs } from "@/lib/api/Blog"
-import { createUpdateComment } from "@/lib/api/Comments"
+import { createUpdateComment, createUpdateCommentForAdvertisement } from "@/lib/api/Comments"
 
 import { AuroraBackground } from "@/components/ui/AuroraBg"
 import Container from "@/components/ui/Container"
@@ -25,6 +25,8 @@ import CustomButton from "../Setting/Components/CustomBtn"
 import { ClipLoader } from "react-spinners"
 import { RootState } from "@/lib/redux/store"
 import { useSelector } from "react-redux"
+import { getAllAdvertisements } from "@/lib/api/Advertisement"
+import { AdvertisementCard } from "@/components/ui/advertisement/AdvertisementCard"
 
 interface ImageViewDto {
   id: number
@@ -40,53 +42,102 @@ interface Blog {
   title: string
   content: string
   userName: string
+  description: string
+  price: number
+  
+  
+
   createdDate: string
   status: string
   imageViewDtos: ImageViewDto[]
   commentViewDtos?: []
 }
 
+interface Advertisement {
+  id: number
+  title: string
+  userName: string
+  createdDate: string
+  description: string
+  price: number
+  content: string
+  imageViewDtos: ImageViewDto[]
+  commentViewDtos?: []
+}
+
+interface InterleavedItem {
+  type: "blog" | "advertisement";
+  data: Blog | Advertisement;
+}
+
 const Blog = () => {
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
-  const [blogs, setBlogs] = useState<Blog[]>([])
+  const [, setBlogs] = useState<Blog[]>([])
+  const [, setAdvertisements] = useState<Advertisement[]>([]);
+  const [combinedItems, setCombinedItems] = useState<InterleavedItem[]>([]);
   const [pageIndex, setPageIndex] = useState(1)
   const [pageSize] = useState(7)
   const [totalPages, setTotalPages] = useState(1)
   const [isLoading, setIsLoading] = useState(true)
   const [orderBlog, setOrderBlog] = useState<1 | 2>(1)
 
-  const [, setComments] = useState<{ [key: number]: string }>({}) 
+  const [comments, setComments] = useState<{ [key: number]: string }>({}) 
   const [apiMessages, setApiMessages] = useState<{ [key: number]: string }>({}) 
   const [activeBlogId, setActiveBlogId] = useState<number | null>(null);
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
+  
 
-    const fetchBlogs = async () => {
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
       try {
-        setIsLoading(true)
-        const requestData = {
+        const blogRequestData = {
           pageIndex,
           pageSize,
           title: null,
           blogStatus: 2,
           orderBlog,
+          orderComment: 1,
+          orderImage: null
+        };
+        const advertisementRequestData = {
+          pageIndex,
+          pageSize,
+          advertisementStatus: 1, // Adjust the status based on your requirements
+          orderAdvertisement: 1,
           orderComment: null,
           orderImage: null
-        }
-        const response = await getAllBlogs(requestData)
-        console.log(response.result.datas)
-        setBlogs(response.result.datas)
-        setTotalPages(response.result.totalPages)
-      } catch (error) {
-        console.error("Error fetching blogs:", error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+        };
 
-    fetchBlogs()
-  }, [pageIndex, orderBlog])
+        const [blogResponse, adResponse] = await Promise.all([
+          getAllBlogs(blogRequestData),
+          getAllAdvertisements(advertisementRequestData)
+        ]);
+        //@ts-ignore
+        setBlogs(blogResponse.result.datas);
+        //@ts-ignore
+        setAdvertisements(adResponse.result.datas);
+        setTotalPages(Math.max(blogResponse.result.totalPages, adResponse.result.totalPages));
+
+        // Interleave blogs and advertisements
+        const interleavedItems = [];
+        const maxItems = Math.max(blogResponse.result.datas.length, adResponse.result.datas.length);
+        for (let i = 0; i < maxItems; i++) {
+          if (i < blogResponse.result.datas.length) interleavedItems.push({ type: "blog", data: blogResponse.result.datas[i] });
+          if (i < adResponse.result.datas.length) interleavedItems.push({ type: "advertisement", data: adResponse.result.datas[i] });
+        }
+        //@ts-ignore
+        setCombinedItems(interleavedItems);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [pageIndex, orderBlog]);
 
   const handlePreviousPage = () => {
     if (pageIndex > 1) {
@@ -109,7 +160,7 @@ const Blog = () => {
     setPageIndex(1)
   }
 
-  const handleCommentSubmit = async (blogId: number, comment: string) => {
+  const handleBlogCommentSubmit = async (blogId: number, comment: string) => {
     try {
       const response = await createUpdateComment({
         blogId,
@@ -138,6 +189,36 @@ const Blog = () => {
     }
   }
 
+  const handleAdCommentSubmit = async (advertisementId: number, comment: string) => {
+    try {
+      const response = await createUpdateCommentForAdvertisement({
+        advertisementId,
+        content: comment
+      })
+
+      console.log(response)
+
+      if (response.isSuccess) {
+        setApiMessages((prev) => ({
+          ...prev,
+          [advertisementId]: ""
+        }))
+        setComments((prev) => ({ ...prev, [advertisementId]: "" }))
+      } else {
+        setApiMessages((prev) => ({
+          ...prev,
+          [advertisementId]: response.message || "Failed to submit comment."
+        }))
+      }
+    } catch (error: any) {
+      setApiMessages((prev) => ({
+        ...prev,
+        [advertisementId]: error.message || "An unknown error occurred."
+      }))
+    }
+  }
+
+ 
   const handleCommentToggle = (blogId: number) => {
     setActiveBlogId((prevBlogId) => (prevBlogId === blogId ? null : blogId)); 
   };
@@ -160,80 +241,98 @@ const Blog = () => {
         }}
         className="relative flex w-full flex-col justify-start gap-4 pb-10"
       >
-        <div className="">
-          <Hero images={images} />
-          <Container>
-            <div className="my-10 flex flex-row items-center justify-start gap-5 font-semibold">
-              <span>Bộ lọc</span>
-              <Select
-                onValueChange={handleOrderChange}
-                value={orderBlog === 1 ? "newest" : "oldest"}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Thời gian đăng bài" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Mới nhất</SelectItem>
-                  <SelectItem value="oldest">Cũ nhất</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        <Hero images={images} />
+        <Container>
+          <div className="my-10 flex items-center gap-5 font-semibold">
+            <span>Bộ lọc</span>
+            <Select onValueChange={handleOrderChange} value={orderBlog === 1 ? "newest" : "oldest"}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Thời gian đăng bài" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Mới nhất</SelectItem>
+                <SelectItem value="oldest">Cũ nhất</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <ClipLoader size={40} color="#000" />
-              </div>
-            ) : blogs.length > 0 ? (
-              <div className="flex w-full justify-center">
-                <div className="flex w-[60rem] flex-col justify-center">
-                  {blogs.map((blog) => (
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <ClipLoader size={40} color="#000" />
+            </div>
+          ) : combinedItems.length > 0 ? (
+            <div className="flex w-full justify-center">
+              <div className="flex w-[60rem] flex-col justify-center">
+                {combinedItems.map((item, index) =>
+                  item.type === "blog" ? (
                     <ArticleCard
-                      key={blog.id}
-                      id={blog.id}
+                      key={index}
+                      id={item.data.id}
                       img={
-                        blog.imageViewDtos.length > 0
-                          ? blog.imageViewDtos.map((image) => image.filePath)
+                        item.data.imageViewDtos.length > 0
+                          ? item.data.imageViewDtos.map(image => image.filePath)
                           : ["https://via.placeholder.com/150"]
                       }
-                      title={blog.title}
-                      content={blog.content}
-                      userName={blog.userName}
-                      createdDate={blog.createdDate}
-                      commentViewDtos={blog.commentViewDtos}
+                      title={item.data.title}
+                      content={item.data.content}
+                      userName={item.data.userName}
+                      createdDate={item.data.createdDate}
+                      commentViewDtos={item.data.commentViewDtos}
                       activeBlogId={activeBlogId}
-                      onSubmitComment={handleCommentSubmit}
+                      //@ts-ignore
+                      onSubmitComment={handleBlogCommentSubmit}
                       onToggleComment={handleCommentToggle}
                       currentUser={currentUser}
-                      apiMessage={apiMessages[blog.id]}
+                      apiMessage={apiMessages[item.data.id]}
                     />
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div>No blogs available.</div>
-            )}
-            <div className="flex justify-center">
-              <div className="mt-6 inline-flex items-center">
-                <CustomButton
-                  icon={<IoIosArrowDropleftCircle />}
-                  label="Trang trước"
-                  onClick={handlePreviousPage}
-                  disabled={pageIndex === 1 || isLoading}
-                />
-                <span className="inline-flex items-center px-4">{`Trang ${pageIndex} trên ${totalPages}`}</span>
-                <CustomButton
-                  icon={<IoIosArrowDroprightCircle />}
-                  label="Trang sau"
-                  onClick={handleNextPage}
-                  disabled={pageIndex === totalPages || isLoading}
-                />
+                  ) : (
+                    <AdvertisementCard
+                      key={index}
+                      id={item.data.id}
+                      img={
+                        item.data.imageViewDtos.length > 0
+                          ? item.data.imageViewDtos.map(image => image.filePath)
+                          : ["https://via.placeholder.com/150"]
+                      }
+                      title={item.data.title}
+                      description={item.data.description}
+                      price={item.data.price}
+                      userName={item.data.userName}
+                      createdDate={item.data.createdDate}
+                      commentViewDtos={item.data.commentViewDtos}
+                      activeBlogId={activeBlogId}
+                      //@ts-ignore
+                      onSubmitComment={handleAdCommentSubmit}
+                      onToggleComment={handleCommentToggle}
+                      currentUser={currentUser}
+                    />
+                  )
+                )}
               </div>
             </div>
-          </Container>
-        </div>
+          ) : (
+            <div>No blogs or advertisements available.</div>
+          )}
+
+          <div className="flex justify-center mt-6">
+            <CustomButton
+              icon={<IoIosArrowDropleftCircle />}
+              label="Trang trước"
+              onClick={handlePreviousPage}
+              disabled={pageIndex === 1 || isLoading}
+            />
+            <span className="inline-flex items-center px-4">{`Trang ${pageIndex} trên ${totalPages}`}</span>
+            <CustomButton
+              icon={<IoIosArrowDroprightCircle />}
+              label="Trang sau"
+              onClick={handleNextPage}
+              disabled={pageIndex === totalPages || isLoading}
+            />
+          </div>
+        </Container>
       </motion.div>
     </AuroraBackground>
-  )
-}
+  );
+};
 
 export default Blog

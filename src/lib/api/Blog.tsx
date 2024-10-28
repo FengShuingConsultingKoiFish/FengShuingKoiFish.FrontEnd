@@ -155,7 +155,7 @@ interface GetAllBlogsRequest {
   title?: string | null
   blogStatus?: number | null
   orderBlog?: number | null
-  orderComment?: string | null
+  orderComment?: number| null
   orderImage?: string | null
 }
 
