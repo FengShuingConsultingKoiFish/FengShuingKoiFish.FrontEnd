@@ -242,3 +242,46 @@ export const getAllAdvertisementsForUser = async (
     nProgress.done();
   }
 };
+
+interface GetAdvertisementsResponse {
+  statusCode: number;
+  isSuccess: boolean;
+  message: string;
+  errors: any;
+  result: {
+    pageIndex: number;
+    totalPages: number;
+    totalItems: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+    datas: Advertisement[];
+  };
+}
+
+export const getAllAdvertisements = async (
+  requestData: GetAdvertisementsRequest
+): Promise<GetAdvertisementsResponse> => {
+  try {
+    nProgress.start();
+
+    const response = await axiosClient.post<GetAdvertisementsResponse>(
+      "/api/Advertisements/get-all-advertisements",
+      requestData
+    );
+
+    return response.data;
+  } catch (error: any) {
+    nProgress.done();
+    if (error.response) {
+      console.error("API Error:", error.response.data.message);
+      toast.error(error.response.data.message || "An error occurred");
+      throw new Error(error.response.data.message || "An error occurred");
+    } else {
+      console.error("Unknown error:", error.message);
+      toast.error("An unknown error occurred");
+      throw new Error("An unknown error occurred");
+    }
+  } finally {
+    nProgress.done();
+  }
+};
