@@ -43,7 +43,7 @@ const PondConsultationPage: React.FC = () => {
   const navigate = useNavigate()
   const loginModal = useLoginModal()
   const [zodiacName, setZodiacName] = useState<string>("")
-  const [userName, setUserName] = useState<string>("") // Thêm trạng thái cho tên người dùng
+  const [userName, setUserName] = useState<string>("")
   const [ponds, setPonds] = useState<
     Array<{ pondName: string; image: string }>
   >([])
@@ -53,11 +53,9 @@ const PondConsultationPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [zodiacMissing, setZodiacMissing] = useState<boolean>(false)
 
-  // Hàm lấy trạng thái đoán mệnh và thông tin user
   const fetchZodiacStatus = async (): Promise<boolean> => {
     const token = sessionStorage.getItem("token")
 
-    // Kiểm tra nếu token không tồn tại
     if (!token) {
       toast.error("Vui lòng đăng nhập trước khi truy cập trang này.")
       loginModal.onOpen()
@@ -95,7 +93,6 @@ const PondConsultationPage: React.FC = () => {
     }
   }
 
-  // Fetch ponds and koi breeds advice based on zodiac
   const fetchConsultationAdvice = async () => {
     const token = sessionStorage.getItem("token")
     if (!token) return
@@ -116,7 +113,6 @@ const PondConsultationPage: React.FC = () => {
         console.error("Error fetching pond advice:", pondResponse.data.message)
       }
 
-      // Call API to get koi breeds advice
       const koiResponse = await axiosClient.get<KoiResponse>(
         `/api/Koi/Get-Suitable-Koi-For-User?zodiacName=${zodiacName}`,
         {
@@ -153,7 +149,7 @@ const PondConsultationPage: React.FC = () => {
     }
 
     validateAndFetch()
-  }, []) // Loại bỏ dependency `zodiacName` để tránh gọi lại không cần thiết
+  }, [])
 
   const renderKoiBreeds = () => {
     return koiBreeds.length > 0 ? (
@@ -258,7 +254,6 @@ const PondConsultationPage: React.FC = () => {
               <p className="text-xl font-semibold">Xin chào {userName}!</p>
             </div>
 
-            {/* Background cho phần giống cá */}
             <div className="bg-cream-stone container mt-8 w-[1600px] rounded-lg p-8">
               <h1 className="title mb-8 mt-4 text-3xl font-bold">
                 Giống Cá Phù Hợp
@@ -266,7 +261,6 @@ const PondConsultationPage: React.FC = () => {
               <div className="grid grid-cols-2 gap-4">{renderKoiBreeds()}</div>
             </div>
 
-            {/* Background cho phần hồ cá */}
             <div className="bg-cream-stone container mt-12 w-[1600px] rounded-lg p-8">
               <h1 className="title mb-8 mt-4 text-3xl font-bold">
                 Hồ Cá Phù Hợp

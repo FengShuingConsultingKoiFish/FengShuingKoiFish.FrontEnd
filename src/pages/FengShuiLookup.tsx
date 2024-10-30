@@ -25,7 +25,7 @@ const FengShuiLookup: React.FC = () => {
   const [isToggled, setIsToggled] = useState(false)
   const [isReadOnly, setIsReadOnly] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  const [loading, setLoading] = useState(false) // Thêm trạng thái loading
+  const [loading, setLoading] = useState(false)
 
   const userProfile = useSelector((state: RootState) => state.users.detailUser)
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
@@ -81,7 +81,7 @@ const FengShuiLookup: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true) // Bắt đầu loading
+    setLoading(true)
 
     setTimeout(() => {
       navigate("/ket-qua", {
@@ -92,8 +92,8 @@ const FengShuiLookup: React.FC = () => {
           useAccountInfo: isToggled
         }
       })
-      setLoading(false) // Kết thúc loading sau khi chuyển hướng
-    }, 2000) // Thời gian chờ 2 giây
+      setLoading(false)
+    }, 1000)
   }
 
   return (

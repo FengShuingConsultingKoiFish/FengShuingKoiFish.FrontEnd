@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react"
 
 import axios from "axios"
+import toast from "react-hot-toast"
 import { FaArrowLeft } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
 import { axiosClient } from "@/lib/api/config/axios-client"
 
 import OnclickButton from "@/components/global/atoms/OnclickButton"
-
-// Đảm bảo bạn đã import axiosClient
 
 interface PondCharacteristic {
   id: number
@@ -87,6 +86,7 @@ const AddPond: React.FC = () => {
       )
 
       if (response.data.isSuccess) {
+        toast.success("Thêm loại Hồ thành công!")
         navigate(`/pond-details/${userPondId}`)
       } else {
         setError(response.data.message || "Có lỗi xảy ra.")
@@ -98,7 +98,7 @@ const AddPond: React.FC = () => {
         setError("Có lỗi xảy ra khi thêm hồ.")
       }
     } finally {
-      setLoading(false) // Kết thúc loading
+      setLoading(false)
     }
   }
 
@@ -165,9 +165,9 @@ const AddPond: React.FC = () => {
             {selectedPondId === pond.id && (
               <div className="mt-2 flex justify-center">
                 <OnclickButton
-                  label={loading ? "Đang xử lý..." : "Thêm"} // Đổi label khi loading
+                  label={loading ? "Đang xử lý..." : "Thêm"}
                   onClick={() => handleSubmit(pond.id)}
-                  disabled={loading} // Vô hiệu hóa nút khi loading
+                  disabled={loading}
                 />
               </div>
             )}

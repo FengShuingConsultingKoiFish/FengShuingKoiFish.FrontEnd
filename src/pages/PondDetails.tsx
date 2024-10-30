@@ -1,6 +1,6 @@
-// src/PondDetails.tsx
 import React, { useEffect, useState } from "react"
 
+import toast from "react-hot-toast"
 import { FaPlus, FaTimes } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
@@ -19,8 +19,6 @@ import {
   PondInfo
 } from "./interfaces"
 
-// Import ConfirmModal
-
 const PondDetails: React.FC = () => {
   const { userPondId } = useParams<{ userPondId: string }>()
   const navigate = useNavigate()
@@ -29,6 +27,7 @@ const PondDetails: React.FC = () => {
   const [pondDetails, setPondDetails] = useState<PondDetail[]>([])
   const [quantity, setQuantity] = useState<number | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+  const [confirmLoading, setConfirmLoading] = useState<boolean>(false)
   const [, setError] = useState<string | null>(null)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
   const [itemToDelete, setItemToDelete] = useState<number | null>(null)
@@ -158,6 +157,7 @@ const PondDetails: React.FC = () => {
       )
 
       if (response.data.isSuccess) {
+        toast.success("Xóa thành công!")
         setKoiDetails((prevKoiDetails) =>
           prevKoiDetails.filter((koi) => koi.koiDetailId !== itemToDelete)
         )
@@ -202,6 +202,7 @@ const PondDetails: React.FC = () => {
       })
 
       if (response.data.isSuccess) {
+        toast.success("Xóa thành công!")
         setPondDetails((prevPondDetails) =>
           prevPondDetails.filter((pond) => pond.pondDetailId !== itemToDelete)
         )
@@ -266,6 +267,14 @@ const PondDetails: React.FC = () => {
       </div>
     )
   })
+  const handleConfirmNavigation = () => {
+    setConfirmLoading(true)
+    setTimeout(() => {
+      setConfirmLoading(false)
+      navigate(`/see-all-pond#pond-${userPondId}`)
+      toast.success("Cập nhật thành công!")
+    }, 1000)
+  }
 
   return (
     <div className="container mx-auto p-4">
@@ -273,19 +282,22 @@ const PondDetails: React.FC = () => {
         label="Trở lại"
         onClick={() => navigate("/see-all-pond")}
       />
-      <h1 className="mb-4 text-center text-2xl font-bold text-gray-500">
+
+      <h1 className="mb-10 bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-center text-5xl font-extrabold text-transparent">
         Chi tiết Hồ và Koi
       </h1>
 
-      <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
-        <h2 className="mb-2 text-xl font-semibold">Chi tiết Koi</h2>
+      <div className="mb-6 rounded-3xl bg-white p-8 shadow-2xl">
+        <h2 className="mb-2 text-center text-4xl font-semibold">
+          Chi tiết Koi
+        </h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {koiCards}
         </div>
       </div>
 
-      <div className="rounded-lg bg-white p-6 shadow-md">
-        <h2 className="mb-2 text-xl font-semibold">Chi tiết Hồ</h2>
+      <div className="mb-6 rounded-3xl bg-white p-8 shadow-2xl">
+        <h2 className="mb-2 text-center text-4xl font-semibold">Chi tiết Hồ</h2>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {pondDetails.map((pond: PondDetail) => (
             <div
@@ -317,7 +329,6 @@ const PondDetails: React.FC = () => {
         </div>
       </div>
 
-      {/* Sử dụng ConfirmModal */}
       <ConfirmModal
         isVisible={showConfirmModal}
         message="Bạn có chắc chắn muốn xóa mục này?"
@@ -327,8 +338,9 @@ const PondDetails: React.FC = () => {
 
       <div className="mt-8 flex justify-center">
         <OnclickButton
-          label="Xác nhận"
-          onClick={() => navigate(`/see-all-pond#pond-${userPondId}`)}
+          label={confirmLoading ? "Chờ..." : "Xác nhận"}
+          onClick={handleConfirmNavigation}
+          disabled={confirmLoading}
         />
       </div>
     </div>

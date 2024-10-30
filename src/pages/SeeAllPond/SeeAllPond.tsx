@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 
-// Import axiosClient thay vì axios
 import { motion } from "framer-motion"
 import toast from "react-hot-toast"
 import { useLocation, useNavigate } from "react-router-dom"
@@ -29,8 +28,8 @@ const SeeAllPond: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const [visiblePonds, setVisiblePonds] = useState<number>(4)
   const [activeButton, setActiveButton] = useState<string>("see-all")
-  const [filter, setFilter] = useState<string>("all") // Thêm trạng thái filter
-  const [searchTerm, setSearchTerm] = useState<string>("") // Thêm trạng thái tìm kiếm
+  const [filter, setFilter] = useState<string>("all")
+  const [searchTerm, setSearchTerm] = useState<string>("")
   const location = useLocation()
   const navigate = useNavigate()
   const loginModal = useLoginModal()
@@ -47,14 +46,11 @@ const SeeAllPond: React.FC = () => {
 
     const fetchPonds = async () => {
       try {
-        const response = await axiosClient.get(
-          "/api/UserPond/getall", // Sử dụng đường dẫn tương đối
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+        const response = await axiosClient.get("/api/UserPond/getall", {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        )
+        })
         if (response.data.isSuccess) {
           setPonds(response.data.result)
         } else {
@@ -212,7 +208,9 @@ const SeeAllPond: React.FC = () => {
         <button
           onClick={() => handleFilterChange("all")}
           className={`rounded-lg px-6 py-2 font-semibold text-white transition-all duration-300 ${
-            filter === "all" ? "bg-blue-500" : "bg-gray-400"
+            filter === "all"
+              ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
+              : "bg-gray-400"
           }`}
         >
           Tất cả
@@ -220,7 +218,9 @@ const SeeAllPond: React.FC = () => {
         <button
           onClick={() => handleFilterChange("hasScore")}
           className={`rounded-lg px-6 py-2 font-semibold text-white transition-all duration-300 ${
-            filter === "hasScore" ? "bg-blue-500" : "bg-gray-400"
+            filter === "hasScore"
+              ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
+              : "bg-gray-400"
           }`}
         >
           Đã có điểm
@@ -228,7 +228,9 @@ const SeeAllPond: React.FC = () => {
         <button
           onClick={() => handleFilterChange("noScore")}
           className={`rounded-lg px-6 py-2 font-semibold text-white transition-all duration-300 ${
-            filter === "noScore" ? "bg-blue-500" : "bg-gray-400"
+            filter === "noScore"
+              ? "bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
+              : "bg-gray-400"
           }`}
         >
           Chưa có điểm

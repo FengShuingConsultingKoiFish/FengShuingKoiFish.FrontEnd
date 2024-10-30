@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 
+import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
 
 import { axiosClient } from "@/lib/api/config/axios-client"
@@ -37,6 +38,7 @@ const PondCard: React.FC<PondCardProps> = ({
   const [scoreDetail, setScoreDetail] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
   const handleViewDetails = () => {
     navigate(`/pond-details/${pond.id}`, { state: { quantity: pond.quantity } })
@@ -46,6 +48,7 @@ const PondCard: React.FC<PondCardProps> = ({
     if (window.confirm("Bạn có chắc chắn muốn xóa hồ cá này?")) {
       onDelete(id)
     }
+    toast.success("Xóa thành công!")
   }
 
   const handleEdit = () => {
@@ -66,21 +69,27 @@ const PondCard: React.FC<PondCardProps> = ({
   }
 
   const handleSave = async () => {
+    setLoading(true)
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    toast.success("Cập nhật thành công!")
     if (
       !updatedPond.pondName ||
       !updatedPond.quantity ||
       !updatedPond.description
     ) {
       setErrorMessage("Các trường không được để trống!")
+      setLoading(false)
       return
     }
 
     if (!validateName(updatedPond.pondName, id)) {
       setErrorMessage("Tên hồ cá đã tồn tại!")
+      setLoading(false)
       return
     }
 
     if (selectedFile) {
+      setLoading(true)
       const formData = new FormData()
       formData.append("File", selectedFile)
       try {
@@ -100,18 +109,23 @@ const PondCard: React.FC<PondCardProps> = ({
           updatedPond.image = uploadResponse.data.result.filePath
         } else {
           setErrorMessage("Tải lên ảnh không thành công.")
+          setLoading(false)
           return
         }
       } catch (error) {
         console.error("Lỗi khi tải lên ảnh:", error)
         setErrorMessage("Có lỗi xảy ra khi tải lên ảnh.")
+        setLoading(false)
         return
+      } finally {
+        setLoading(false)
       }
     }
 
     setErrorMessage(null)
     onUpdate(updatedPond)
     setIsEditing(false)
+    setLoading(false)
   }
 
   const handleInputChange = (
@@ -212,9 +226,10 @@ const PondCard: React.FC<PondCardProps> = ({
           <div className="flex space-x-4">
             <button
               onClick={handleSave}
-              className="rounded bg-blue-500 px-6 py-2 font-semibold text-white transition-all duration-300 hover:bg-blue-400"
+              className="rounded bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 px-6 py-2 font-semibold text-white transition-all duration-300 hover:bg-blue-400"
+              disabled={loading}
             >
-              Lưu
+              {loading ? "Đang lưu..." : "Lưu"}{" "}
             </button>
             <button
               onClick={handleCancelEdit}
@@ -250,7 +265,7 @@ const PondCard: React.FC<PondCardProps> = ({
                 : Math.round(score)}
               <button
                 onClick={handleScoreDetail}
-                className="ml-4 rounded bg-blue-500 px-2 py-1 text-white transition-all duration-300 hover:bg-blue-400"
+                className="ml-4 rounded bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 px-2 py-1 text-white transition-all duration-300 hover:bg-blue-400"
               >
                 Chi tiết
               </button>

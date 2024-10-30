@@ -24,17 +24,15 @@ const Navbar = () => {
     Id: string
     Name: string
     Email: string
-    Role: string // Assuming Role can be "Admin", "Staff", or something else
+    Role: string
   }
 
-  // Get current user from Redux store
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
 
-  // State to control the dropdown menu visibility for "Dịch vụ"
   const [isServiceMenuOpen, setIsServiceMenuOpen] = useState(false)
 
   const toggleServiceMenu = (e: React.MouseEvent) => {
-    e.preventDefault() // Ngăn chặn liên kết hoạt động
+    e.preventDefault()
     setIsServiceMenuOpen((prev) => !prev)
   }
   const closeServiceMenu = () => setIsServiceMenuOpen(false)
@@ -52,7 +50,6 @@ const Navbar = () => {
               <div className="relative flex flex-row gap-5">
                 <Item label="Giới thiệu" link=""></Item>
 
-                {/* Toggleable service menu */}
                 <div className="relative">
                   <button
                     className="focus:outline-none"
@@ -99,7 +96,6 @@ const Navbar = () => {
                 <GifCall />
                 Liên hệ
               </Button>
-              {/* Conditional rendering based on whether user is logged in */}
               <div className="flex flex-row justify-between gap-3">
                 {currentUser ? (
                   <UserMenu currentUser={currentUser} />

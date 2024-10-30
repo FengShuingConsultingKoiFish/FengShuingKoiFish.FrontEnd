@@ -4,8 +4,6 @@ import { useLocation, useNavigate } from "react-router-dom"
 
 import { axiosClient } from "@/lib/api/config/axios-client"
 
-// đảm bảo bạn đã import axiosClient đúng đường dẫn
-
 interface ZodiacResponse {
   statusCode: number
   isSuccess: boolean
@@ -22,13 +20,18 @@ const ResultPage: React.FC = () => {
   const [zodiac, setZodiac] = useState<string>("")
   const [zodiacMessage, setZodiacMessage] = useState<string>("")
   const [loading, setLoading] = useState(true)
+  const [consultingLoading, setConsultingLoading] = useState(false)
 
   const handleNewLookup = () => {
     navigate("/doan-menh")
   }
 
   const handlePondConsultation = () => {
-    navigate("/tu-van-ho", { state: { zodiacName: zodiac } })
+    setConsultingLoading(true)
+    setTimeout(() => {
+      setConsultingLoading(false)
+      navigate("/tu-van-ho", { state: { zodiacName: zodiac } })
+    }, 1000)
   }
 
   const fetchZodiacForGuest = async () => {
@@ -155,9 +158,9 @@ const ResultPage: React.FC = () => {
                 <button
                   className="button-glow mt-4 rounded-md bg-purple-500 px-4 py-2 text-white"
                   onClick={handlePondConsultation}
-                  disabled={!zodiac}
+                  disabled={!zodiac || consultingLoading}
                 >
-                  Tư Vấn Hồ Cá
+                  {consultingLoading ? "Đang tải..." : "Tư Vấn Hồ Cá"}
                 </button>
               )}
             </div>

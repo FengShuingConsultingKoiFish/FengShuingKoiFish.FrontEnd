@@ -26,7 +26,7 @@ const CreatePondPage: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [existingPonds, setExistingPonds] = useState<Pond[]>([])
-  const [loading, setLoading] = useState(false) // Thêm trạng thái loading
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
   const loginModal = useLoginModal()
 
@@ -151,7 +151,7 @@ const CreatePondPage: React.FC = () => {
       console.error("Có lỗi xảy ra: ", error)
       setErrorMessage("Có lỗi xảy ra khi tạo hồ cá, vui lòng thử lại.")
     } finally {
-      setLoading(false) // Kết thúc trạng thái loading
+      setLoading(false)
     }
   }
 
@@ -269,7 +269,6 @@ const CreatePondPage: React.FC = () => {
               label={loading ? "Đang tạo..." : "Tạo hồ cá"}
               disabled={loading}
             />{" "}
-            {/* Hiển thị trạng thái loading */}
           </div>
         </div>
       </form>

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react"
 
 import axios from "axios"
+import toast from "react-hot-toast"
 import { FaArrowLeft } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
 import { axiosClient } from "@/lib/api/config/axios-client"
 
 import OnclickButton from "@/components/global/atoms/OnclickButton"
-
-// Đảm bảo import axiosClient
 
 interface KoiBreed {
   id: number
@@ -85,6 +84,7 @@ const AddKoi: React.FC = () => {
       )
 
       if (response.data.isSuccess) {
+        toast.success("Thêm Koi thành công!")
         navigate(`/pond-details/${userPondId}`)
       } else {
         setError(response.data.message || "Có lỗi xảy ra.")
@@ -97,7 +97,7 @@ const AddKoi: React.FC = () => {
         setError("Có lỗi xảy ra khi thêm Koi.")
       }
     } finally {
-      setLoading(false) // Kết thúc loading
+      setLoading(false)
     }
   }
 
@@ -111,7 +111,6 @@ const AddKoi: React.FC = () => {
 
   return (
     <div className="relative mb-4 p-4">
-      {/* Back Button */}
       <button
         onClick={() => navigate(`/pond-details/${userPondId}`)}
         className="absolute left-4 top-4 text-gray-600 hover:text-gray-800"
@@ -119,11 +118,9 @@ const AddKoi: React.FC = () => {
         <FaArrowLeft className="text-2xl" />
       </button>
 
-      {/* Title */}
       <h2 className="mb-6 text-center text-2xl font-semibold">Danh sách Koi</h2>
       {error && <p className="text-center text-red-500">{error}</p>}
 
-      {/* Search Bar */}
       <div className="mb-4 flex justify-center">
         <input
           type="text"
@@ -134,7 +131,6 @@ const AddKoi: React.FC = () => {
         />
       </div>
 
-      {/* Koi Breeds List */}
       <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {filteredKoiBreeds.map((koi, index) => (
           <div
@@ -152,7 +148,6 @@ const AddKoi: React.FC = () => {
             }`}
             onClick={() => setSelectedKoiId(koi.id)}
           >
-            {/* Overlay when selected */}
             {selectedKoiId === koi.id && (
               <div className="pointer-events-none absolute inset-0 rounded bg-black bg-opacity-30"></div>
             )}
@@ -166,13 +161,12 @@ const AddKoi: React.FC = () => {
             <p>Hoa văn: {koi.pattern}</p>
             <p>Mô tả: {koi.description}</p>
 
-            {/* Add Button for Selected Koi */}
             {selectedKoiId === koi.id && (
               <div className="mt-2 flex justify-center">
                 <OnclickButton
                   label={loading ? "Đang thêm..." : "Thêm"}
                   onClick={() => handleSubmit(koi.id)}
-                  disabled={loading} // Vô hiệu hóa khi loading
+                  disabled={loading}
                 />
               </div>
             )}
@@ -180,13 +174,9 @@ const AddKoi: React.FC = () => {
         ))}
       </div>
 
-      {/* Show More Button */}
       {visibleItems < koiBreeds.length && (
         <div className="flex justify-center">
-          <OnclickButton
-            label="Xem Thêm"
-            onClick={handleShowMore} // Attach onClick handler
-          />
+          <OnclickButton label="Xem Thêm" onClick={handleShowMore} />
         </div>
       )}
     </div>
