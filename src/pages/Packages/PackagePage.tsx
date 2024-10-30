@@ -113,7 +113,9 @@ export function PackagePage() {
         {isLoading ? (
           <div className="flex items-center justify-center">
             <ClipLoader size={40} color="#000" />
-          </div>
+          </div> 
+        ) :  packages.length === 0 ? (
+          <p>Bạn chưa mua gói quảng cáo nào !</p>
         ) : (
           <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-4">
             {packages.map((pkg) => (

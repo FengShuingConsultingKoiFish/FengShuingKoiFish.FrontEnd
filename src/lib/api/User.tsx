@@ -7,7 +7,6 @@ import toast from "react-hot-toast"
 import { toastWarn } from "@/components/providers/Toaster"
 
 import {
-  clearCurrentUser,
   setDetailUser,
 } from "../redux/reducers/userSlice"
 import { axiosClient } from "./config/axios-client"
@@ -133,10 +132,10 @@ export const GetUserProfile = async (
         case 400:
           toastWarn("Hãy cập nhật thông tin của bạn!")
           break
-        case 401:
-          dispatch(clearCurrentUser())
-          toast.error("Phiên của bạn đã hết hạn !!")
-          break
+        // case 401:
+        //   dispatch(clearCurrentUser())
+        //   toast.error("Phiên của bạn đã hết hạn !!")
+        //   break
         default:
           toast.error(
             error.response.data?.statusCode || "An unknown error occurred"

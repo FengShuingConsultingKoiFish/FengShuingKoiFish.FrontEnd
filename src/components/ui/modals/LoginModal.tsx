@@ -58,12 +58,7 @@ const LoginModal = () => {
 
         // Store token in localStorage (or sessionStorage as in loginUser function)
         if (result && result.user) {
-          const mappedUser = {
-            Id: result.user.Id,
-            Name: result.user.Name,
-            Email: result.user.Email,
-            Role: result.user.Role
-          }
+          const mappedUser = result.user
           dispatch(setCurrentUser(mappedUser))
 
           toast.success(result.message)

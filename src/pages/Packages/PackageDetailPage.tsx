@@ -42,7 +42,8 @@ export const PackageDetailPage = () => {
     useState<AdvertisementPackage | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState("")
-  const currentUser = useSelector((state: RootState) => state.users.detailUser)
+  const userDetail = useSelector((state: RootState) => state.users.detailUser)
+  const currentUser = useSelector((state: RootState) => state.users.currentUser)
 
   useEffect(() => {
     const fetchPackageDetail = async () => {
@@ -70,9 +71,9 @@ export const PackageDetailPage = () => {
     }
 
     const paymentData = {
-     packageId: packageDetail.id,
-     name: packageDetail.name,
-     price: packageDetail.price
+      packageId: packageDetail.id,
+      name: packageDetail.name,
+      price: packageDetail.price
     }
 
     try {
@@ -129,35 +130,70 @@ export const PackageDetailPage = () => {
       content: (
         <div>
           <p className="mb-4 text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
-        Chính sách hoàn trả dành cho khách hàng khi mua gói quảng cáo Cá Koi.
-      </p>
-      <div className="mb-8">
-        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-4">Điều kiện áp dụng hoàn trả:</h2>
-        <ul className="list-disc pl-5 space-y-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
-          <li>Khách hàng có quyền yêu cầu hoàn trả trong vòng 7 ngày kể từ khi mua gói quảng cáo Cá Koi.</li>
-          <li>Chỉ những giao dịch có lỗi kỹ thuật hoặc không thể hiển thị đúng nội dung quảng cáo mới đủ điều kiện hoàn trả.</li>
-          <li>Yêu cầu hoàn trả phải được gửi qua email hoặc liên hệ trực tiếp đến bộ phận chăm sóc khách hàng của chúng tôi.</li>
-        </ul>
-      </div>
-      <div className="mb-8">
-        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-4">Các trường hợp không áp dụng hoàn trả:</h2>
-        <ul className="list-disc pl-5 space-y-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
-          <li>Hoàn trả không áp dụng cho các giao dịch đã được sử dụng hết dung lượng hoặc thời gian quảng cáo.</li>
-          <li>Không hoàn trả trong trường hợp khách hàng thay đổi ý định sau khi mua.</li>
-          <li>Gói quảng cáo đã được hiển thị theo thỏa thuận không thuộc diện được hoàn trả.</li>
-        </ul>
-      </div>
-      <div className="mb-8">
-        <h2 className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-4">Quy trình hoàn trả:</h2>
-        <ul className="list-disc pl-5 space-y-2 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
-          <li>Sau khi nhận yêu cầu hoàn trả hợp lệ, chúng tôi sẽ xác minh và tiến hành xử lý hoàn tiền trong vòng 5 - 7 ngày làm việc.</li>
-          <li>Tiền sẽ được hoàn lại theo phương thức thanh toán ban đầu của khách hàng.</li>
-          <li>Mọi thắc mắc về quá trình hoàn trả, vui lòng liên hệ với bộ phận hỗ trợ để được giải đáp.</li>
-        </ul>
-      </div>
-      <p className="text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
-        Chúng tôi cam kết cung cấp dịch vụ tốt nhất và đảm bảo quyền lợi của khách hàng khi sử dụng gói quảng cáo Cá Koi. 
-      </p>
+            Chính sách hoàn trả dành cho khách hàng khi mua gói quảng cáo Cá
+            Koi.
+          </p>
+          <div className="mb-8">
+            <h2 className="mb-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+              Điều kiện áp dụng hoàn trả:
+            </h2>
+            <ul className="list-disc space-y-2 pl-5 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
+              <li>
+                Khách hàng có quyền yêu cầu hoàn trả trong vòng 7 ngày kể từ khi
+                mua gói quảng cáo Cá Koi.
+              </li>
+              <li>
+                Chỉ những giao dịch có lỗi kỹ thuật hoặc không thể hiển thị đúng
+                nội dung quảng cáo mới đủ điều kiện hoàn trả.
+              </li>
+              <li>
+                Yêu cầu hoàn trả phải được gửi qua email hoặc liên hệ trực tiếp
+                đến bộ phận chăm sóc khách hàng của chúng tôi.
+              </li>
+            </ul>
+          </div>
+          <div className="mb-8">
+            <h2 className="mb-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+              Các trường hợp không áp dụng hoàn trả:
+            </h2>
+            <ul className="list-disc space-y-2 pl-5 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
+              <li>
+                Hoàn trả không áp dụng cho các giao dịch đã được sử dụng hết
+                dung lượng hoặc thời gian quảng cáo.
+              </li>
+              <li>
+                Không hoàn trả trong trường hợp khách hàng thay đổi ý định sau
+                khi mua.
+              </li>
+              <li>
+                Gói quảng cáo đã được hiển thị theo thỏa thuận không thuộc diện
+                được hoàn trả.
+              </li>
+            </ul>
+          </div>
+          <div className="mb-8">
+            <h2 className="mb-4 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
+              Quy trình hoàn trả:
+            </h2>
+            <ul className="list-disc space-y-2 pl-5 text-xs text-neutral-700 dark:text-neutral-300 md:text-sm">
+              <li>
+                Sau khi nhận yêu cầu hoàn trả hợp lệ, chúng tôi sẽ xác minh và
+                tiến hành xử lý hoàn tiền trong vòng 5 - 7 ngày làm việc.
+              </li>
+              <li>
+                Tiền sẽ được hoàn lại theo phương thức thanh toán ban đầu của
+                khách hàng.
+              </li>
+              <li>
+                Mọi thắc mắc về quá trình hoàn trả, vui lòng liên hệ với bộ phận
+                hỗ trợ để được giải đáp.
+              </li>
+            </ul>
+          </div>
+          <p className="text-xs font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
+            Chúng tôi cam kết cung cấp dịch vụ tốt nhất và đảm bảo quyền lợi của
+            khách hàng khi sử dụng gói quảng cáo Cá Koi.
+          </p>
         </div>
       )
     }
@@ -199,11 +235,17 @@ export const PackageDetailPage = () => {
           )}
           <div className="flex items-center justify-center">
             {currentUser ? (
-              <CustomButton
-                icon={<IconCreditCardPay />}
-                label="Mua ngay"
-                onClick={handlePurchase}
-              />
+              userDetail ? (
+                <CustomButton
+                  icon={<IconCreditCardPay />}
+                  label="Mua ngay"
+                  onClick={handlePurchase}
+                />
+              ) : (
+                <p className="text-red-500">
+                  Vui lòng cập nhật thông tin của bạn để mua gói
+                </p>
+              )
             ) : (
               <div className="flex flex-col items-center justify-center">
                 <p className="text-red-500">Vui lòng đăng nhập để mua gói</p>

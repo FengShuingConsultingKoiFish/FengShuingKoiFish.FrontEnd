@@ -1,6 +1,8 @@
+import axios from "axios"
 import { jwtDecode } from "jwt-decode"
 import { Dispatch } from "redux"
-import { setCurrentUser } from "../redux/reducers/userSlice"
+
+import { clearCurrentUser, setCurrentUser } from "../redux/reducers/userSlice"
 import { axiosClient } from "./config/axios-client"
 
 // Define the user type according to your backend response
@@ -35,10 +37,10 @@ interface ErrorResponse {
   isSuccess: boolean
   message: string
   errors: Array<{
-    key: string;
-    value: string;
-  }>;
-  result: any;
+    key: string
+    value: string
+  }>
+  result: any
 }
 
 // Register User function
@@ -95,9 +97,12 @@ export const loginUser =
 
       if (responseData.result && responseData.result.token) {
         const token = responseData.result.token
+        const refreshToken = responseData.result.refreshToken
+
         const user = jwtDecode<User>(token)
-        sessionStorage.setItem("token", token)
-        sessionStorage.setItem("user", JSON.stringify(user))
+        localStorage.setItem("token", token)
+        localStorage.setItem("user", JSON.stringify(user))
+        localStorage.setItem("refreshToken", refreshToken)
 
         console.log("Dispatching setCurrentUser action")
 
@@ -112,22 +117,66 @@ export const loginUser =
     }
   }
 
-  // Verify Email function
-  export const verifyEmail = async (
-    token: string,
-    email: string
-  ): Promise<VerifyEmailResponse> => {
-    try {
-      const response = await axiosClient.get<VerifyEmailResponse>(
-        `/api/Accounts/verify-email?token=${token}&email=${email}`
-      )
-  
-      const responseData = response.data
-      console.log("Response Data:", responseData)
-  
-      return responseData
-    } catch (error) {
-      throw error as ErrorResponse
-    }
-  }
+// Verify Email function
+export const verifyEmail = async (
+  token: string,
+  email: string
+): Promise<VerifyEmailResponse> => {
+  try {
+    const response = await axiosClient.get<VerifyEmailResponse>(
+      `/api/Accounts/verify-email?token=${token}&email=${email}`
+    )
 
+    const responseData = response.data
+    console.log("Response Data:", responseData)
+
+    return responseData
+  } catch (error) {
+    throw error as ErrorResponse
+  }
+}
+
+interface TokenRenewalResponse {
+  statusCode: number
+  isSuccess: boolean
+  message: string
+  errors: string | null
+  result: {
+    token: string
+    refreshToken: string
+  }
+}
+
+const token = sessionStorage.getItem("token")
+
+export const renewToken = async (
+  token: string,
+  refreshToken: string,
+  dispatch: Dispatch
+): Promise<TokenRenewalResponse> => {
+  try {
+    console.log("Jump into renewToken API...")
+
+    const response = await axios.post<TokenRenewalResponse>(
+      //`https://localhost:7166/api/Accounts/renew-token`,
+      `https://consultingfish.azurewebsites.net/api/Accounts/renew-token`,
+      {
+        token,
+        refreshToken
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+
+    console.log("Full Renew token response:", response.data)
+    return response.data
+  } catch (error) {
+    console.error("Failed to renew token:", error)
+    dispatch(clearCurrentUser())
+    throw error as ErrorResponse
+  }
+}
