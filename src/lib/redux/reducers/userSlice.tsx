@@ -34,7 +34,7 @@ const initialState: UsersState = {
   updateUser: {},
   detailUser: null,
   userHistory: [],
-  currentUser: null
+  currentUser: null,
 }
 
 const usersSlice = createSlice({
@@ -71,8 +71,11 @@ const usersSlice = createSlice({
     clearCurrentUser: (state) => {
       state.currentUser = null
       state.detailUser = null
-      sessionStorage.removeItem("token") // Remove token from sessionStorage
-      sessionStorage.removeItem("user") // Remove user from sessionStorage
+
+      localStorage.removeItem("token")
+      localStorage.removeItem("user")
+      localStorage.removeItem("refreshToken") 
+
     }
   }
 })

@@ -44,7 +44,7 @@ const HistoryView = () => {
   const [showMoreButton, setShowMoreButton] = useState(false)
 
   useEffect(() => {
-    window.scrollTo(0,0)
+    window.scrollTo(0, 0)
     fetchUserPaymentHistory()
   }, [])
 
@@ -106,6 +106,8 @@ const HistoryView = () => {
               <h1 className="mb-20 text-3xl">Lịch sử giao dịch của bạn </h1>
               {isLoading ? (
                 <p>Loading...</p>
+              ) : userHistory.length === 0 ? (
+                <p>Bạn chưa thực hiện giao dịch nào</p>
               ) : (
                 <>
                   <ol className="relative border-s">

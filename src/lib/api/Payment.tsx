@@ -199,12 +199,13 @@ interface ResponsePayment {
   message: string;
 }
 
-export const getResponsePayment = async (url: string): Promise<ResponsePayment> => {
+export const getResponsePayment = async (): Promise<ResponsePayment> => {
   try {
     nProgress.start();
 
+    // Send the request directly if no query parameters are needed
     const response = await axiosClient.get<ResponsePayment>(
-      `/api/Payments/response-payment${url}`
+      `/api/Payments/response-payment`
     );
 
     return {

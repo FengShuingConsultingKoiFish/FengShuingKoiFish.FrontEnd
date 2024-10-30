@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit"
 import { combineReducers } from "redux"
 import { persistReducer, persistStore } from "redux-persist"
-import storage from "redux-persist/lib/storage"
 
 import usersSlice from "./reducers/userSlice"
 import userBlogsSlice from "./reducers/userBlogSlice"
 import userPackageSlice from "./reducers/userPackageSlice"
+import storage from "redux-persist/es/storage"
 
 // Configure Redux store
 

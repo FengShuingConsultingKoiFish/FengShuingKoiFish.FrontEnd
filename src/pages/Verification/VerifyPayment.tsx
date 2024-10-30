@@ -15,23 +15,23 @@ const PaymentSuccessPage: React.FC = () => {
     const verifyPayment = async () => {
       try {
         if (vnpResponseCode === "00" && vnpTransactionStatus === "00") {
-          const paymentResponse = await getResponsePayment(location.search);
+          const paymentResponse = await getResponsePayment();
           if (paymentResponse.statusCode === 200) {
             setIsPaymentSuccess(true);
           } else {
-            navigate("/payment-failed");
+            navigate("/thanh-toan-that-bai");
           }
         } else {
-          navigate("/payment-failed");
+          navigate("/thanh-toan-that-bai");
         }
       } catch (error: any) {
         console.error("Payment verification failed:", error);
 
         if (error.response && error.response.status === 400) {
           console.error("Error message:", error.response.data.message);
-          navigate("/payment-failed");
+          navigate("/thanh-toan-that-bai");
         } else {
-          navigate("/error");
+          navigate("/thanh-toan-that-bai");
         }
       } finally {
         setIsLoading(false);
