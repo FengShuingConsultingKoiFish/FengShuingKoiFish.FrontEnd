@@ -177,9 +177,13 @@ const PondCard: React.FC<PondCardProps> = ({
       style={{
         width: "80%",
         height: "500px",
-        backgroundColor: "#90cdf4",
+        backgroundImage:
+          "url('https://goldensmiletravel.com/uploads/images/2023/04/27/ho-tien-truc-1-1682594687.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
         borderRadius: "30% 40% 20% 40% / 40% 60% 40% 40%",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+        boxShadow:
+          "0 4px 8px rgba(0, 0, 0, 0.2), inset 0 0 15px rgba(255, 255, 255, 0.3)",
         border: "20px solid #CE7446"
       }}
     >
