@@ -4,6 +4,8 @@ import { motion } from "framer-motion"
 import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
 
+import useLoginModal from "@/hooks/useLoginModal"
+
 import { axiosClient } from "@/lib/api/config/axios-client"
 
 import SubmitButton from "@/components/global/atoms/SubmitButton"
@@ -26,6 +28,7 @@ const CreatePondPage: React.FC = () => {
   const [existingPonds, setExistingPonds] = useState<Pond[]>([])
   const [loading, setLoading] = useState(false) // Thêm trạng thái loading
   const navigate = useNavigate()
+  const loginModal = useLoginModal()
 
   useEffect(() => {
     const token = sessionStorage.getItem("token")
@@ -33,6 +36,7 @@ const CreatePondPage: React.FC = () => {
     if (!token) {
       toast.error("Vui lòng đăng nhập để tạo hồ cá.")
       navigate("/")
+      loginModal.onOpen()
       return
     }
 

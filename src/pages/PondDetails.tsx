@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react"
 import { FaPlus, FaTimes } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
+import useLoginModal from "@/hooks/useLoginModal"
+
 import { axiosClient } from "@/lib/api/config/axios-client"
 
 import ConfirmModal from "@/components/global/atoms/ConfirmModal"
@@ -22,6 +24,7 @@ import {
 const PondDetails: React.FC = () => {
   const { userPondId } = useParams<{ userPondId: string }>()
   const navigate = useNavigate()
+  const loginModal = useLoginModal()
   const [koiDetails, setKoiDetails] = useState<KoiDetail[]>([])
   const [pondDetails, setPondDetails] = useState<PondDetail[]>([])
   const [quantity, setQuantity] = useState<number | null>(null)
@@ -39,6 +42,7 @@ const PondDetails: React.FC = () => {
 
     if (!token) {
       navigate("/")
+      loginModal.onOpen()
       return
     }
 

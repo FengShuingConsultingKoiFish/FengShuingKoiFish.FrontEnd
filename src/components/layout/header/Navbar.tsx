@@ -33,9 +33,11 @@ const Navbar = () => {
   // State to control the dropdown menu visibility for "Dịch vụ"
   const [isServiceMenuOpen, setIsServiceMenuOpen] = useState(false)
 
-  const toggleServiceMenu = () => {
+  const toggleServiceMenu = (e: React.MouseEvent) => {
+    e.preventDefault() // Ngăn chặn liên kết hoạt động
     setIsServiceMenuOpen((prev) => !prev)
   }
+  const closeServiceMenu = () => setIsServiceMenuOpen(false)
 
   return (
     <div className="sticky top-0 z-40 w-full bg-background shadow-2xl">
@@ -46,33 +48,39 @@ const Navbar = () => {
               <Logo />
             </Link>
 
-            {currentUser?.Name !== "Admin" &&(
-
+            {currentUser?.Name !== "Admin" && (
               <div className="relative flex flex-row gap-5">
                 <Item label="Giới thiệu" link=""></Item>
 
                 {/* Toggleable service menu */}
-                <div className="relative" onClick={toggleServiceMenu}>
-                  <Item label="Dịch vụ" link="" />
+                <div className="relative">
+                  <button
+                    className="focus:outline-none"
+                    onClick={toggleServiceMenu}
+                  >
+                    <Item label="Dịch vụ" link="#" />
+                  </button>
                   {isServiceMenuOpen && (
                     <div className="absolute left-0 top-full mt-2 w-48 rounded-lg border border-gray-300 bg-white shadow-lg">
                       <Link
                         to="/doan-menh"
                         className="block px-4 py-2 hover:bg-gray-100"
+                        onClick={closeServiceMenu}
                       >
                         Đoán mệnh
                       </Link>
                       <Link
                         to="/tu-van-ho"
                         className="block px-4 py-2 hover:bg-gray-100"
+                        onClick={closeServiceMenu}
                         state={{ zodiacName: "Kim" }}
                       >
                         Tư vấn hồ
                       </Link>
-                      {/* Thêm chức năng Tạo hồ cá */}
                       <Link
                         to="/create-pond"
                         className="block px-4 py-2 hover:bg-gray-100"
+                        onClick={closeServiceMenu}
                       >
                         Tạo hồ & Xem hồ
                       </Link>

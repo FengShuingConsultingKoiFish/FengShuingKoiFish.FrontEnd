@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
 
+import useLoginModal from "@/hooks/useLoginModal"
+
 import { axiosClient } from "@/lib/api/config/axios-client"
 
 interface PondResponse {
@@ -39,7 +41,7 @@ interface UserProfile {
 
 const PondConsultationPage: React.FC = () => {
   const navigate = useNavigate()
-
+  const loginModal = useLoginModal()
   const [zodiacName, setZodiacName] = useState<string>("")
   const [userName, setUserName] = useState<string>("") // Thêm trạng thái cho tên người dùng
   const [ponds, setPonds] = useState<
@@ -58,7 +60,7 @@ const PondConsultationPage: React.FC = () => {
     // Kiểm tra nếu token không tồn tại
     if (!token) {
       toast.error("Vui lòng đăng nhập trước khi truy cập trang này.")
-      navigate("/")
+      loginModal.onOpen()
       return false
     }
 

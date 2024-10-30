@@ -5,6 +5,8 @@ import { motion } from "framer-motion"
 import toast from "react-hot-toast"
 import { useLocation, useNavigate } from "react-router-dom"
 
+import useLoginModal from "@/hooks/useLoginModal"
+
 import { axiosClient } from "@/lib/api/config/axios-client"
 
 import OnclickButton from "@/components/global/atoms/OnclickButton"
@@ -31,6 +33,7 @@ const SeeAllPond: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("") // Thêm trạng thái tìm kiếm
   const location = useLocation()
   const navigate = useNavigate()
+  const loginModal = useLoginModal()
 
   useEffect(() => {
     const token = sessionStorage.getItem("token")
@@ -38,6 +41,7 @@ const SeeAllPond: React.FC = () => {
     if (!token) {
       toast.error("Vui lòng đăng nhập để xem danh sách hồ cá.")
       navigate("/")
+      loginModal.onOpen()
       return
     }
 

@@ -138,7 +138,8 @@ const ResultPage: React.FC = () => {
                   {zodiac ? zodiac : "Cần nhập đủ thông tin"}
                 </p>
                 <p className="mb-2">
-                  {zodiacMessage || "Bạn cần đăng nhập để xem thông điệp"}
+                  {zodiacMessage ||
+                    "Thông điệp này chỉ dành cho thông tin tài khoản đăng nhập"}
                 </p>
               </div>
             </div>
