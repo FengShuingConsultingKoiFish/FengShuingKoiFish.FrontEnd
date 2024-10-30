@@ -4,9 +4,11 @@ import axios from "axios"
 import { FaArrowLeft } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
+import { axiosClient } from "@/lib/api/config/axios-client"
+
 import OnclickButton from "@/components/global/atoms/OnclickButton"
 
-// Adjust the path as needed
+// Đảm bảo bạn đã import axiosClient
 
 interface PondCharacteristic {
   id: number
@@ -24,6 +26,7 @@ const AddPond: React.FC = () => {
   >([])
   const [selectedPondId, setSelectedPondId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [visibleItems, setVisibleItems] = useState<number>(6)
 
@@ -36,8 +39,8 @@ const AddPond: React.FC = () => {
 
     const fetchPondCharacteristics = async () => {
       try {
-        const response = await axios.get(
-          "https://consultingfish.azurewebsites.net/api/Pond/Get-All-PondCharacteristics",
+        const response = await axiosClient.get(
+          "/api/Pond/Get-All-PondCharacteristics",
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -64,7 +67,7 @@ const AddPond: React.FC = () => {
       setError("UserPond ID không hợp lệ.")
       return
     }
-
+    setLoading(true)
     const token = sessionStorage.getItem("token")
     const payload = {
       pondId: parseInt(userPondId),
@@ -72,8 +75,8 @@ const AddPond: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(
-        "https://consultingfish.azurewebsites.net/api/UserPond/adddetails",
+      const response = await axiosClient.post(
+        "/api/UserPond/adddetails",
         payload,
         {
           headers: {
@@ -94,6 +97,8 @@ const AddPond: React.FC = () => {
       } else {
         setError("Có lỗi xảy ra khi thêm hồ.")
       }
+    } finally {
+      setLoading(false) // Kết thúc loading
     }
   }
 
@@ -157,12 +162,12 @@ const AddPond: React.FC = () => {
             <h3 className="text-lg font-bold">{pond.name}</h3>
             <p>Mô tả: {pond.description}</p>
 
-            {/* Conditionally Render the SubmitButton */}
             {selectedPondId === pond.id && (
               <div className="mt-2 flex justify-center">
                 <OnclickButton
-                  label="Thêm"
-                  onClick={() => handleSubmit(pond.id)} // Attach onClick handler
+                  label={loading ? "Đang xử lý..." : "Thêm"} // Đổi label khi loading
+                  onClick={() => handleSubmit(pond.id)}
+                  disabled={loading} // Vô hiệu hóa nút khi loading
                 />
               </div>
             )}
@@ -172,10 +177,7 @@ const AddPond: React.FC = () => {
 
       {visibleItems < filteredPondCharacteristics.length && (
         <div className="flex justify-center">
-          <OnclickButton
-            label="Xem Thêm"
-            onClick={handleShowMore} // Attach onClick handler
-          />
+          <OnclickButton label="Xem Thêm" onClick={handleShowMore} />
         </div>
       )}
     </div>

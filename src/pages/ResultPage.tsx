@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react"
 
-import axios from "axios"
 import { useLocation, useNavigate } from "react-router-dom"
+
+import { axiosClient } from "@/lib/api/config/axios-client"
+
+// đảm bảo bạn đã import axiosClient đúng đường dẫn
 
 interface ZodiacResponse {
   statusCode: number
@@ -43,8 +46,8 @@ const ResultPage: React.FC = () => {
 
       const formattedBirthDate = formattedDate.toISOString().split("T")[0]
 
-      const response = await axios.get<ZodiacResponse>(
-        `https://consultingfish.azurewebsites.net/api/Zodiac/Get-Zodiac-By-Birthdate-For-Guest?birthDate=${formattedBirthDate}`
+      const response = await axiosClient.get<ZodiacResponse>(
+        `/api/Zodiac/Get-Zodiac-By-Birthdate-For-Guest?birthDate=${formattedBirthDate}`
       )
 
       if (response.data.isSuccess) {
@@ -68,8 +71,8 @@ const ResultPage: React.FC = () => {
   const fetchZodiacForUser = async () => {
     const token = sessionStorage.getItem("token")
     try {
-      const response = await axios.get<ZodiacResponse>(
-        "https://consultingfish.azurewebsites.net/api/Zodiac/Get-Zodiac-Sign",
+      const response = await axiosClient.get<ZodiacResponse>(
+        "/api/Zodiac/Get-Zodiac-Sign",
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -104,7 +107,7 @@ const ResultPage: React.FC = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-white">
       {loading ? (
-        <p>Đang tải...</p> // Hiển thị thông báo khi đang tải
+        <p>Đang tải...</p>
       ) : (
         <div className="text-center">
           <h1 className="mb-8 text-2xl font-bold">
@@ -147,16 +150,15 @@ const ResultPage: React.FC = () => {
               >
                 TRA CỨU MỚI
               </button>
-              {useAccountInfo &&
-                zodiac && ( // Chỉ hiển thị nút Tư vấn Hồ Cá khi sử dụng tài khoản
-                  <button
-                    className="button-glow mt-4 rounded-md bg-purple-500 px-4 py-2 text-white"
-                    onClick={handlePondConsultation}
-                    disabled={!zodiac} // Disable button if zodiac is not available
-                  >
-                    Tư Vấn Hồ Cá
-                  </button>
-                )}
+              {useAccountInfo && zodiac && (
+                <button
+                  className="button-glow mt-4 rounded-md bg-purple-500 px-4 py-2 text-white"
+                  onClick={handlePondConsultation}
+                  disabled={!zodiac}
+                >
+                  Tư Vấn Hồ Cá
+                </button>
+              )}
             </div>
           </div>
         </div>

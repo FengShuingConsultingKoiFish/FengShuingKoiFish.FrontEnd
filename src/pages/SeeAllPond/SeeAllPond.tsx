@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react"
 
-import axios from "axios"
+// Import axiosClient thay vì axios
 import { motion } from "framer-motion"
 import toast from "react-hot-toast"
 import { useLocation, useNavigate } from "react-router-dom"
+
+import { axiosClient } from "@/lib/api/config/axios-client"
 
 import OnclickButton from "@/components/global/atoms/OnclickButton"
 
@@ -41,8 +43,8 @@ const SeeAllPond: React.FC = () => {
 
     const fetchPonds = async () => {
       try {
-        const response = await axios.get(
-          "https://consultingfish.azurewebsites.net/api/UserPond/getall",
+        const response = await axiosClient.get(
+          "/api/UserPond/getall", // Sử dụng đường dẫn tương đối
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -66,7 +68,6 @@ const SeeAllPond: React.FC = () => {
 
   useEffect(() => {
     if (!loading && location.hash) {
-      // Chỉ cuộn khi dữ liệu đã tải
       const elementId = location.hash.replace("#", "")
       const element = document.getElementById(elementId)
 
@@ -79,14 +80,11 @@ const SeeAllPond: React.FC = () => {
   const handleDeletePond = async (id: number) => {
     const token = sessionStorage.getItem("token")
     try {
-      const response = await axios.delete(
-        `https://consultingfish.azurewebsites.net/api/UserPond/delete/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+      const response = await axiosClient.delete(`/api/UserPond/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      )
+      })
       if (response.data.isSuccess) {
         setPonds((prevPonds) => prevPonds.filter((pond) => pond.id !== id))
       } else {
@@ -100,8 +98,8 @@ const SeeAllPond: React.FC = () => {
   const handleUpdatePond = async (updatedPond: Pond) => {
     const token = sessionStorage.getItem("token")
     try {
-      const response = await axios.put(
-        `https://consultingfish.azurewebsites.net/api/UserPond/update/${updatedPond.id}`,
+      const response = await axiosClient.put(
+        `/api/UserPond/update/${updatedPond.id}`,
         {
           pondName: updatedPond.pondName,
           quantity: updatedPond.quantity,
@@ -149,7 +147,6 @@ const SeeAllPond: React.FC = () => {
     setFilter(newFilter)
   }
 
-  // Kết hợp bộ lọc theo từ khóa và điều kiện có điểm hay không
   const filteredPonds = ponds.filter((pond) => {
     const matchesSearch = pond.pondName
       .toLowerCase()
@@ -199,7 +196,6 @@ const SeeAllPond: React.FC = () => {
         </button>
       </div>
 
-      {/* Ô tìm kiếm */}
       <input
         type="text"
         placeholder="Tìm kiếm hồ cá theo tên..."
@@ -240,7 +236,7 @@ const SeeAllPond: React.FC = () => {
       </h1>
 
       <PondList
-        ponds={filteredPonds} // Sử dụng danh sách hồ cá đã lọc
+        ponds={filteredPonds}
         visiblePonds={visiblePonds}
         onDelete={handleDeletePond}
         onUpdate={handleUpdatePond}

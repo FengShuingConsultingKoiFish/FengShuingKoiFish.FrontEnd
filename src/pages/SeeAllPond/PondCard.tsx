@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 
-import axios from "axios"
 import { useNavigate } from "react-router-dom"
+
+import { axiosClient } from "@/lib/api/config/axios-client"
 
 import OnclickButton from "@/components/global/atoms/OnclickButton"
 
@@ -84,8 +85,8 @@ const PondCard: React.FC<PondCardProps> = ({
       formData.append("File", selectedFile)
       try {
         const token = sessionStorage.getItem("token")
-        const uploadResponse = await axios.post(
-          "https://consultingfish.azurewebsites.net/api/Images/upload-image",
+        const uploadResponse = await axiosClient.post(
+          "/api/Images/upload-image",
           formData,
           {
             headers: {
@@ -118,17 +119,15 @@ const PondCard: React.FC<PondCardProps> = ({
   ) => {
     setUpdatedPond({ ...updatedPond, [e.target.name]: e.target.value })
   }
+
   const handleScoreDetail = async () => {
     try {
       const token = sessionStorage.getItem("token")
-      const response = await axios.get(
-        "https://consultingfish.azurewebsites.net/api/UserPond/getall",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+      const response = await axiosClient.get("/api/UserPond/getall", {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      )
+      })
 
       if (response.data.isSuccess && response.data.result) {
         const selectedPond = response.data.result.find(
@@ -304,7 +303,6 @@ const PondCard: React.FC<PondCardProps> = ({
               </div>
             )}
 
-            {/* Hàng nút */}
             <div className="mt-14 flex items-center space-x-4">
               <OnclickButton label="Xem chi tiết" onClick={handleViewDetails} />
               <button

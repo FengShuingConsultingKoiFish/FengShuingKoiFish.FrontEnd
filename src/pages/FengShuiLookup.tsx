@@ -25,6 +25,7 @@ const FengShuiLookup: React.FC = () => {
   const [isToggled, setIsToggled] = useState(false)
   const [isReadOnly, setIsReadOnly] = useState(false)
   const [showModal, setShowModal] = useState(false)
+  const [loading, setLoading] = useState(false) // Thêm trạng thái loading
 
   const userProfile = useSelector((state: RootState) => state.users.detailUser)
   const currentUser = useSelector((state: RootState) => state.users.currentUser)
@@ -45,7 +46,6 @@ const FengShuiLookup: React.FC = () => {
         !userProfile?.dateOfBirth?.trim() ||
         !userProfile?.gender?.trim()
       ) {
-        // Hiển thị thông báo khi thiếu thông tin
         setShowModal(true)
       } else {
         setName(userProfile.fullName)
@@ -65,33 +65,35 @@ const FengShuiLookup: React.FC = () => {
       setMonth("")
       setYear("")
       setIsReadOnly(false)
-      setShowModal(false) // Ẩn thông báo khi tắt toggle
+      setShowModal(false)
     }
   }
 
-  // Hàm chuyển hướng đến trang profile
   const goToProfile = () => {
-    setShowModal(false) // Đóng modal
+    setShowModal(false)
     navigate("/Setting/profile?redirect=fengshui")
   }
 
-  // Hàm đóng modal và reset trạng thái toggle
   const handleCloseModal = () => {
     setShowModal(false)
-    setIsToggled(false) // Tắt toggle khi đóng modal
+    setIsToggled(false)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true) // Bắt đầu loading
 
-    navigate("/ket-qua", {
-      state: {
-        name,
-        gender,
-        birthDate: `${day}/${month}/${year} (DL)`,
-        useAccountInfo: isToggled
-      }
-    })
+    setTimeout(() => {
+      navigate("/ket-qua", {
+        state: {
+          name,
+          gender,
+          birthDate: `${day}/${month}/${year} (DL)`,
+          useAccountInfo: isToggled
+        }
+      })
+      setLoading(false) // Kết thúc loading sau khi chuyển hướng
+    }, 2000) // Thời gian chờ 2 giây
   }
 
   return (
@@ -123,7 +125,7 @@ const FengShuiLookup: React.FC = () => {
 
           <ConfirmModal1
             isOpen={showModal}
-            onClose={handleCloseModal} // Đóng modal và tắt toggle
+            onClose={handleCloseModal}
             onConfirm={goToProfile}
             message="Bạn cần cập nhật thông tin trước khi đoán mệnh."
             confirmText="Đi đến cập nhật"
@@ -204,7 +206,10 @@ const FengShuiLookup: React.FC = () => {
             )}
 
             <div className="mt-8 flex justify-center">
-              <SubmitButton label="Giải mã" />
+              <SubmitButton
+                label={loading ? "Đang xử lý..." : "Giải mã"}
+                disabled={loading}
+              />
             </div>
           </form>
         </div>

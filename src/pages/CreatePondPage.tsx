@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react"
 
-import axios from "axios"
 import { motion } from "framer-motion"
 import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
+
+import { axiosClient } from "@/lib/api/config/axios-client"
 
 import SubmitButton from "@/components/global/atoms/SubmitButton"
 
@@ -23,6 +24,7 @@ const CreatePondPage: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [existingPonds, setExistingPonds] = useState<Pond[]>([])
+  const [loading, setLoading] = useState(false) // Thêm trạng thái loading
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -36,14 +38,14 @@ const CreatePondPage: React.FC = () => {
 
     const fetchPonds = async () => {
       try {
-        const response = await axios.get(
-          "https://consultingfish.azurewebsites.net/api/UserPond/getall",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+        const token = sessionStorage.getItem("token")
+
+        const response = await axiosClient.get("/api/UserPond/getall", {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        )
+        })
+
         if (response.data.isSuccess) {
           setExistingPonds(response.data.result)
         }
@@ -62,8 +64,8 @@ const CreatePondPage: React.FC = () => {
     try {
       const token = sessionStorage.getItem("token")
 
-      const response = await axios.post(
-        "https://consultingfish.azurewebsites.net/api/Images/upload-image",
+      const response = await axiosClient.post(
+        "/api/Images/upload-image",
         formData,
         {
           headers: {
@@ -102,16 +104,19 @@ const CreatePondPage: React.FC = () => {
       return
     }
 
-    const token = sessionStorage.getItem("token")
+    setLoading(true)
+    setErrorMessage(null)
+    setSuccessMessage(null)
 
     try {
       const uploadedImageUrl = await handleImageUpload(pondImage)
       if (!uploadedImageUrl) {
+        setLoading(false)
         return
       }
 
-      const response = await axios.post(
-        "https://consultingfish.azurewebsites.net/api/UserPond/add",
+      const response = await axiosClient.post(
+        "/api/UserPond/add",
         {
           pondName,
           quantity: Number(quantity),
@@ -120,7 +125,7 @@ const CreatePondPage: React.FC = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`
           }
         }
       )
@@ -141,6 +146,8 @@ const CreatePondPage: React.FC = () => {
     } catch (error) {
       console.error("Có lỗi xảy ra: ", error)
       setErrorMessage("Có lỗi xảy ra khi tạo hồ cá, vui lòng thử lại.")
+    } finally {
+      setLoading(false) // Kết thúc trạng thái loading
     }
   }
 
@@ -198,9 +205,6 @@ const CreatePondPage: React.FC = () => {
             className="w-full rounded-lg border border-gray-300 p-3 shadow-inner"
             required
           />
-          <span className="absolute right-4 top-2 font-bold text-gray-400">
-            1/4
-          </span>
         </div>
 
         <div className="relative rounded-lg border-2 border-dashed border-gray-300 bg-white p-6 shadow-md">
@@ -216,9 +220,6 @@ const CreatePondPage: React.FC = () => {
             className="w-full rounded-lg border border-gray-300 p-3 shadow-inner"
             required
           />
-          <span className="absolute right-4 top-2 font-bold text-gray-400">
-            2/4
-          </span>
         </div>
 
         <div className="relative rounded-lg border-2 border-dashed border-gray-300 bg-white p-6 shadow-md">
@@ -234,9 +235,6 @@ const CreatePondPage: React.FC = () => {
             accept="image/*"
             required
           />
-          <span className="absolute right-4 top-2 font-bold text-gray-400">
-            3/4
-          </span>
         </div>
 
         <div className="relative rounded-lg border-2 border-dashed border-gray-300 bg-white p-6 shadow-md">
@@ -247,9 +245,6 @@ const CreatePondPage: React.FC = () => {
             className="w-full rounded-lg border border-gray-300 p-3 shadow-inner"
             placeholder="Mô tả về hồ cá"
           />
-          <span className="absolute right-4 top-2 font-bold text-gray-400">
-            4/4
-          </span>
         </div>
 
         {errorMessage && (
@@ -266,7 +261,11 @@ const CreatePondPage: React.FC = () => {
 
         <div className="mt-6 flex justify-center">
           <div className="rounded-lg">
-            <SubmitButton label="Tạo hồ cá" />
+            <SubmitButton
+              label={loading ? "Đang tạo..." : "Tạo hồ cá"}
+              disabled={loading}
+            />{" "}
+            {/* Hiển thị trạng thái loading */}
           </div>
         </div>
       </form>

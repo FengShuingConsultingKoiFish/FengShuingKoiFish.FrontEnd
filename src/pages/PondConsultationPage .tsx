@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
 
-import axios from "axios"
 import toast from "react-hot-toast"
 import { useNavigate } from "react-router-dom"
+
+import { axiosClient } from "@/lib/api/config/axios-client"
 
 interface PondResponse {
   statusCode: number
@@ -62,8 +63,8 @@ const PondConsultationPage: React.FC = () => {
     }
 
     try {
-      const response = await axios.get(
-        `https://consultingfish.azurewebsites.net/api/Zodiac/Check-If-User-Has-Zodiac`,
+      const response = await axiosClient.get(
+        "/api/Zodiac/Check-If-User-Has-Zodiac",
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -74,11 +75,10 @@ const PondConsultationPage: React.FC = () => {
       if (response.data.isSuccess && response.data.result?.zodiacName) {
         setZodiacName(response.data.result.zodiacName)
 
-        // Lấy tên người dùng từ sessionStorage hoặc API nếu có
         const storedUser = sessionStorage.getItem("userProfile")
         if (storedUser) {
           const parsedUser: UserProfile = JSON.parse(storedUser)
-          setUserName(parsedUser.name) // Gán tên người dùng
+          setUserName(parsedUser.name)
         }
 
         return true
@@ -96,14 +96,11 @@ const PondConsultationPage: React.FC = () => {
   // Fetch ponds and koi breeds advice based on zodiac
   const fetchConsultationAdvice = async () => {
     const token = sessionStorage.getItem("token")
-
-    // Nếu không có token thì return tránh lỗi API
     if (!token) return
 
     try {
-      // Call API to get ponds advice
-      const pondResponse = await axios.get<PondResponse>(
-        `https://consultingfish.azurewebsites.net/api/Pond/Get-Suitable-Pond-For-User?zodiacName=${zodiacName}`,
+      const pondResponse = await axiosClient.get<PondResponse>(
+        `/api/Pond/Get-Suitable-Pond-For-User?zodiacName=${zodiacName}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -118,8 +115,8 @@ const PondConsultationPage: React.FC = () => {
       }
 
       // Call API to get koi breeds advice
-      const koiResponse = await axios.get<KoiResponse>(
-        `https://consultingfish.azurewebsites.net/api/Koi/Get-Suitable-Koi-For-User?zodiacName=${zodiacName}`,
+      const koiResponse = await axiosClient.get<KoiResponse>(
+        `/api/Koi/Get-Suitable-Koi-For-User?zodiacName=${zodiacName}`,
         {
           headers: {
             Authorization: `Bearer ${token}`

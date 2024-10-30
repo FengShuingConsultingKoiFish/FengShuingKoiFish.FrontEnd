@@ -4,7 +4,11 @@ import axios from "axios"
 import { FaArrowLeft } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
 
+import { axiosClient } from "@/lib/api/config/axios-client"
+
 import OnclickButton from "@/components/global/atoms/OnclickButton"
+
+// Đảm bảo import axiosClient
 
 interface KoiBreed {
   id: number
@@ -22,6 +26,7 @@ const AddKoi: React.FC = () => {
   const [koiBreeds, setKoiBreeds] = useState<KoiBreed[]>([])
   const [selectedKoiId, setSelectedKoiId] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [visibleItems, setVisibleItems] = useState<number>(6)
 
@@ -35,14 +40,11 @@ const AddKoi: React.FC = () => {
 
     const fetchKoiBreeds = async () => {
       try {
-        const response = await axios.get(
-          "https://consultingfish.azurewebsites.net/api/Koi/Get-All-KoiBreeds",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
+        const response = await axiosClient.get("/api/Koi/Get-All-KoiBreeds", {
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-        )
+        })
 
         if (response.data.isSuccess) {
           setKoiBreeds(response.data.result)
@@ -63,7 +65,7 @@ const AddKoi: React.FC = () => {
       setError("UserPond ID không hợp lệ.")
       return
     }
-
+    setLoading(true)
     const token = sessionStorage.getItem("token")
     const payload = {
       pondId: parseInt(userPondId),
@@ -71,8 +73,8 @@ const AddKoi: React.FC = () => {
     }
 
     try {
-      const response = await axios.post(
-        "https://consultingfish.azurewebsites.net/api/UserPond/adddetails",
+      const response = await axiosClient.post(
+        "/api/UserPond/adddetails",
         payload,
         {
           headers: {
@@ -92,9 +94,10 @@ const AddKoi: React.FC = () => {
         console.error("Chi tiết lỗi từ API:", err.response.data)
         setError(err.response.data.message || "Có lỗi xảy ra khi thêm Koi.")
       } else {
-        console.error("Lỗi không xác định:", err)
-        setError("Có lỗi xảy ra khi thêm Koi1.")
+        setError("Có lỗi xảy ra khi thêm Koi.")
       }
+    } finally {
+      setLoading(false) // Kết thúc loading
     }
   }
 
@@ -167,8 +170,9 @@ const AddKoi: React.FC = () => {
             {selectedKoiId === koi.id && (
               <div className="mt-2 flex justify-center">
                 <OnclickButton
-                  label="Thêm"
-                  onClick={() => handleSubmit(koi.id)} // Attach onClick handler
+                  label={loading ? "Đang thêm..." : "Thêm"}
+                  onClick={() => handleSubmit(koi.id)}
+                  disabled={loading} // Vô hiệu hóa khi loading
                 />
               </div>
             )}

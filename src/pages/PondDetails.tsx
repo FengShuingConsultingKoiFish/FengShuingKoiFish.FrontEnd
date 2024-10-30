@@ -1,9 +1,10 @@
 // src/PondDetails.tsx
 import React, { useEffect, useState } from "react"
 
-import axios from "axios"
 import { FaPlus, FaTimes } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
+
+import { axiosClient } from "@/lib/api/config/axios-client"
 
 import ConfirmModal from "@/components/global/atoms/ConfirmModal"
 import OnclickButton from "@/components/global/atoms/OnclickButton"
@@ -43,8 +44,8 @@ const PondDetails: React.FC = () => {
 
     const fetchPondCharacteristics = async () => {
       try {
-        const response = await axios.get(
-          "https://consultingfish.azurewebsites.net/api/Pond/Get-All-PondCharacteristics",
+        const response = await axiosClient.get(
+          "/api/Pond/Get-All-PondCharacteristics",
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -59,12 +60,9 @@ const PondDetails: React.FC = () => {
 
     const fetchPondDetails = async () => {
       try {
-        const pondResponse = await axios.get(
-          `https://consultingfish.azurewebsites.net/api/UserPond/getall`,
-          {
-            headers: { Authorization: `Bearer ${token}` }
-          }
-        )
+        const pondResponse = await axiosClient.get("/api/UserPond/getall", {
+          headers: { Authorization: `Bearer ${token}` }
+        })
 
         const pondInfo = pondResponse.data.result.find(
           (pond: PondInfo) => pond.id.toString() === userPondId
@@ -78,8 +76,8 @@ const PondDetails: React.FC = () => {
           return
         }
 
-        const response = await axios.get(
-          `https://consultingfish.azurewebsites.net/api/UserPond/viewdetails/${userPondId}`,
+        const response = await axiosClient.get(
+          `/api/UserPond/viewdetails/${userPondId}`,
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -89,8 +87,8 @@ const PondDetails: React.FC = () => {
           const { koiDetails, pondDetails } = response.data.result
           setPondDetails(pondDetails || [])
 
-          const koiBreedResponse = await axios.get(
-            "https://consultingfish.azurewebsites.net/api/Koi/Get-All-KoiBreeds",
+          const koiBreedResponse = await axiosClient.get(
+            "/api/Koi/Get-All-KoiBreeds",
             { headers: { Authorization: `Bearer ${token}` } }
           )
 
@@ -144,8 +142,8 @@ const PondDetails: React.FC = () => {
       formData.append("userPondId", userPondId || "")
       formData.append("koiBreedId", koiBreedId.toString())
 
-      const response = await axios.delete(
-        `https://consultingfish.azurewebsites.net/api/UserPond/deletekoibreed`,
+      const response = await axiosClient.delete(
+        "/api/UserPond/deletekoibreed",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -191,16 +189,13 @@ const PondDetails: React.FC = () => {
       formData.append("userPondId", userPondId || "")
       formData.append("pondId", pondId.toString())
 
-      const response = await axios.delete(
-        `https://consultingfish.azurewebsites.net/api/UserPond/deletepond`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data"
-          },
-          data: formData
-        }
-      )
+      const response = await axiosClient.delete(`/api/UserPond/deletepond`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        },
+        data: formData
+      })
 
       if (response.data.isSuccess) {
         setPondDetails((prevPondDetails) =>
