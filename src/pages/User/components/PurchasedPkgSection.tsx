@@ -4,14 +4,14 @@ import { CardBody, CardContainer, CardItem } from "@/components/ui/3dCard"
 import { Button } from "@/components/ui/MovingBorder"
 import Status from "@/components/ui/Status"
 
-interface ImageViewDtos {
-  id: number
-  filePath: string
-  altText?: string | null
-  userId: string
-  userName: string
-  createdDate: string
-}
+// interface ImageViewDtos {
+//   id: number
+//   filePath: string
+//   altText?: string | null
+//   userId: string
+//   userName: string
+//   createdDate: string
+// }
 
 interface PurchasedPkgProps {
   id: number
@@ -22,7 +22,12 @@ interface PurchasedPkgProps {
   limitContent: number
   limitImage: number
   createdDate: string
-  imageViewDtos: ImageViewDtos[]
+  durationInDays: number
+  advertisementPackageId: number
+  monitoredQuantity: number
+  userId: number
+  userName: string
+
   status: number
   onClick: () => void
 }
@@ -32,16 +37,12 @@ export function PurchasedPkgSection({
   price,
   limitAd,
   limitContent,
+  createdDate,
   limitImage,
-  imageViewDtos,
+  durationInDays,
   status,
   onClick
 }: PurchasedPkgProps) {
-  const imageUrl =
-    imageViewDtos.length > 0
-      ? imageViewDtos[0].filePath
-      : "https://via.placeholder.com/150"
-
   return (
     <CardContainer
       className="rounded-xl bg-white shadow-2xl"
@@ -49,7 +50,7 @@ export function PurchasedPkgSection({
     >
       <CardBody className="relative p-6">
         <CardItem className="mb-4" translateZ={50}>
-          <img alt={name} src={imageUrl} className="h-96 w-full object-cover" />
+          <p>Ngày mua : {createdDate}</p>
         </CardItem>
         <CardItem className="mb-2 flex-grow" translateZ={40}>
           <h3 className="text-xl font-bold">{name}</h3>
@@ -57,7 +58,20 @@ export function PurchasedPkgSection({
         <CardItem className="mb-2 flex-grow" translateZ={40}>
           <Status status={status} />
         </CardItem>
-
+        <CardItem className="mb-2 flex-grow" translateZ={40}>
+          <p className="card-item-description flex-grow text-gray-600">
+            Thời gian sử dụng : {durationInDays} ngày
+          </p>
+        </CardItem>
+        <CardItem className="mb-2 flex-grow" translateZ={40}>
+          <p className="card-item-description flex-grow text-gray-600 inline-flex items-center gap-1">
+            <p className="">Giá tiền :</p>
+            {price.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND"
+            })}
+          </p>
+        </CardItem>
         <CardItem translateZ={30}>
           <p className="card-item-description flex-grow text-gray-600">
             Giới hạn quảng cáo : {limitAd}

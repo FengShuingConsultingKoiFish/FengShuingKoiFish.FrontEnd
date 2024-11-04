@@ -37,7 +37,7 @@ const PondDetails: React.FC = () => {
   >([])
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
 
     if (!token) {
       navigate("/")
@@ -129,7 +129,7 @@ const PondDetails: React.FC = () => {
 
   const handleDeleteKoi = async () => {
     if (!itemToDelete || deleteType !== "koi") return
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
     const koiToDeleteDetail = koiDetails.find(
       (koi) => koi.koiDetailId === itemToDelete
     )
@@ -173,7 +173,7 @@ const PondDetails: React.FC = () => {
 
   const handleDeletePond = async () => {
     if (!itemToDelete || deleteType !== "pond") return
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
 
     const pondToDeleteDetail = pondDetails.find(
       (pond) => pond.pondDetailId === itemToDelete

@@ -13,34 +13,42 @@ import { AuroraBackground } from "@/components/ui/AuroraBg"
 import CustomButton from "../Setting/Components/CustomBtn"
 import { PurchasedPkgSection } from "./components/PurchasedPkgSection"
 
-interface ImageViewDTO {
-  id: number
-  filePath: string
-  altText?: string | null
-  userId: string
-  userName: string
-  createdDate: string
-}
+// interface ImageViewDTO {
+//   id: number
+//   filePath: string
+//   altText?: string | null
+//   userId: string
+//   userName: string
+//   createdDate: string
+// }
 
-interface AdvertisementPackageViewDTO {
-  id: number
-  name?: string
-  price?: number
-  description?: string
-  limitAd: number
-  limitContent?: number
-  limitImage?: number
-  createdDate?: string
-  imageViewDTOs: ImageViewDTO[]
-}
+// interface AdvertisementPackageViewDTO {
+//   id: number
+//   name?: string
+//   price?: number
+//   description?: string
+//   limitAd: number
+//   limitContent?: number
+//   limitImage?: number
+//   createdDate?: string
+//   imageViewDTOs: ImageViewDTO[]
+// }
 
 interface UserPurchasedPkgDetail {
   id: number
+  name: string
+  price: number
+  description: string
+  limitAd: number
+  limitContent: number
+  limitImage: number
+  durationInDays: number
+  advertisementPackageId: number
   monitoredQuantity: number
+  userId: number
   userName: string
   status: number
   createdDate: string
-  advertisementPackageViewDTO: AdvertisementPackageViewDTO
 }
 
 export function PurchasedPackagePage() {
@@ -130,15 +138,19 @@ export function PurchasedPackagePage() {
             {purchasedPackages.map((pkg) => (
               <PurchasedPkgSection
                 key={pkg.id}
-                id={pkg.advertisementPackageViewDTO.id}
-                name={pkg.advertisementPackageViewDTO.name || ""}
-                price={pkg.advertisementPackageViewDTO.price || 0}
-                description={pkg.advertisementPackageViewDTO.description || ""}
-                limitAd={pkg.advertisementPackageViewDTO.limitAd || 0}
-                limitContent={pkg.advertisementPackageViewDTO.limitContent || 0}
-                limitImage={pkg.advertisementPackageViewDTO.limitImage || 0}
-                createdDate={pkg.advertisementPackageViewDTO.createdDate || ""}
-                imageViewDtos={pkg.advertisementPackageViewDTO.imageViewDTOs}
+                id={pkg.id}
+                name={pkg.name || ""}
+                price={pkg.price || 0}
+                description={pkg.description || ""}
+                limitAd={pkg.limitAd || 0}
+                limitContent={pkg.limitContent || 0}
+                limitImage={pkg.limitImage || 0}
+                createdDate={pkg.createdDate || ""}
+                durationInDays={pkg.durationInDays || 0}
+                advertisementPackageId={pkg.advertisementPackageId || 0}
+                monitoredQuantity={pkg.monitoredQuantity || 0}
+                userId={pkg.userId || 0}
+                userName={pkg.userName || ""}
                 status={pkg.status}
                 onClick={() => handlePackageClick(pkg.id)}
               />

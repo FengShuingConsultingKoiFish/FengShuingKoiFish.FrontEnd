@@ -31,7 +31,7 @@ const CreatePondPage: React.FC = () => {
   const loginModal = useLoginModal()
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
 
     if (!token) {
       toast.error("Vui lòng đăng nhập để tạo hồ cá.")
@@ -42,7 +42,7 @@ const CreatePondPage: React.FC = () => {
 
     const fetchPonds = async () => {
       try {
-        const token = sessionStorage.getItem("token")
+        const token = localStorage.getItem("token")
 
         const response = await axiosClient.get("/api/UserPond/getall", {
           headers: {
@@ -66,7 +66,7 @@ const CreatePondPage: React.FC = () => {
     formData.append("File", file)
 
     try {
-      const token = sessionStorage.getItem("token")
+      const token = localStorage.getItem("token")
 
       const response = await axiosClient.post(
         "/api/Images/upload-image",
@@ -129,7 +129,7 @@ const CreatePondPage: React.FC = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`
+            Authorization: `Bearer ${localStorage.getItem("token")}`
           }
         }
       )

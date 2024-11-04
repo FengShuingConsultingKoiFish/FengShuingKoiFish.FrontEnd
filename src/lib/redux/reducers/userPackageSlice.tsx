@@ -1,34 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface ImageViewDTO {
-  altText?: string | null;
-  createdDate: string;
-  filePath: string;
-  id: number;
-  userId: string;
-  userName: string;
-}
-
 interface UserPruchasedPkgDetail {
   id: number
+  name: string
+  price: number
+  description: string
+  limitAd: number
+  limitContent: number
+  limitImage: number
+  durationInDays: number
+  advertisementPackageId: number
   monitoredQuantity: number
+  userId: number
   userName: string
-  status: number 
+  status: number
   createdDate: string
-  advertisementPackageViewDTO: AdvertisementPackageViewDTO
 }
 
-interface AdvertisementPackageViewDTO {
-  id: number;
-  name?: string;
-  price?: number;
-  description?: string;
-  limitAd?: number;
-  limitContent?: number;
-  limitImage?: number;
-  createdDate?: string;
-  imageViewDTOs: ImageViewDTO[];
-}
 
 interface UserPackageState {
   packageList: UserPruchasedPkgDetail[];

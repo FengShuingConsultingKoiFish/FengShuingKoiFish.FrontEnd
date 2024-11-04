@@ -93,7 +93,7 @@ const PondCard: React.FC<PondCardProps> = ({
       const formData = new FormData()
       formData.append("File", selectedFile)
       try {
-        const token = sessionStorage.getItem("token")
+        const token = localStorage.getItem("token")
         const uploadResponse = await axiosClient.post(
           "/api/Images/upload-image",
           formData,
@@ -136,7 +136,7 @@ const PondCard: React.FC<PondCardProps> = ({
 
   const handleScoreDetail = async () => {
     try {
-      const token = sessionStorage.getItem("token")
+      const token = localStorage.getItem("token")
       const response = await axiosClient.get("/api/UserPond/getall", {
         headers: {
           Authorization: `Bearer ${token}`

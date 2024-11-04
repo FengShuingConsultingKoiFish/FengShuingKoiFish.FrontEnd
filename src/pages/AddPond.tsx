@@ -30,7 +30,7 @@ const AddPond: React.FC = () => {
   const [visibleItems, setVisibleItems] = useState<number>(6)
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
     if (!token) {
       navigate("/")
       return
@@ -67,7 +67,7 @@ const AddPond: React.FC = () => {
       return
     }
     setLoading(true)
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
     const payload = {
       pondId: parseInt(userPondId),
       pondDetails: [{ pondId }]

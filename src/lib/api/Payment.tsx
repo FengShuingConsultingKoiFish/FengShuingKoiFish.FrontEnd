@@ -194,26 +194,62 @@ export const getAllPaymentsForAdmin = async (
   }
 }
 
-interface ResponsePayment {
+// interface ResponsePaymentResponse {
+//   result: string;
+// }
+
+// export const getResponsePayment = async (): Promise<ResponsePaymentResponse> => {
+//   try {
+//     nProgress.start();
+
+//     // Send the request directly if no query parameters are needed
+//     const response = await axiosClient.get<ResponsePaymentResponse>(
+//       `/api/Payments/response-payment`, 
+    
+//     );
+
+//     return response.data;
+
+
+//   } catch (error: any) {
+//     console.error("Error in response payment request:", error);
+//     if (error.response) {
+//       throw new Error(error.response.data.message || "An error occurred");
+//     } else {
+//       throw new Error("An unknown error occurred");
+//     }
+//   } finally {
+//     nProgress.done();
+//   }
+// };
+
+
+interface PaymentResponseMessage {
   statusCode: number;
+  isSuccess: boolean;
   message: string;
+  errors: any;
+  result: any;
 }
 
-export const getResponsePayment = async (): Promise<ResponsePayment> => {
+export const getPaymentResponseMessage = async (
+  responseMessage: string
+): Promise<PaymentResponseMessage> => {
   try {
     nProgress.start();
 
-    // Send the request directly if no query parameters are needed
-    const response = await axiosClient.get<ResponsePayment>(
-      `/api/Payments/response-payment`
+    const response = await axiosClient.get<PaymentResponseMessage>(
+      "/api/Payments/response-payment-view",
+      {
+        params: {
+          responseMessage,
+        },
+      }
     );
 
-    return {
-      statusCode: response.status,
-      message: "Success",
-    };
+    return response.data;
   } catch (error: any) {
-    console.error("Error in response payment request:", error);
+    console.error("Error fetching payment response message:", error);
     if (error.response) {
       throw new Error(error.response.data.message || "An error occurred");
     } else {

@@ -1,52 +1,65 @@
-import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { getResponsePayment } from "@/lib/api/Payment";
+import React, { useEffect, useState } from "react"
+
+import { Link, useLocation, useNavigate } from "react-router-dom"
+
+import { getPaymentResponseMessage } from "@/lib/api/Payment"
 
 const PaymentSuccessPage: React.FC = () => {
-  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const vnpResponseCode = searchParams.get("vnp_ResponseCode");
-  const vnpTransactionStatus = searchParams.get("vnp_TransactionStatus");
+  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  function convert(text: string): string {
+    return encodeURIComponent(text.trim())
+  }
 
   useEffect(() => {
     const verifyPayment = async () => {
+      console.log("Starting payment verification...")
       try {
-        if (vnpResponseCode === "00" && vnpTransactionStatus === "00") {
-          const paymentResponse = await getResponsePayment();
-          if (paymentResponse.statusCode === 200) {
-            setIsPaymentSuccess(true);
-          } else {
-            navigate("/thanh-toan-that-bai");
-          }
+        const searchParams = new URLSearchParams(location.search)
+        const responseMessage = searchParams.get("responseMessage") ?? ""
+
+        //const encodedResponseMessage = `responseMessage=${responseMessage}`;
+
+        console.log(
+          "Sending request to getPaymentResponseMessage with:",
+          convert(responseMessage)
+        )
+        const paymentResponse = await getPaymentResponseMessage(
+          convert(responseMessage)
+        )
+
+        console.log("Received paymentResponse:", paymentResponse)
+        if (paymentResponse.statusCode === 200) {
+          setIsPaymentSuccess(true)
         } else {
-          navigate("/thanh-toan-that-bai");
+          navigate("/thanh-toan-that-bai")
         }
       } catch (error: any) {
-        console.error("Payment verification failed:", error);
+        console.error("Payment verification failed:", error)
 
         if (error.response && error.response.status === 400) {
-          console.error("Error message:", error.response.data.message);
-          navigate("/thanh-toan-that-bai");
+          console.error("Error message:", error.response.data.message)
+          navigate("/thanh-toan-that-bai")
         } else {
-          navigate("/thanh-toan-that-bai");
+          navigate("/thanh-toan-that-bai")
         }
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    verifyPayment();
-  }, [vnpResponseCode, vnpTransactionStatus, location.search, navigate]);
+    verifyPayment()
+  }, [location.search, navigate])
 
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
         <h1>Đang xác thực...</h1>
       </div>
-    );
+    )
   }
 
   if (isPaymentSuccess) {
@@ -94,10 +107,10 @@ const PaymentSuccessPage: React.FC = () => {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
-  return null;
-};
+  return null
+}
 
-export default PaymentSuccessPage;
+export default PaymentSuccessPage

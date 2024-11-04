@@ -35,7 +35,7 @@ const SeeAllPond: React.FC = () => {
   const loginModal = useLoginModal()
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
 
     if (!token) {
       toast.error("Vui lòng đăng nhập để xem danh sách hồ cá.")
@@ -78,7 +78,7 @@ const SeeAllPond: React.FC = () => {
   }, [location.hash, loading])
 
   const handleDeletePond = async (id: number) => {
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
     try {
       const response = await axiosClient.delete(`/api/UserPond/delete/${id}`, {
         headers: {
@@ -96,7 +96,7 @@ const SeeAllPond: React.FC = () => {
   }
 
   const handleUpdatePond = async (updatedPond: Pond) => {
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
     try {
       const response = await axiosClient.put(
         `/api/UserPond/update/${updatedPond.id}`,

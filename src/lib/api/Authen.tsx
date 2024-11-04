@@ -147,13 +147,12 @@ interface TokenRenewalResponse {
   }
 }
 
-const token = sessionStorage.getItem("token")
-
 export const renewToken = async (
   token: string,
   refreshToken: string,
   dispatch: Dispatch
 ): Promise<TokenRenewalResponse> => {
+  //const currentToken = sessionStorage.getItem("token")
   try {
     console.log("Jump into renewToken API...")
 

@@ -85,7 +85,7 @@ const LoginModal = () => {
             toast.error("Login failed due to unknown reasons")
           }
         } else {
-          toast.error("An unknown error occurred during login.")
+          toast.error("Email của bạn chưa được xác nhận !")
         }
       }
     },

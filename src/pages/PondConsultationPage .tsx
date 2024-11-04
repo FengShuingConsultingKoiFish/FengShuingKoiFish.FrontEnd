@@ -54,7 +54,7 @@ const PondConsultationPage: React.FC = () => {
   const [zodiacMissing, setZodiacMissing] = useState<boolean>(false)
 
   const fetchZodiacStatus = async (): Promise<boolean> => {
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
 
     if (!token) {
       toast.error("Vui lòng đăng nhập trước khi truy cập trang này.")
@@ -75,7 +75,7 @@ const PondConsultationPage: React.FC = () => {
       if (response.data.isSuccess && response.data.result?.zodiacName) {
         setZodiacName(response.data.result.zodiacName)
 
-        const storedUser = sessionStorage.getItem("userProfile")
+        const storedUser = localStorage.getItem("userProfile")
         if (storedUser) {
           const parsedUser: UserProfile = JSON.parse(storedUser)
           setUserName(parsedUser.name)
@@ -94,7 +94,7 @@ const PondConsultationPage: React.FC = () => {
   }
 
   const fetchConsultationAdvice = async () => {
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
     if (!token) return
 
     try {
