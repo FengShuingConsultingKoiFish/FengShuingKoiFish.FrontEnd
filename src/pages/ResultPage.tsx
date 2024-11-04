@@ -72,7 +72,7 @@ const ResultPage: React.FC = () => {
   }
 
   const fetchZodiacForUser = async () => {
-    const token = sessionStorage.getItem("token")
+    const token = localStorage.getItem("token")
     try {
       const response = await axiosClient.get<ZodiacResponse>(
         "/api/Zodiac/Get-Zodiac-Sign",

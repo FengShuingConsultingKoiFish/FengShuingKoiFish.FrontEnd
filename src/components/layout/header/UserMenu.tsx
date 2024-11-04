@@ -51,7 +51,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
 
   useEffect(() => {
     // Check if user is stored in sessionStorage and set it in Redux
-    const user = sessionStorage.getItem("user")
+    const user = localStorage.getItem("user")
     if (user) {
       dispatch(setCurrentUser(JSON.parse(user)))
     }
