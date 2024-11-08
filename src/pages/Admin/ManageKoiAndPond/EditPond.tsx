@@ -1,0 +1,266 @@
+import React, { useEffect, useState } from "react"
+
+import CustomButton from "@/pages/Setting/Components/CustomBtn"
+import { IconSquareRoundedPlusFilled } from "@tabler/icons-react"
+import { SubmitHandler, useForm } from "react-hook-form"
+import toast from "react-hot-toast"
+import { MdAddPhotoAlternate } from "react-icons/md"
+import { useNavigate, useParams } from "react-router-dom"
+import { ClipLoader } from "react-spinners"
+
+import { axiosClient } from "@/lib/api/config/axios-client"
+
+import { FileUpload } from "@/components/ui/FileUpload"
+import Input from "@/components/ui/Input"
+
+interface EditPondFormData {
+  pondCategoryId: number
+  name: string
+  description: string
+  image: string
+}
+
+interface PondCategory {
+  id: number
+  name: string
+}
+
+interface PondCharacteristic {
+  id: number
+  name: string
+  pondCategoryId: number
+}
+
+const EditPond: React.FC = () => {
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [showFileUpload, setShowFileUpload] = useState<boolean>(false)
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [pondCategories, setPondCategories] = useState<PondCategory[]>([])
+  const [existingPondCharacteristics, setExistingPondCharacteristics] =
+    useState<PondCharacteristic[]>([])
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm<EditPondFormData>()
+
+  useEffect(() => {
+    const fetchPondDetails = async () => {
+      setIsLoading(true)
+      try {
+        const response = await axiosClient.get(
+          "/api/Pond/Get-All-PondCharacteristics"
+        )
+        if (response.data.isSuccess) {
+          const pond = response.data.result.find(
+            (item: PondCharacteristic) => item.id === parseInt(id || "0")
+          )
+
+          if (pond) {
+            reset({
+              pondCategoryId: pond.pondCategoryId,
+              name: pond.name,
+              description: pond.description,
+              image: pond.image
+            })
+          } else {
+            toast.error("Không tìm thấy đặc điểm hồ.")
+            navigate("/admin/quan-li-ca-va-loai-ho/all-pond")
+          }
+          setExistingPondCharacteristics(response.data.result)
+        } else {
+          toast.error("Có lỗi xảy ra khi tải dữ liệu.")
+        }
+      } catch {
+        toast.error("Lỗi khi tải dữ liệu.")
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    const fetchPondCategories = async () => {
+      try {
+        const response = await axiosClient.get(
+          "/api/Pond/Get-All-PondCategories"
+        )
+        if (response.data.isSuccess) {
+          setPondCategories(response.data.result)
+        }
+      } catch {
+        toast.error("Có lỗi xảy ra khi tải danh sách loại hồ.")
+      }
+    }
+
+    fetchPondDetails()
+    fetchPondCategories()
+  }, [id, navigate, reset])
+
+  const handleFileUploadClick = () => {
+    setShowFileUpload(true)
+  }
+
+  const handleFileChange = (files: File[]) => {
+    setUploadedFile(files[0])
+  }
+
+  const handleImageUpload = async (file: File): Promise<string | null> => {
+    const formData = new FormData()
+    formData.append("File", file)
+
+    try {
+      const response = await axiosClient.post(
+        "/api/Images/upload-image",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        }
+      )
+
+      if (response.data.isSuccess) {
+        return response.data.result.filePath
+      } else {
+        toast.error("Tải lên ảnh không thành công, vui lòng thử lại.")
+        return null
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error)
+      toast.error("Có lỗi xảy ra khi tải lên ảnh.")
+      return null
+    }
+  }
+
+  const onSubmit: SubmitHandler<EditPondFormData> = async (data) => {
+    const selectedCategoryId = Number(data.pondCategoryId)
+    const normalizedName = data.name.trim().toLowerCase()
+
+    const isDuplicate = existingPondCharacteristics.some(
+      (pond) =>
+        pond.name.trim().toLowerCase() === normalizedName &&
+        pond.pondCategoryId === selectedCategoryId &&
+        pond.id !== parseInt(id || "0")
+    )
+
+    if (isDuplicate) {
+      toast.error(
+        "Tên đặc điểm hồ đã tồn tại trong loại hồ đã chọn. Vui lòng chọn tên khác."
+      )
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      const uploadedImageUrl = uploadedFile
+        ? await handleImageUpload(uploadedFile)
+        : data.image
+      if (!uploadedImageUrl) {
+        setIsLoading(false)
+        return
+      }
+
+      const pondPayload = {
+        ...data,
+        pondCategoryId: selectedCategoryId,
+        image: uploadedImageUrl
+      }
+
+      const response = await axiosClient.put(
+        `/api/Pond/${id}/PondCharacteristic`,
+        pondPayload
+      )
+
+      if (response.data.isSuccess) {
+        toast.success("Cập nhật đặc điểm hồ thành công.")
+        navigate("/admin/quan-li-ca-va-ho/all-pond")
+      } else {
+        toast.error(response.data.message || "Có lỗi xảy ra khi cập nhật.")
+      }
+    } catch {
+      toast.error("Có lỗi xảy ra khi cập nhật đặc điểm hồ.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="relative flex w-full flex-col">
+      <div className="max-w-[500px]">
+        <h2 className="mb-4 text-2xl font-semibold">Chỉnh sửa đặc điểm hồ</h2>
+        <div className="flex items-center justify-start gap-5">
+          <CustomButton
+            icon={<MdAddPhotoAlternate size={25} />}
+            label="Tải ảnh lên"
+            onClick={handleFileUploadClick}
+          />
+        </div>
+        {showFileUpload && <FileUpload onChange={handleFileChange} />}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label htmlFor="pondCategoryId" className="block font-semibold">
+              Chọn loại hồ
+            </label>
+            <select
+              id="pondCategoryId"
+              {...register("pondCategoryId", {
+                required: "Vui lòng chọn loại hồ"
+              })}
+              className="w-full rounded-md border border-neutral-300 p-2"
+              disabled={isLoading}
+            >
+              <option value="">-- Chọn loại hồ --</option>
+              {pondCategories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            {errors.pondCategoryId && (
+              <p className="text-sm text-red-500">
+                {errors.pondCategoryId.message}
+              </p>
+            )}
+          </div>
+          <Input
+            id="name"
+            label="Tên đặc điểm hồ"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+            onChange={() => {}}
+          />
+          <Input
+            id="description"
+            label="Mô tả"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+            onChange={() => {}}
+          />
+          <CustomButton
+            icon={
+              isLoading ? (
+                <ClipLoader size={20} color={"#fff"} />
+              ) : (
+                <IconSquareRoundedPlusFilled />
+              )
+            }
+            label={isLoading ? "" : "Cập nhật"}
+            onClick={handleSubmit(onSubmit)}
+            disabled={isLoading}
+          />
+        </form>
+      </div>
+    </div>
+  )
+}
+
+export default EditPond

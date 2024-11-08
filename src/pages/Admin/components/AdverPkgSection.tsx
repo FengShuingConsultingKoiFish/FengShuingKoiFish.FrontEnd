@@ -1,7 +1,9 @@
 import React from "react"
+
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
-import { LayoutGrid } from "./LayoutImg"
 import { IconEdit } from "@tabler/icons-react"
+
+import { LayoutGrid } from "./LayoutImg"
 
 interface ImageViewDto {
   id: number
@@ -19,7 +21,7 @@ interface AdverPkgSectionProps {
   limitAd: number
   limitContent: number
   limitImage: number
-  clickToEdit: () => void;
+  clickToEdit: () => void
   imageViewDtos: ImageViewDto[]
 }
 
@@ -73,7 +75,7 @@ const AdverPkgSection: React.FC<AdverPkgSectionProps> = ({
           />
         </div>
 
-        <div className="flex w-full flex-col px-4 justify-start gap-2">
+        <div className="flex w-full flex-col justify-start gap-2 px-4">
           <p className="inline-flex items-center gap-2 break-words text-sm text-gray-700">
             <p className=""> Miêu tả:</p>
             {description}

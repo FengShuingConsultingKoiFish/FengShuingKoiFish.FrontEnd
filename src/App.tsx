@@ -1,12 +1,7 @@
 import { useEffect } from "react"
 
 import { useSelector } from "react-redux"
-import {
-  Route,
-  Routes,
-  useLocation,
-  useNavigate
-} from "react-router-dom"
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom"
 
 import Footer from "./components/layout/footer/Footer"
 import Navbar from "./components/layout/header/Navbar"
@@ -31,10 +26,34 @@ import { ApprovedPosts } from "./pages/Admin/ManageBlog/ApprovedBlog"
 import { ManageBlogPage } from "./pages/Admin/ManageBlog/ManageBlogs"
 import { PendingPosts } from "./pages/Admin/ManageBlog/PendingBlog"
 import { RejectedPosts } from "./pages/Admin/ManageBlog/RejectedBlog"
+import CreateCategoryKoi from "./pages/Admin/ManageCategoryKoiAndPond/CreateCategoryKoi"
+import CreateCategoryPond from "./pages/Admin/ManageCategoryKoiAndPond/CreateCategoryPond"
+import EditCategoryKoi from "./pages/Admin/ManageCategoryKoiAndPond/EditCategoryKoi"
+import EditCategoryPond from "./pages/Admin/ManageCategoryKoiAndPond/EditCategoryPond"
+import GetAllCategoryKoi from "./pages/Admin/ManageCategoryKoiAndPond/GetAllCategoryKoi"
+import GetAllCategoryPond from "./pages/Admin/ManageCategoryKoiAndPond/GetAllCategoryPond"
+import { ManageCategoryKoiAndPondPage } from "./pages/Admin/ManageCategoryKoiAndPond/ManageCategoryKoiAndPondPage"
+import CreateKoi from "./pages/Admin/ManageKoiAndPond/CreateKoi"
+import CreatePond from "./pages/Admin/ManageKoiAndPond/CreatePond"
+import EditKoi from "./pages/Admin/ManageKoiAndPond/EditKoi"
+import EditPond from "./pages/Admin/ManageKoiAndPond/EditPond"
+import GetAllKoi from "./pages/Admin/ManageKoiAndPond/GetAllKoi"
+import GetAllPond from "./pages/Admin/ManageKoiAndPond/GetAllPond"
+import { ManageKoiAndPondPage } from "./pages/Admin/ManageKoiAndPond/ManageKoiAndPondPage"
 import { AllPayment } from "./pages/Admin/ManagePayment/AllPayment"
 import { ManagePaymentPage } from "./pages/Admin/ManagePayment/ManagePayment"
 import AllUser from "./pages/Admin/ManageUser/AllUser"
 import { ManageUserPage } from "./pages/Admin/ManageUser/ManageUser"
+import { CreateZodiac } from "./pages/Admin/ManageZodiac/CreateZodiac"
+import EditZodiac from "./pages/Admin/ManageZodiac/EditZodiac"
+import { AllZodiac } from "./pages/Admin/ManageZodiac/GetAllZodiacs"
+import { ManageZodiacPage } from "./pages/Admin/ManageZodiac/ManageZodiacPage"
+import CreateKoiZodiac from "./pages/Admin/ManageZodiacKoiPond/CreateKoiZodiac"
+import CreatePondZodiac from "./pages/Admin/ManageZodiacKoiPond/CreatePondZodiac"
+import EditKoiZodiac from "./pages/Admin/ManageZodiacKoiPond/EditKoiZodiac"
+import GetAllKoiZodiac from "./pages/Admin/ManageZodiacKoiPond/GetAllKoiZodiac"
+import GetAllPondZodiac from "./pages/Admin/ManageZodiacKoiPond/GetAllPondZodiac"
+import { ManageZodiacKoiPondPage } from "./pages/Admin/ManageZodiacKoiPond/ManageZodiacKoiPondPage"
 import Blog from "./pages/Blog/Blog"
 import CreateBlogModal from "./pages/Blog/components/CreateBlogModal"
 import CreatePondPage from "./pages/CreatePondPage"
@@ -63,13 +82,21 @@ import PaymentFailedPage from "./pages/Verification/PaymentFail"
 import SuccessPage from "./pages/Verification/SuccessPage"
 import PaymentSuccessPage from "./pages/Verification/VerifyPayment"
 
-
 const ProtectedAdminPage = ProtectedRouteForAdmin(AdminPage)
 const ProtectedManageBlogPage = ProtectedRouteForAdmin(ManageBlogPage)
 const ProtectedManageAdverPkgPage = ProtectedRouteForAdmin(ManageAdverPkgPage)
 const ProtectedManageUserPage = ProtectedRouteForAdmin(ManageUserPage)
 const ProtectedManageAdverPage = ProtectedRouteForAdmin(ManageAdverPage)
 const ProtectedManagePaymentPage = ProtectedRouteForAdmin(ManagePaymentPage)
+const ProtectedManageZodiactPage = ProtectedRouteForAdmin(ManageZodiacPage)
+const ProtectedManageKoiAndPondPage =
+  ProtectedRouteForAdmin(ManageKoiAndPondPage)
+const ProtectedManageCategoryKoiAndPondPage = ProtectedRouteForAdmin(
+  ManageCategoryKoiAndPondPage
+)
+const ProtectedManageZodiacKoiPondPage = ProtectedRouteForAdmin(
+  ManageZodiacKoiPondPage
+)
 const ProtectedPurchasedPkgPage = ProtectedRouteForUser(PurchasedPackagePage)
 const ProtectedPurchasedPkgDetailPage = ProtectedRouteForUser(
   UserPackageDetailPage
@@ -186,6 +213,46 @@ function App() {
             element={<ProtectedManagePaymentPage />}
           >
             <Route path="all" element={<AllPayment />} />
+          </Route>
+          <Route
+            path="/admin/quan-li-menh"
+            element={<ProtectedManageZodiactPage />}
+          >
+            <Route path="create" element={<CreateZodiac />} />
+            <Route path="all" element={<AllZodiac />} />
+            <Route path="edit/:id" element={<EditZodiac />} />
+          </Route>
+          <Route
+            path="/admin/quan-li-ca-va-ho"
+            element={<ProtectedManageKoiAndPondPage />}
+          >
+            <Route path="create-koi" element={<CreateKoi />} />
+            <Route path="all-koi" element={<GetAllKoi />} />
+            <Route path="create-pond" element={<CreatePond />} />
+            <Route path="all-pond" element={<GetAllPond />} />
+            <Route path="all-koi/edit/:id" element={<EditKoi />} />
+            <Route path="all-pond/edit/:id" element={<EditPond />} />
+          </Route>
+          <Route
+            path="/admin/quan-li-loai-ca-va-loai-ho"
+            element={<ProtectedManageCategoryKoiAndPondPage />}
+          >
+            <Route path="create-koi" element={<CreateCategoryKoi />} />
+            <Route path="all-koi" element={<GetAllCategoryKoi />} />
+            <Route path="create-pond" element={<CreateCategoryPond />} />
+            <Route path="all-pond" element={<GetAllCategoryPond />} />
+            <Route path="all-koi/edit/:id" element={<EditCategoryKoi />} />
+            <Route path="all-pond/edit/:id" element={<EditCategoryPond />} />
+          </Route>
+          <Route
+            path="/admin/quan-li-menh-tuong-thich"
+            element={<ProtectedManageZodiacKoiPondPage />}
+          >
+            <Route path="create-koi" element={<CreateKoiZodiac />} />
+            <Route path="all-zodiac-koi" element={<GetAllKoiZodiac />} />
+            <Route path="create-pond" element={<CreatePondZodiac />} />
+            <Route path="all-zodiac-pond" element={<GetAllPondZodiac />} />
+            <Route path="all-zodiac-koi/edit/:id" element={<EditKoiZodiac />} />
           </Route>
         </Routes>
       </div>

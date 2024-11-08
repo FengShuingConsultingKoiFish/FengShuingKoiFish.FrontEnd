@@ -4,10 +4,14 @@ import {
   IconBadgeAdFilled,
   IconBrandTabler,
   IconCreditCard,
+  IconFish,
   IconPackage,
   IconSettings,
   IconUsersGroup,
-  IconWriting
+  IconWaterpolo,
+  IconWriting,
+  IconYinYang,
+  IconZodiacAquarius
 } from "@tabler/icons-react"
 import { motion } from "framer-motion"
 import { TbMoodEmpty } from "react-icons/tb"
@@ -49,17 +53,45 @@ export function AdminPage() {
     {
       label: "Quản lý người dùng",
       href: "/admin/nguoi-dung",
-      icon: <IconUsersGroup className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+      icon: (
+        <IconUsersGroup className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+      )
     },
     {
       label: "Quản lý các gói quảng cáo",
       href: "/admin/quang-cao",
-      icon: <IconBadgeAdFilled className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+      icon: (
+        <IconBadgeAdFilled className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+      )
     },
     {
       label: "Quản lý các giao dịch",
       href: "/admin/giao-dich",
-      icon: <IconCreditCard className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+      icon: (
+        <IconCreditCard className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+      )
+    },
+    {
+      label: "Quản lí mệnh",
+      href: "/admin/quan-li-menh",
+      icon: (
+        <IconZodiacAquarius className="h-5 w-5 flex-shrink-0 text-neutral-700" />
+      ) // Icon liên quan đến mệnh hoặc cung hoàng đạo
+    },
+    {
+      label: "Quản lí cá và hồ",
+      href: "/admin/quan-li-ca-va-ho",
+      icon: <IconFish className="h-5 w-5 flex-shrink-0 text-neutral-700" /> // Icon cá và hồ
+    },
+    {
+      label: "Quản lí loại cá và loại hồ",
+      href: "/admin/quan-li-loai-ca-va-loai-ho",
+      icon: <IconWaterpolo className="h-5 w-5 flex-shrink-0 text-neutral-700" /> // Icon cá hoặc hồ
+    },
+    {
+      label: "Quản lí Mệnh tương thích",
+      href: "/admin/quan-li-menh-tuong-thich",
+      icon: <IconYinYang className="h-5 w-5 flex-shrink-0 text-neutral-700" /> // Icon cá hoặc hồ
     },
     {
       label: "Cài đặt",
@@ -67,6 +99,7 @@ export function AdminPage() {
       icon: <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700" />
     }
   ]
+
   const [open, setOpen] = useState(false)
   return (
     <div
