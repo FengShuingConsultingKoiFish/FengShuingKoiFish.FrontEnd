@@ -33,10 +33,12 @@ const GetAllKoi: React.FC = () => {
   const [koiCategories, setKoiCategories] = useState<KoiCategory[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [pageIndex, setPageIndex] = useState(1)
-  const [pageSize] = useState(5)
+  const [pageSize] = useState(4)
   const [totalPages, setTotalPages] = useState(1)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [koiToDelete, setKoiToDelete] = useState<number | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState<number | "">("")
 
   useEffect(() => {
     const fetchKoiCategories = async () => {
@@ -118,77 +120,110 @@ const GetAllKoi: React.FC = () => {
     return category ? category.name : "Unknown Category"
   }
 
+  // Filtered koi breeds based on search term and selected category
+  const filteredKoiBreeds = koiBreeds.filter((koi) => {
+    const matchesSearch = koi.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+    const matchesCategory =
+      selectedCategory === "" || koi.koiCategoryId === selectedCategory
+    return matchesSearch && matchesCategory
+  })
+
   return (
     <div className="relative flex w-full flex-col">
       <h2 className="mb-4 text-2xl font-bold">Tất cả các giống cá Koi</h2>
 
+      {/* Search and Filter Section */}
+      <div className="mb-4 flex gap-4">
+        <input
+          type="text"
+          placeholder="Tìm kiếm tên cá Koi..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-40 rounded border border-gray-300 p-2"
+        />
+        <select
+          value={selectedCategory}
+          onChange={(e) =>
+            setSelectedCategory(e.target.value ? Number(e.target.value) : "")
+          }
+          className="w-40 rounded border border-gray-300 p-2"
+        >
+          <option value="">Tất cả loại cá Koi</option>
+          {koiCategories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {isLoading ? (
         <p>Đang tải...</p>
-      ) : koiBreeds.length === 0 ? (
+      ) : filteredKoiBreeds.length === 0 ? (
         <p>Không có giống cá nào</p>
       ) : (
-        <ul className="space-y-4 font-semibold">
-          {koiBreeds
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {filteredKoiBreeds
             .slice((pageIndex - 1) * pageSize, pageIndex * pageSize)
             .map((koi) => (
-              <li
+              <div
                 key={koi.id}
-                className="relative mb-6 rounded-lg border border-gray-200 bg-white shadow-md"
+                className="flex rounded-lg border border-gray-200 bg-white shadow-md"
               >
-                <div className="items-center px-4 py-3">
-                  <div className="flex flex-col justify-start gap-3">
-                    <div className="flex flex-row justify-between">
-                      <p className="inline-flex items-start gap-3 text-xl font-semibold">
-                        Tên giống cá:{" "}
-                        <span className="text-xl font-medium">{koi.name}</span>
-                      </p>
-                    </div>
-                    <p className="inline-flex items-center gap-2 text-gray-500">
+                {/* Left Side Image */}
+                <div className="h-48 w-1/4 overflow-hidden rounded-l-lg">
+                  <img
+                    src={koi.image || "https://via.placeholder.com/150"}
+                    alt={koi.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+
+                {/* Right Side Content */}
+                <div className="relative flex w-3/4 flex-col p-4">
+                  <div className="flex-grow overflow-hidden">
+                    <h3 className="break-words text-xl font-semibold">
+                      Tên giống cá Koi:{" "}
+                      <span className="font-normal uppercase">{koi.name}</span>
+                    </h3>
+                    <p className="font-semibold text-gray-500">
                       Loại cá Koi:{" "}
-                      <span>{getCategoryNameById(koi.koiCategoryId)}</span>
+                      <span className="font-normal">
+                        {getCategoryNameById(koi.koiCategoryId)}
+                      </span>
                     </p>
-                    <p className="inline-flex items-center gap-2 text-gray-500">
-                      Màu sắc: <span>{koi.colors}</span>
+                    <p className="font-semibold text-gray-500">
+                      Màu sắc: <span className="font-normal">{koi.colors}</span>
                     </p>
-                    <p className="inline-flex items-center gap-2 text-gray-500">
-                      Hoa văn: <span>{koi.pattern}</span>
+                    <p className="font-semibold text-gray-500">
+                      Hoa văn:{" "}
+                      <span className="font-normal">{koi.pattern}</span>
+                    </p>
+                    <p className="mt-2 break-words text-sm font-semibold text-gray-700">
+                      Mô tả:{" "}
+                      <span className="font-normal">{koi.description}</span>
                     </p>
                   </div>
-                </div>
-
-                <div className="absolute right-4 top-4 flex gap-2">
-                  <CustomButton
-                    label="Chỉnh sửa"
-                    onClick={() => handleEditDetail(koi.id)}
-                  />
-                  <CustomButton
-                    label="Xóa"
-                    onClick={() => handleDeleteRequest(koi.id)}
-                  />
-                </div>
-
-                <div className="flex w-full flex-col justify-start gap-2 px-4">
-                  <p className="inline-flex items-center gap-2 break-words text-sm text-gray-700">
-                    <span className=""> Mô tả:</span>
-                    {koi.description}
-                  </p>
-                </div>
-
-                {koi.image && (
-                  <div className="p-4">
-                    <img
-                      src={koi.image}
-                      alt={koi.name}
-                      className="h-80 w-full rounded object-cover"
+                  <div className="mt-4 flex justify-end gap-2">
+                    <CustomButton
+                      label="Chỉnh sửa"
+                      onClick={() => handleEditDetail(koi.id)}
+                    />
+                    <CustomButton
+                      label="Xóa"
+                      onClick={() => handleDeleteRequest(koi.id)}
                     />
                   </div>
-                )}
-              </li>
+                </div>
+              </div>
             ))}
-        </ul>
+        </div>
       )}
 
-      <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] items-center sm:translate-x-[40rem] md:translate-x-[30rem]">
+      {/* Pagination */}
+      <div className="fixed bottom-0 mt-6 inline-flex w-full items-center justify-center">
         <CustomButton
           icon={<IoIosArrowDropleftCircle />}
           label="Trang trước"

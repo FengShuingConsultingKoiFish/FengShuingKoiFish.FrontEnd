@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react"
 
 import CustomButton from "@/pages/Setting/Components/CustomBtn"
+import axios from "axios"
 import toast from "react-hot-toast"
-import { useNavigate, useParams } from "react-router-dom"
-
-import { axiosClient } from "@/lib/api/config/axios-client"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 import SelectKoiBreed from "./SelectKoiBreed"
 
@@ -13,45 +12,86 @@ interface KoiBreed {
   name: string
 }
 
-interface Zodiac {
-  id: number
-  zodiacName: string
+interface ZodiacGroup {
+  zodiacId: number
+  koiBreeds: KoiBreed[]
+}
+interface KoiZodiacItem {
+  zodiacId: number
+  koiBreedId: number
+  koiBreed?: {
+    name: string
+  }
 }
 
 const EditKoiZodiac: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [zodiacs, setZodiacs] = useState<Zodiac[]>([])
-  const [selectedKoiBreeds, setSelectedKoiBreeds] = useState<KoiBreed[]>([])
+  const [groupedZodiacData, setGroupedZodiacData] = useState<ZodiacGroup[]>([])
+  const [allZodiacs, setAllZodiacs] = useState<number[]>([])
   const [selectedZodiac, setSelectedZodiac] = useState<number | null>(null)
+  const [selectedKoiBreeds, setSelectedKoiBreeds] = useState<KoiBreed[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [isKoiModalVisible, setIsKoiModalVisible] = useState(false)
+  const location = useLocation()
+  const { zodiacId } = useParams()
+  const { zodiacName, koiBreeds } = location.state || {}
+
+  console.log("Zodiac ID:", zodiacId)
+  console.log("Zodiac Name:", zodiacName)
+  console.log("Koi Breeds:", koiBreeds)
 
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
         const [zodiacResponse, koiZodiacResponse] = await Promise.all([
-          axiosClient.get("/api/Zodiac/Get-All-Zodiac"),
-          axiosClient.get(`/api/Koi/Get-Koi-Zodiac/${id}`)
+          axios.get("/api/Zodiac/Get-All-Zodiac"),
+          axios.get("/api/Koi/Get-Koi-Zodiac-All")
         ])
 
-        // Kiểm tra dữ liệu trả về từ API của cung hoàng đạo
-        console.log("Zodiac Response:", zodiacResponse.data)
-
         if (zodiacResponse.data.isSuccess) {
-          setZodiacs(zodiacResponse.data.result)
+          const allZodiacs = zodiacResponse.data.result.map(
+            (z: { id: number }) => z.id
+          )
+          setAllZodiacs(allZodiacs)
         }
-
-        // Kiểm tra dữ liệu sau khi setZodiacs
-        console.log("Zodiacs after set:", zodiacs)
 
         if (koiZodiacResponse.data.isSuccess) {
-          const { zodiacId, koiBreeds } = koiZodiacResponse.data.result
-          setSelectedZodiac(zodiacId)
-          setSelectedKoiBreeds(koiBreeds)
+          const data: KoiZodiacItem[] = koiZodiacResponse.data.result
+          console.log("API data:", data)
+
+          const groupedData: ZodiacGroup[] = []
+          data.forEach((item) => {
+            const existingGroup = groupedData.find(
+              (group) => group.zodiacId === item.zodiacId
+            )
+            const koiBreed: KoiBreed = {
+              id: item.koiBreedId,
+              name: item.koiBreed?.name || `Koi ${item.koiBreedId}`
+            }
+
+            if (existingGroup) {
+              existingGroup.koiBreeds.push(koiBreed)
+            } else {
+              groupedData.push({
+                zodiacId: item.zodiacId,
+                koiBreeds: [koiBreed]
+              })
+            }
+          })
+
+          console.log("Grouped Data:", groupedData)
+          setGroupedZodiacData(groupedData)
+
+          setSelectedZodiac(Number(id))
+          const initialGroup = groupedData.find(
+            (group) => group.zodiacId === Number(id)
+          )
+          setSelectedKoiBreeds(initialGroup ? initialGroup.koiBreeds : [])
+          console.log("Initial selected Zodiac and Koi Breeds:", initialGroup)
         }
       } catch (error) {
-        console.error("Error loading data:", error)
+        console.error("Error fetching data:", error)
       }
     }
 
@@ -59,8 +99,7 @@ const EditKoiZodiac: React.FC = () => {
   }, [id])
 
   const handleAddKoiBreed = (koiBreed: KoiBreed) => {
-    const koiBreedExists = selectedKoiBreeds.some((k) => k.id === koiBreed.id)
-    if (koiBreedExists) {
+    if (selectedKoiBreeds.some((k) => k.id === koiBreed.id)) {
       toast.error("Bạn đã lựa chọn giống cá Koi này rồi.")
       return
     }
@@ -75,20 +114,21 @@ const EditKoiZodiac: React.FC = () => {
   }
 
   const handleSubmit = async () => {
-    if (selectedKoiBreeds.length === 0 || selectedZodiac === null) {
+    if (!selectedZodiac || selectedKoiBreeds.length === 0) {
       toast.error("Vui lòng chọn ít nhất một giống cá Koi và Cung Hoàng Đạo")
       return
     }
 
     setIsLoading(true)
     try {
-      const response = await axiosClient.put(
-        `/api/Koi/Update-Koi-Zodiac/${id}`,
-        {
-          zodiacId: selectedZodiac,
-          koiBreeds: selectedKoiBreeds.map((k) => k.id)
-        }
-      )
+      console.log("Submitting data:", {
+        zodiacId: selectedZodiac,
+        koiBreeds: selectedKoiBreeds.map((k) => k.id)
+      })
+      const response = await axios.put(`/api/Koi/Update-Koi-Zodiac/${id}`, {
+        zodiacId: selectedZodiac,
+        koiBreeds: selectedKoiBreeds.map((k) => k.id)
+      })
 
       if (response.data.isSuccess) {
         toast.success("Cập nhật mối tương hợp thành công")
@@ -121,9 +161,9 @@ const EditKoiZodiac: React.FC = () => {
           className="w-full rounded-md border border-neutral-300 p-2"
         >
           <option value="">-- Chọn Cung Hoàng Đạo --</option>
-          {zodiacs.map((zodiac) => (
-            <option key={zodiac.id} value={zodiac.id}>
-              {zodiac.zodiacName}
+          {allZodiacs.map((zodiacId) => (
+            <option key={zodiacId} value={zodiacId}>
+              Zodiac {zodiacId}
             </option>
           ))}
         </select>
@@ -164,18 +204,30 @@ const EditKoiZodiac: React.FC = () => {
         onClick={handleSubmit}
         isLoading={isLoading}
         disabled={
-          isLoading || selectedKoiBreeds.length === 0 || selectedZodiac === null
+          isLoading || !selectedZodiac || selectedKoiBreeds.length === 0
         }
       />
+
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold">Dữ liệu nhóm:</h3>
+        {groupedZodiacData.map((group) => (
+          <div key={group.zodiacId} className="mb-4">
+            <h4>Zodiac ID: {group.zodiacId}</h4>
+            <ul>
+              {group.koiBreeds.map((breed) => (
+                <li key={breed.id}>{breed.name}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
 
       {isKoiModalVisible && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="w-full max-w-3xl rounded-lg bg-white p-6 shadow-lg">
             <h3 className="mb-4 text-xl font-bold">Chọn Giống Cá Koi</h3>
             <SelectKoiBreed
-              onSelectKoi={(koiBreed) => {
-                handleAddKoiBreed(koiBreed)
-              }}
+              onSelectKoi={(koiBreed) => handleAddKoiBreed(koiBreed)}
             />
             <CustomButton
               label="Đóng"

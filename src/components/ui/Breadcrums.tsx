@@ -6,14 +6,17 @@ import {
   IconCheck,
   IconClockHour2,
   IconCreditCard,
+  IconDroplet,
   IconFileText,
   IconFish,
   IconHome,
+  IconLayersLinked,
   IconList,
   IconListDetails,
   IconPackages,
   IconPool,
   IconSquareRoundedPlus,
+  IconStar,
   IconUser,
   IconWaterpolo
 } from "@tabler/icons-react"
@@ -140,17 +143,17 @@ const breadcrumbMap: {
     label: "Quản lý mệnh tương thích",
     icon: <IconPackages className="mr-2 h-4 w-4" />
   },
-  "/admin/quan-li-menh-tuong-thich/all-pond": {
+  "/admin/quan-li-menh-tuong-thich/all-zodiac-pond": {
     label: "Mệnh tương thích với Hồ",
-    icon: <IconPool className="mr-2 h-4 w-4" />
+    icon: <IconDroplet className="mr-2 h-4 w-4" />
   },
   "/admin/quan-li-menh-tuong-thich/all-zodiac-koi": {
     label: "Mệnh tương thích với Cá",
-    icon: <IconListDetails className="mr-2 h-4 w-4" />
+    icon: <IconStar className="mr-2 h-4 w-4" />
   },
   "/admin/quan-li-menh-tuong-thich/create-pond": {
     label: "Tạo tương thích với Hồ",
-    icon: <IconWaterpolo className="mr-2 h-4 w-4" />
+    icon: <IconLayersLinked className="mr-2 h-4 w-4" />
   },
   "/admin/quan-li-menh-tuong-thich/create-koi": {
     label: "Tạo tương thích với Cá",

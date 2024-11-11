@@ -259,9 +259,10 @@ const PondCard: React.FC<PondCardProps> = ({
             <p className="mb-2 text-xl font-medium text-gray-100 transition-transform duration-300 hover:scale-105">
               Số lượng cá: {quantity}
             </p>
-            <p className="mb-4 text-xl text-gray-200 transition-transform duration-300 hover:scale-105">
+            <p className="mb-4 max-w-[85%] break-words text-xl text-gray-200 transition-transform duration-300 hover:scale-105">
               Mô tả: {description}
             </p>
+
             <p className="mb-4 text-xl text-yellow-300 transition-transform duration-300 hover:scale-105">
               Điểm số:{" "}
               {score === 0
@@ -322,7 +323,7 @@ const PondCard: React.FC<PondCardProps> = ({
               </div>
             )}
 
-            <div className="mt-14 flex items-center space-x-4">
+            <div className="mb-2 flex items-center space-x-4">
               <OnclickButton label="Xem chi tiết" onClick={handleViewDetails} />
               <button
                 onClick={handleEdit}

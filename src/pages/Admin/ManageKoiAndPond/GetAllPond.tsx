@@ -32,10 +32,12 @@ const GetAllPond = () => {
   const [pondCategories, setPondCategories] = useState<PondCategory[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [pageIndex, setPageIndex] = useState(1)
-  const [pageSize] = useState(6)
+  const [pageSize] = useState(4) // 4 items per page for a 2x2 layout
   const [totalPages, setTotalPages] = useState(1)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [pondToDelete, setPondToDelete] = useState<number | null>(null)
+  const [searchTerm, setSearchTerm] = useState("") // State for search term
+  const [selectedCategory, setSelectedCategory] = useState<number | "">("") // State for filter by category
 
   useEffect(() => {
     const fetchPondCategories = async () => {
@@ -105,7 +107,6 @@ const GetAllPond = () => {
         const response = await axiosClient.delete(
           `/api/Pond/${pondToDelete}/PondCharacteristic`
         )
-
         if (response.data.isSuccess) {
           setPonds((prev) => prev.filter((pond) => pond.id !== pondToDelete))
           setIsModalVisible(false)
@@ -122,75 +123,109 @@ const GetAllPond = () => {
     }
   }
 
+  // Filter ponds based on search term and selected category
+  const filteredPonds = ponds.filter((pond) => {
+    const matchesSearch = pond.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+    const matchesCategory =
+      selectedCategory === "" || pond.pondCategoryId === selectedCategory
+    return matchesSearch && matchesCategory
+  })
+
   return (
     <div className="relative flex w-full flex-col">
       <h2 className="mb-4 text-2xl font-bold">Danh sách các loại hồ</h2>
 
+      {/* Search and Filter Section */}
+      <div className="mb-4 flex gap-4">
+        <input
+          type="text"
+          placeholder="Tìm kiếm tên hồ..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-40 rounded border border-gray-300 p-2"
+        />
+        <select
+          value={selectedCategory}
+          onChange={(e) =>
+            setSelectedCategory(e.target.value ? Number(e.target.value) : "")
+          }
+          className="w-40 rounded border border-gray-300 p-2"
+        >
+          <option value="">Tất cả loại hồ</option>
+          {pondCategories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {isLoading ? (
         <p>Đang tải...</p>
-      ) : ponds.length === 0 ? (
+      ) : filteredPonds.length === 0 ? (
         <p>Không có loại hồ nào</p>
       ) : (
-        <ul className="space-y-4 font-semibold">
-          {ponds
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {filteredPonds
             .slice((pageIndex - 1) * pageSize, pageIndex * pageSize)
             .map((pond) => (
               <div
                 key={pond.id}
-                className="relative mb-6 rounded-lg border border-gray-200 bg-white shadow-md"
+                className="flex rounded-lg border border-gray-200 bg-white shadow-md"
               >
-                <div className="items-center px-4 py-3">
-                  <div className="flex flex-col justify-start gap-3">
-                    <div className="flex flex-row justify-between">
-                      <p className="inline-flex items-start gap-3 text-xl font-semibold">
-                        Tên hồ:{" "}
-                        <span className="text-xl font-medium">{pond.name}</span>
-                      </p>
-                    </div>
-                    <p className="inline-flex items-center gap-2 text-gray-500">
+                {/* Left Side Image */}
+                <div className="h-48 w-1/4 overflow-hidden rounded-l-lg">
+                  <img
+                    src={pond.image || "https://via.placeholder.com/150"}
+                    alt={pond.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+
+                {/* Right Side Content */}
+                <div className="relative flex w-3/4 flex-col justify-between p-4">
+                  <div>
+                    <h3 className="break-words text-xl font-semibold">
+                      Tên hồ:{" "}
+                      <span className="font-normal uppercase">{pond.name}</span>
+                    </h3>
+                    <p className="font-semibold text-gray-500">
                       Loại hồ:{" "}
-                      <span>{getCategoryNameById(pond.pondCategoryId)}</span>
+                      <span className="font-normal">
+                        {getCategoryNameById(pond.pondCategoryId)}
+                      </span>
+                    </p>
+                    <p className="mt-2 break-words text-sm font-semibold text-gray-700">
+                      Mô tả:{" "}
+                      <span className="font-normal">{pond.description}</span>
                     </p>
                   </div>
-                </div>
 
-                <div className="absolute right-4 top-4 flex gap-2">
-                  <CustomButton
-                    icon={<IoIosCreate />}
-                    label="Chỉnh sửa"
-                    onClick={() =>
-                      navigate(
-                        `/admin/quan-li-ca-va-ho/all-pond/edit/${pond.id}`
-                      )
-                    }
-                  />
-                  <CustomButton
-                    label="Xóa"
-                    onClick={() => handleDeleteRequest(pond.id)}
-                  />
-                </div>
-
-                <div className="flex w-full flex-col justify-start gap-2 px-4">
-                  <p className="inline-flex items-center gap-2 break-words text-sm text-gray-700">
-                    <span className="">Mô tả:</span> {pond.description}
-                  </p>
-                </div>
-
-                {pond.image && (
-                  <div className="p-4">
-                    <img
-                      src={pond.image}
-                      alt={pond.name}
-                      className="h-32 w-full rounded object-cover"
+                  <div className="mt-4 flex justify-end gap-2">
+                    <CustomButton
+                      icon={<IoIosCreate />}
+                      label="Chỉnh sửa"
+                      onClick={() =>
+                        navigate(
+                          `/admin/quan-li-ca-va-ho/all-pond/edit/${pond.id}`
+                        )
+                      }
+                    />
+                    <CustomButton
+                      label="Xóa"
+                      onClick={() => handleDeleteRequest(pond.id)}
                     />
                   </div>
-                )}
+                </div>
               </div>
             ))}
-        </ul>
+        </div>
       )}
 
-      <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] items-center sm:translate-x-[40rem] md:translate-x-[30rem]">
+      {/* Pagination */}
+      <div className="fixed bottom-0 mt-6 inline-flex w-full items-center justify-center">
         <CustomButton
           icon={<IoIosArrowDropleftCircle />}
           label="Trang trước"

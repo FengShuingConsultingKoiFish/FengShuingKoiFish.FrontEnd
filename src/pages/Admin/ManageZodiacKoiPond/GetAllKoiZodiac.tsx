@@ -6,6 +6,7 @@ import {
   IoIosArrowDropleftCircle,
   IoIosArrowDroprightCircle
 } from "react-icons/io"
+import { useNavigate } from "react-router-dom"
 
 import { axiosClient } from "@/lib/api/config/axios-client"
 
@@ -36,6 +37,7 @@ interface GroupedKoiZodiac {
   zodiacId: number
   zodiacName: string
   koiBreeds: KoiBreed[]
+  ids: number[] // Thêm trường ids để chứa danh sách các id thuộc zodiacId
 }
 
 const GetAllKoiZodiac = () => {
@@ -48,6 +50,7 @@ const GetAllKoiZodiac = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [zodiacToDelete, setZodiacToDelete] = useState<number | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,6 +93,7 @@ const GetAllKoiZodiac = () => {
 
                 if (existingGroup && koiBreedDetails) {
                   existingGroup.koiBreeds.push(koiBreedDetails)
+                  existingGroup.ids.push(current.id) // Thêm id vào danh sách ids của nhóm
                 } else if (koiBreedDetails) {
                   const zodiacName =
                     zodiacs.find((zodiac) => zodiac.id === current.zodiacId)
@@ -97,7 +101,8 @@ const GetAllKoiZodiac = () => {
                   acc.push({
                     zodiacId: current.zodiacId,
                     zodiacName: zodiacName,
-                    koiBreeds: [koiBreedDetails]
+                    koiBreeds: [koiBreedDetails],
+                    ids: [current.id] // Tạo mảng ids mới với id hiện tại
                   })
                 }
                 return acc
@@ -136,6 +141,19 @@ const GetAllKoiZodiac = () => {
   const handleDeleteRequest = (zodiacId: number) => {
     setZodiacToDelete(zodiacId)
     setIsModalVisible(true)
+  }
+
+  const handleEditGroup = (group: GroupedKoiZodiac) => {
+    navigate(
+      `/admin/quan-li-menh-tuong-thich/all-zodiac-koi/edit/${group.zodiacId}`,
+      {
+        state: {
+          zodiacId: group.zodiacId,
+          zodiacName: group.zodiacName,
+          koiBreeds: group.koiBreeds
+        }
+      }
+    )
   }
 
   const handleConfirmDelete = async () => {
@@ -195,18 +213,34 @@ const GetAllKoiZodiac = () => {
                       {zodiac.zodiacName}
                     </span>
                   </p>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
                     {zodiac.koiBreeds.map((breed, index) => (
                       <div
                         key={`${zodiac.zodiacId}-${breed.id}-${index}`}
                         className="flex flex-col items-center rounded-md border p-4 shadow-sm"
                       >
-                        <p className="font-semibold">
-                          Tên giống cá Koi: {breed.name}
+                        <p className="w-full max-w-full break-words font-semibold">
+                          Tên giống cá Koi:{" "}
+                          <span className="font-normal uppercase">
+                            {breed.name}
+                          </span>
                         </p>
-                        <p>Màu sắc: {breed.colors}</p>
-                        <p>Hoa văn: {breed.pattern}</p>
-                        <p>Mô tả: {breed.description}</p>
+                        <p className="w-full max-w-full break-words font-semibold">
+                          Màu sắc:{" "}
+                          <span className="font-normal">{breed.colors}</span>
+                        </p>
+
+                        <p className="w-full max-w-full break-words font-semibold">
+                          Hoa văn:{" "}
+                          <span className="font-normal">{breed.pattern}</span>
+                        </p>
+
+                        <p className="w-full break-words text-sm font-semibold text-gray-700">
+                          Mô tả:{" "}
+                          <span className="font-normal">
+                            {breed.description}
+                          </span>
+                        </p>
                         {breed.image && (
                           <img
                             src={breed.image}
@@ -217,10 +251,15 @@ const GetAllKoiZodiac = () => {
                       </div>
                     ))}
                   </div>
+
                   <div className="mt-4">
                     <CustomButton
-                      label="Xóa Cung Mệnh"
+                      label="Xóa Tương Thích"
                       onClick={() => handleDeleteRequest(zodiac.zodiacId)}
+                    />
+                    <CustomButton
+                      label="Chỉnh sửa"
+                      onClick={() => handleEditGroup(zodiac)}
                     />
                   </div>
                 </div>
@@ -229,7 +268,7 @@ const GetAllKoiZodiac = () => {
         </ul>
       )}
 
-      <div className="fixed bottom-0 mt-6 inline-flex translate-x-[50rem] items-center sm:translate-x-[40rem] md:translate-x-[30rem]">
+      <div className="fixed bottom-0 mt-6 inline-flex w-full items-center justify-center">
         <CustomButton
           icon={<IoIosArrowDropleftCircle />}
           label="Trang trước"
