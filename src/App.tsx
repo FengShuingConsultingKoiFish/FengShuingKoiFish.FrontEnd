@@ -252,7 +252,10 @@ function App() {
             <Route path="all-zodiac-koi" element={<GetAllKoiZodiac />} />
             <Route path="create-pond" element={<CreatePondZodiac />} />
             <Route path="all-zodiac-pond" element={<GetAllPondZodiac />} />
-            <Route path="all-zodiac-koi/edit/:id" element={<EditKoiZodiac />} />
+            <Route
+              path="all-zodiac-koi/edit/:zodiacId"
+              element={<EditKoiZodiac />}
+            />
           </Route>
         </Routes>
       </div>

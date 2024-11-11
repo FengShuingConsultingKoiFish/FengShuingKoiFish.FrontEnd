@@ -116,25 +116,29 @@ const SelectPond: React.FC<SelectPondProps> = ({ onSelectPond }) => {
       ) : filteredPonds.length === 0 ? (
         <p>Không có loại hồ nào</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid max-h-96 grid-cols-1 gap-4 overflow-y-auto md:grid-cols-3">
           {filteredPonds.map((pond) => (
             <div
               key={pond.id}
               className="relative transform cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-md transition-transform hover:scale-105"
               onClick={() => onSelectPond(pond)}
             >
-              <div className="flex flex-col gap-3">
-                <p className="text-xl font-semibold">Tên hồ: {pond.name}</p>
-                <p>Loại hồ: {getCategoryNameById(pond.pondCategoryId)}</p>
-                <p>Mô tả: {pond.description}</p>
-                {pond.image && (
-                  <img
-                    src={pond.image}
-                    alt={pond.name}
-                    className="mt-2 h-32 w-full rounded object-cover"
-                  />
-                )}
-              </div>
+              <p className="font-semibold">
+                Tên hồ: <span className="font-normal">{pond.name}</span>
+              </p>
+              <p className="text-gray-600">
+                Loại cá: {getCategoryNameById(pond.pondCategoryId)}
+              </p>
+              {pond.image && (
+                <img
+                  src={pond.image}
+                  alt={pond.name}
+                  className="mt-2 h-32 w-full rounded object-cover"
+                />
+              )}
+              <p className="w-full break-words text-sm font-semibold text-gray-700">
+                Mô tả: <span className="font-normal">{pond.description}</span>
+              </p>
             </div>
           ))}
         </div>

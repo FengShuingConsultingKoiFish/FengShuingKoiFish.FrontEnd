@@ -4,6 +4,7 @@ export interface KoiDetail {
   koiDetailId: number
   koiBreedName: string
   koiName: string
+  koiCategoryId?: number
   koiBreedId?: number
   colors?: string
   pattern?: string

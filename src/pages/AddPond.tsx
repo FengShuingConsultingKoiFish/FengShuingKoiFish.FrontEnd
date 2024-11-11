@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
-import axios from "axios"
 import toast from "react-hot-toast"
 import { FaArrowLeft } from "react-icons/fa"
 import { useNavigate, useParams } from "react-router-dom"
@@ -11,9 +10,15 @@ import OnclickButton from "@/components/global/atoms/OnclickButton"
 
 interface PondCharacteristic {
   id: number
+  pondCategoryId: number
   name: string
   description: string
   image: string
+}
+
+interface PondCategory {
+  id: number
+  name: string
 }
 
 const AddPond: React.FC = () => {
@@ -23,30 +28,23 @@ const AddPond: React.FC = () => {
   const [pondCharacteristics, setPondCharacteristics] = useState<
     PondCharacteristic[]
   >([])
+  const [pondCategories, setPondCategories] = useState<PondCategory[]>([])
   const [selectedPondId, setSelectedPondId] = useState<number | null>(null)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
+    null
+  )
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [visibleItems, setVisibleItems] = useState<number>(6)
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([])
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    if (!token) {
-      navigate("/")
-      return
-    }
-
     const fetchPondCharacteristics = async () => {
       try {
         const response = await axiosClient.get(
-          "/api/Pond/Get-All-PondCharacteristics",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
+          "/api/Pond/Get-All-PondCharacteristics"
         )
-
         if (response.data.isSuccess) {
           setPondCharacteristics(response.data.result)
         } else {
@@ -58,8 +56,42 @@ const AddPond: React.FC = () => {
       }
     }
 
+    const fetchPondCategories = async () => {
+      try {
+        const response = await axiosClient.get(
+          "/api/Pond/Get-All-PondCategories"
+        )
+        if (response.data.isSuccess) {
+          setPondCategories(response.data.result)
+        } else {
+          setError("Không thể tải danh sách loại hồ.")
+        }
+      } catch (err) {
+        console.error(err)
+        setError("Có lỗi xảy ra khi tải danh sách loại hồ.")
+      }
+    }
+
     fetchPondCharacteristics()
+    fetchPondCategories()
   }, [navigate])
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      selectedPondId !== null &&
+      cardRefs.current[selectedPondId] &&
+      !cardRefs.current[selectedPondId]?.contains(event.target as Node)
+    ) {
+      setSelectedPondId(null)
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [selectedPondId])
 
   const handleSubmit = async (pondId: number) => {
     if (!userPondId) {
@@ -67,7 +99,6 @@ const AddPond: React.FC = () => {
       return
     }
     setLoading(true)
-    const token = localStorage.getItem("token")
     const payload = {
       pondId: parseInt(userPondId),
       pondDetails: [{ pondId }]
@@ -76,15 +107,8 @@ const AddPond: React.FC = () => {
     try {
       const response = await axiosClient.post(
         "/api/UserPond/adddetails",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        }
+        payload
       )
-
       if (response.data.isSuccess) {
         toast.success("Thêm loại Hồ thành công!")
         navigate(`/pond-details/${userPondId}`)
@@ -92,24 +116,31 @@ const AddPond: React.FC = () => {
         setError(response.data.message || "Có lỗi xảy ra.")
       }
     } catch (err) {
-      if (axios.isAxiosError(err) && err.response) {
-        setError(err.response.data.message || "Có lỗi xảy ra khi thêm hồ.")
-      } else {
-        setError("Có lỗi xảy ra khi thêm hồ.")
-      }
+      console.error("Error while adding pond details:", err)
+      setError("Có lỗi xảy ra khi thêm hồ.")
     } finally {
       setLoading(false)
     }
   }
 
-  const filteredPondCharacteristics = pondCharacteristics.filter((pond) =>
-    pond.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredPondCharacteristics = pondCharacteristics
+    .filter((pond) =>
+      pond.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .filter(
+      (pond) =>
+        !selectedCategoryId || pond.pondCategoryId === selectedCategoryId
+    )
 
   const visiblePonds = filteredPondCharacteristics.slice(0, visibleItems)
 
   const handleShowMore = () => {
     setVisibleItems((prev) => prev + 6)
+  }
+
+  const getPondCategoryName = (pondCategoryId: number) => {
+    const category = pondCategories.find((cat) => cat.id === pondCategoryId)
+    return category ? category.name : "Không xác định"
   }
 
   return (
@@ -121,10 +152,10 @@ const AddPond: React.FC = () => {
         <FaArrowLeft className="text-2xl" />
       </button>
 
-      <h2 className="mb-6 text-center text-2xl font-semibold">Thêm Hồ</h2>
+      <h2 className="mb-6 text-center text-2xl font-semibold">Danh sách Hồ</h2>
       {error && <p className="text-center text-red-500">{error}</p>}
 
-      <div className="mb-4 flex justify-center">
+      <div className="mb-4 flex justify-center space-x-4">
         <input
           type="text"
           placeholder="Tìm kiếm loại hồ..."
@@ -132,48 +163,81 @@ const AddPond: React.FC = () => {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full max-w-md rounded border border-gray-300 p-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+
+        <select
+          value={selectedCategoryId || ""}
+          onChange={(e) =>
+            setSelectedCategoryId(
+              e.target.value ? parseInt(e.target.value) : null
+            )
+          }
+          className="rounded-md border border-gray-300 bg-white p-2 text-gray-700 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Tất cả loại hồ</option>
+          {pondCategories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {visiblePonds.map((pond, index) => (
-          <div
-            key={pond.id}
-            className={`relative transform cursor-pointer rounded border p-4 transition-all hover:scale-105 hover:shadow-lg ${
-              selectedPondId === pond.id
-                ? "scale-105 border-blue-500 shadow-lg"
-                : "border-gray-300"
-            } ${
-              index % 3 === 0
-                ? "bg-yellow-100"
-                : index % 3 === 1
-                  ? "bg-green-100"
-                  : "bg-blue-100"
-            }`}
-            onClick={() => setSelectedPondId(pond.id)}
-          >
-            {selectedPondId === pond.id && (
-              <div className="pointer-events-none absolute inset-0 rounded bg-black bg-opacity-30"></div>
-            )}
-            <img
-              src={pond.image}
-              alt={pond.name}
-              className="h-32 w-full rounded object-cover"
-            />
-            <h3 className="text-lg font-bold">{pond.name}</h3>
-            <p>Mô tả: {pond.description}</p>
+      {filteredPondCharacteristics.length === 0 ? (
+        <p className="text-center text-gray-500">Không có hồ nào.</p>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {visiblePonds.map((pond) => (
+            <div
+              key={pond.id}
+              ref={(el) => (cardRefs.current[pond.id] = el)}
+              className={`relative flex cursor-pointer rounded-lg border border-gray-200 bg-white shadow-md transition-all hover:scale-105 hover:shadow-lg ${
+                selectedPondId === pond.id
+                  ? "scale-105 border-blue-500 shadow-lg"
+                  : "border-gray-300"
+              }`}
+              onClick={() => setSelectedPondId(pond.id)} // Khi click vào card sẽ thay đổi selectedPondId
+            >
+              {/* Khi card được chọn, hiển thị lớp phủ màu xám */}
+              {selectedPondId === pond.id && (
+                <div className="absolute inset-0 rounded-lg bg-black bg-opacity-30"></div>
+              )}
 
-            {selectedPondId === pond.id && (
-              <div className="mt-2 flex justify-center">
-                <OnclickButton
-                  label={loading ? "Đang xử lý..." : "Thêm"}
-                  onClick={() => handleSubmit(pond.id)}
-                  disabled={loading}
+              {/* Left Side Image */}
+              <div className="h-48 w-1/4 overflow-hidden rounded-l-lg">
+                <img
+                  src={pond.image || "https://via.placeholder.com/150"}
+                  alt={pond.name}
+                  className="h-full w-full object-cover"
                 />
               </div>
-            )}
-          </div>
-        ))}
-      </div>
+
+              {/* Right Side Content */}
+              <div className="relative flex w-3/4 flex-col p-4">
+                <div className="flex-grow overflow-hidden">
+                  <h3 className="text-xl font-semibold">{pond.name}</h3>
+                  <p className="text-gray-500">
+                    Loại Hồ: {getPondCategoryName(pond.pondCategoryId)}
+                  </p>
+                  <p className="mt-2 break-words text-sm text-gray-700">
+                    Mô tả: {pond.description}
+                  </p>
+                </div>
+
+                {/* Add button (only shows when card is selected) */}
+                {selectedPondId === pond.id && (
+                  <div className="absolute bottom-4 right-4 flex justify-center">
+                    <OnclickButton
+                      label={loading ? "Đang xử lý..." : "Thêm"}
+                      onClick={() => handleSubmit(pond.id)}
+                      disabled={loading}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {visibleItems < filteredPondCharacteristics.length && (
         <div className="flex justify-center">

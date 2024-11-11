@@ -244,17 +244,20 @@ const PondDetails: React.FC = () => {
           className="absolute right-2 top-2 cursor-pointer text-red-500"
           onClick={() => openConfirmModal(koi.koiDetailId, "koi")}
         />
-        <p className="text-lg font-bold">Loài Koi: {koi.koiBreedName}</p>
-        <p className="text-gray-700">Tên Koi: {koi.koiName}</p>
+        <p className="text-lg font-bold">Tên Koi: {koi.koiBreedName}</p>
         {koi.colors && <p>Màu sắc: {koi.colors}</p>}
         {koi.pattern && <p>Hoa văn: {koi.pattern}</p>}
-        {koi.description && <p>Mô tả: {koi.description}</p>}
         {koi.image && (
           <img
             src={koi.image}
             alt={koi.koiBreedName}
             className="mt-2 w-full rounded-lg"
           />
+        )}
+        {koi.description && (
+          <p className="w-full break-words text-sm font-semibold text-gray-700">
+            Mô tả: <span className="font-normal">{koi.description}</span>
+          </p>
         )}
       </div>
     ) : (
@@ -308,14 +311,18 @@ const PondDetails: React.FC = () => {
                 className="absolute right-2 top-2 cursor-pointer text-red-500"
                 onClick={() => openConfirmModal(pond.pondDetailId, "pond")}
               />
-              <p className="text-lg font-bold">Loại Hồ: {pond.pondName}</p>
-              {pond.description && <p>Mô tả: {pond.description}</p>}
+              <p className="text-lg font-bold">Tên hồ: {pond.pondName}</p>
               {pond.image && (
                 <img
                   src={pond.image}
                   alt={pond.pondName}
                   className="mt-2 w-full rounded-lg"
                 />
+              )}
+              {pond.description && (
+                <p className="w-full break-words text-sm font-semibold text-gray-700">
+                  Mô tả: <span className="font-normal">{pond.description}</span>
+                </p>
               )}
             </div>
           ))}

@@ -66,6 +66,11 @@ const SelectKoiBreed: React.FC<SelectKoiBreedProps> = ({ onSelectKoi }) => {
     return matchesCategory && matchesSearch
   })
 
+  const getCategoryNameById = (categoryId: number) => {
+    const category = koiCategories.find((cat) => cat.id === categoryId)
+    return category ? category.name : "Không xác định"
+  }
+
   return (
     <div className="p-4">
       <div className="mb-4 flex gap-4">
@@ -95,23 +100,29 @@ const SelectKoiBreed: React.FC<SelectKoiBreedProps> = ({ onSelectKoi }) => {
       ) : filteredKoiBreeds.length === 0 ? (
         <p>Không có giống cá nào</p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div className="grid max-h-96 grid-cols-1 gap-4 overflow-y-auto md:grid-cols-3">
           {filteredKoiBreeds.map((koi) => (
             <div
               key={koi.id}
               className="relative transform cursor-pointer rounded-lg border border-gray-200 bg-white p-4 shadow-md transition-transform hover:scale-105"
               onClick={() => onSelectKoi(koi)}
             >
-              <p className="text-xl font-semibold">{koi.name}</p>
-              <p className="text-gray-600">Loại: {koi.koiCategoryId}</p>
+              <p className="font-semibold">
+                Tên giống cá Koi:{" "}
+                <span className="font-normal uppercase">{koi.name}</span>
+              </p>
+              <p className="text-gray-600">
+                Loại cá: {getCategoryNameById(koi.koiCategoryId)}
+              </p>
               {koi.image && (
                 <img
                   src={koi.image}
-                  alt={koi.name}
                   className="mt-2 h-32 w-full rounded object-cover"
                 />
               )}
-              <p className="text-gray-500">{koi.description}</p>
+              <p className="w-full break-words text-sm font-semibold text-gray-700">
+                Mô tả: <span className="font-normal">{koi.description}</span>
+              </p>
             </div>
           ))}
         </div>
