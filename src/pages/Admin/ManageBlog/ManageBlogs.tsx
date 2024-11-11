@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils"
 
 import { BlogSvg } from "@/components/global/icons/icon"
 import Breadcrumb from "@/components/ui/Breadcrums"
-import { WobbleCard } from "@/components/ui/WobbleCard"
 
 import { Sidebar, SidebarBody, SidebarLink } from "../components/CustomSidebar"
 
