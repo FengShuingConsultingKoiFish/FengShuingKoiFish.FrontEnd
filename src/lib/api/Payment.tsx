@@ -259,3 +259,30 @@ export const getPaymentResponseMessage = async (
     nProgress.done();
   }
 };
+
+export const extendPackage = async (purchasedPackageId: number): Promise<PaymentResponseMessage> => {
+  try {
+    nProgress.start();
+
+    const response = await axiosClient.post<PaymentResponseMessage>(
+      "/api/Payments/extend-package",
+      null,
+      {
+        params: {
+          purchasedPackageId,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error in extend package request:", error);
+    if (error.response) {
+      throw new Error(error.response.data.message || "An error occurred");
+    } else {
+      throw new Error("An unknown error occurred");
+    }
+  } finally {
+    nProgress.done();
+  }
+};

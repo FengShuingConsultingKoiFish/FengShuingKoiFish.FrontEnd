@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
 import { ClipLoader } from "react-spinners"
 
+import { extendPackage } from "@/lib/api/Payment"
 import { getPurchasedPackageById } from "@/lib/api/PurchasedPkg"
 import { setUserPackageDetail } from "@/lib/redux/reducers/userPackageSlice"
 
@@ -15,6 +16,7 @@ import { AuroraBackground } from "@/components/ui/AuroraBg"
 import { ArticleReading } from "@/components/ui/blog/ArticleReading"
 
 import CustomButton from "../Setting/Components/CustomBtn"
+import toast from "react-hot-toast"
 
 interface UserPruchasedPkgDetail {
   id: number
@@ -68,6 +70,20 @@ export const UserPackageDetailPage = () => {
 
     fetchPackageDetail()
   }, [id])
+
+  const handleExtendPackage = async () => {
+    if (!packageDetail) return
+
+    try {
+      const response = await extendPackage(packageDetail.id)
+      toast.success("Đang chuyển trang thanh toán VnPay... !")
+      console.log("Đang chuyển tiếp ...:", response)
+      window.location.href = response.result
+    } catch (error) {
+      console.error("Error extending package:", error)
+      setError("Failed to extend package")
+    }
+  }
 
   const data = [
     {
@@ -212,13 +228,13 @@ export const UserPackageDetailPage = () => {
               NẾU BẠN CẢM THẤY HÀI LÒNG VỀ GÓI CỦA CHÚNG TÔI
             </p>
             <div className="flex h-[30rem] w-full items-center justify-center">
-              <PinContainer title="Gia hạn ngay" onClick={() => {}}>
+              <PinContainer title="Gia hạn ngay" onClick={handleExtendPackage}>
                 <div className="flex h-[20rem] w-[20rem] basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2">
-                  <h3 className="!m-0 max-w-xs !pb-2 text-pretty text-2xl font-bold text-white">
+                  <h3 className="!m-0 max-w-xs text-pretty !pb-2 text-2xl font-bold text-white">
                     {packageDetail?.name || "Package Details"}
                   </h3>
                   <div className="!m-0 !p-0 text-base font-normal">
-                    <span className="text-white"> 
+                    <span className="text-white">
                       Giá :
                       {packageDetail?.price.toLocaleString("vi-VN", {
                         style: "currency",

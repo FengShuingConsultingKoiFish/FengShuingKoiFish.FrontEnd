@@ -11,6 +11,7 @@ import { Link, Outlet, useLocation } from "react-router-dom"
 
 import { cn } from "@/lib/utils"
 
+import { BlogSvg } from "@/components/global/icons/icon"
 import Breadcrumb from "@/components/ui/Breadcrums"
 import { WobbleCard } from "@/components/ui/WobbleCard"
 
@@ -88,41 +89,9 @@ const Dashboard = () => {
         <Breadcrumb />
         <div className="flex flex-grow flex-col items-center justify-start text-black">
           {location.pathname === "/admin/blogs" && (
-            <div className="mx-auto grid h-screen w-full max-w-7xl grid-cols-1 gap-4 lg:grid-cols-3">
-              <WobbleCard
-                containerClassName="col-span-1 lg:col-span-2 h-full bg-pink-800 min-h-[500px] lg:min-h-[300px]"
-                className=""
-              >
-                <div className="max-w-xs">
-                  <h2 className="text-balance text-left text-base font-semibold tracking-[-0.015em] text-white md:text-xl lg:text-3xl">
-                    Tổng số bài đăng
-                  </h2>
-                  <p className="mt-4 text-left text-base/6 text-neutral-200">
-                    With over 100,000 mothly active bot users, Gippity AI is the
-                    most popular AI platform for developers.
-                  </p>
-                </div>
-              </WobbleCard>
-              <WobbleCard containerClassName="col-span-1 min-h-[300px]">
-                <h2 className="max-w-80 text-balance text-left text-base font-semibold tracking-[-0.015em] text-white md:text-xl lg:text-3xl">
-                  Số bài đăng thành công
-                </h2>
-                <p className="mt-4 max-w-[26rem] text-left text-base/6 text-neutral-200">
-                  If someone yells “stop!”, goes limp, or taps out, the fight is
-                  over.
-                </p>
-              </WobbleCard>
-              <WobbleCard containerClassName="col-span-1 lg:col-span-3 bg-blue-900 min-h-[500px] lg:min-h-[600px] xl:min-h-[300px]">
-                <div className="max-w-sm">
-                  <h2 className="max-w-sm text-balance text-left text-base font-semibold tracking-[-0.015em] text-white md:max-w-lg md:text-xl lg:text-3xl">
-                    Số bài đăng bị từ chối
-                  </h2>
-                  <p className="mt-4 max-w-[26rem] text-left text-base/6 text-neutral-200">
-                    With over 100,000 mothly active bot users, Gippity AI is the
-                    most popular AI platform for developers.
-                  </p>
-                </div>
-              </WobbleCard>
+            <div className="flex flex-col justify-between">
+              <p className="flex items-center justify-center text-4xl font-semibold my-10">Quản lý Blog</p>
+              <BlogSvg />
             </div>
           )}
           <Outlet />

@@ -1,9 +1,14 @@
 import { useState } from "react"
+
 import { IconCirclePlus, IconList } from "@tabler/icons-react"
 import { Link, Outlet } from "react-router-dom"
+
 import { cn } from "@/lib/utils"
+
 import Breadcrumb from "@/components/ui/Breadcrums"
+
 import { Sidebar, SidebarBody, SidebarLink } from "../components/CustomSidebar"
+import { PackageSvg } from "@/components/global/icons/svgIcon"
 
 export function ManageAdverPkgPage() {
   const links = [
@@ -58,6 +63,14 @@ const Dashboard = () => {
       <div className="flex h-full w-full flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10">
         <Breadcrumb />
         <div className="flex flex-grow flex-col items-center justify-start text-black">
+          {location.pathname === "/admin/goi-quang-cao" && (
+            <div className="flex flex-col justify-between">
+              <p className="my-10 flex items-center justify-center text-4xl font-semibold">
+                Quản lý gói quảng cáo
+              </p>
+              <PackageSvg />
+            </div>
+          )}
           <Outlet />
         </div>
       </div>
