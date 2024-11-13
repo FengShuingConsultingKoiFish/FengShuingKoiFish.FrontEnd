@@ -42,7 +42,7 @@ interface UserPurchasedPkgDetail {
   limitAd: number
   limitContent: number
   limitImage: number
-  durationInDays: number
+  durationsInDays: number
   advertisementPackageId: number
   monitoredQuantity: number
   userId: number
@@ -146,7 +146,7 @@ export function PurchasedPackagePage() {
                 limitContent={pkg.limitContent || 0}
                 limitImage={pkg.limitImage || 0}
                 createdDate={pkg.createdDate || ""}
-                durationInDays={pkg.durationInDays || 0}
+                durationInDays={pkg.durationsInDays || 0}
                 advertisementPackageId={pkg.advertisementPackageId || 0}
                 monitoredQuantity={pkg.monitoredQuantity || 0}
                 userId={pkg.userId || 0}

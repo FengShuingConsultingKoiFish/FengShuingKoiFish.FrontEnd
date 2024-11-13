@@ -37,6 +37,7 @@ interface EditAdverFormData {
   limitAd: number
   limitContent: number
   limitImage: number
+  durationsInDays: number
   advertisementPackageId: number
   imageIds: number[]
 }
@@ -77,6 +78,7 @@ export const EditAdver: React.FC = () => {
           limitAd: response.result.limitAd,
           limitContent: response.result.limitContent,
           limitImage: response.result.limitImage,
+          durationsInDays: response.result.durationsInDays,
           advertisementPackageId: Number(id),
           imageIds: response.result.imageViewDTOs.map((image: any) => image.id)
         })
@@ -247,6 +249,7 @@ export const EditAdver: React.FC = () => {
           limitAd: data.limitAd,
           limitContent: data.limitContent,
           limitImage: data.limitImage,
+          durationsInDays: data.durationsInDays,
           imageIds,
           advertisementPackageId: Number(id)
         }
@@ -361,6 +364,17 @@ export const EditAdver: React.FC = () => {
                   type="number"
                   onChange={() => {}}
                   label="Giới hạn hình ảnh"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                />
+                <Input
+                  id="durationsInDays"
+                  placeholder=""
+                  type="number"
+                  onChange={() => {}}
+                  label="Thời hạn của gói"
                   disabled={isLoading}
                   register={register}
                   errors={errors}

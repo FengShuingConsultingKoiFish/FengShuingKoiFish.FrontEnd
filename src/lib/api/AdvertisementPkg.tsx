@@ -62,170 +62,172 @@ interface ImageViewDTO {
 }
 
 interface AdvertisementPackage {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
-  limitAd: number;
-  limitContent: number;
-  limitImage: number;
-  isActive: boolean;
-  createdDate: string;
-  createdBy: string;
+  id: number
+  name: string
+  price: number
+  description: string
+  limitAd: number
+  limitContent: number
+  limitImage: number
+  durationsInDays: number
+  isActive: boolean
+  createdDate: string
+  createdBy: string
   imageViewDTOs: ImageViewDTO[]
 }
-    
-
 
 interface GetAllAdvertisementPackagesResponse {
-  statusCode: number;
-  isSuccess: boolean;
-  message: string;
+  statusCode: number
+  isSuccess: boolean
+  message: string
   result: {
-    pageIndex: number;
-    totalPages: number;
-    totalItems: number;
-    hasPreviousPage: boolean;
-    hasNextPage: boolean;
-    datas: AdvertisementPackage[];
-  };
+    pageIndex: number
+    totalPages: number
+    totalItems: number
+    hasPreviousPage: boolean
+    hasNextPage: boolean
+    datas: AdvertisementPackage[]
+  }
 }
 
 interface GetAllAdvertisementPackagesRequest {
-  pageIndex: number;
-  pageSize: number;
-  name?: string;
-  priceFilter?: number | null;
-  orderImage?: number | null;
+  pageIndex: number
+  pageSize: number
+  name?: string
+  priceFilter?: number | null
+  orderImage?: number | null
 }
 
 export const getAllAdvertisementsPkg = async (
   requestData: GetAllAdvertisementPackagesRequest
 ): Promise<GetAllAdvertisementPackagesResponse> => {
   try {
-    nProgress.start();
-    const response = await axiosClient.post<GetAllAdvertisementPackagesResponse>(
-      "/api/AdvertisementPackages/get-all-packages",
-      requestData
-    );
-    return response.data;
+    nProgress.start()
+    const response =
+      await axiosClient.post<GetAllAdvertisementPackagesResponse>(
+        "/api/AdvertisementPackages/get-all-packages",
+        requestData
+      )
+    return response.data
   } catch (error: any) {
-    nProgress.done();
+    nProgress.done()
     if (error.response) {
-      console.error("API Error: ", error.response.data.message);
-      toast.error(error.response.data.message || "An error occurred");
-      throw new Error(error.response.data.message || "An error occurred");
+      console.error("API Error: ", error.response.data.message)
+      toast.error(error.response.data.message || "An error occurred")
+      throw new Error(error.response.data.message || "An error occurred")
     } else {
-      console.error("Unknown error: ", error.message);
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      console.error("Unknown error: ", error.message)
+      toast.error("An unknown error occurred")
+      throw new Error("An unknown error occurred")
     }
   } finally {
-    nProgress.done();
+    nProgress.done()
   }
-};
-
-interface GetAdvertisementPackageByIdResponse {
-  statusCode: number;
-  isSuccess: boolean;
-  message: string;
-  result: AdvertisementPackage;
 }
 
-export const getAdvertisementPackageById = async (id: number): Promise<GetAdvertisementPackageByIdResponse> => {
+interface GetAdvertisementPackageByIdResponse {
+  statusCode: number
+  isSuccess: boolean
+  message: string
+  result: AdvertisementPackage
+}
+
+export const getAdvertisementPackageById = async (
+  id: number
+): Promise<GetAdvertisementPackageByIdResponse> => {
   try {
-    nProgress.start();
+    nProgress.start()
     const response = await axiosClient.get<GetAdvertisementPackageByIdResponse>(
       `/api/AdvertisementPackages/get-package-by-id/${id}`
-    );
-    return response.data;
+    )
+    return response.data
   } catch (error: any) {
-    nProgress.done();
+    nProgress.done()
     if (error.response) {
-      console.error("API Error: ", error.response.data.message);
-      toast.error(error.response.data.message || "An error occurred");
-      throw new Error(error.response.data.message || "An error occurred");
+      console.error("API Error: ", error.response.data.message)
+      toast.error(error.response.data.message || "An error occurred")
+      throw new Error(error.response.data.message || "An error occurred")
     } else {
-      console.error("Unknown error: ", error.message);
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      console.error("Unknown error: ", error.message)
+      toast.error("An unknown error occurred")
+      throw new Error("An unknown error occurred")
     }
   } finally {
-    nProgress.done();
+    nProgress.done()
   }
-};
+}
 
 interface AddImagesToPackageRequest {
-  advertisementPackageId: number;
-  imagesId: number[];
+  advertisementPackageId: number
+  imagesId: number[]
 }
 
 // Interface for the response
 interface AddImagesToPackageResponse {
-  statusCode: number;
-  isSuccess: boolean;
-  message: string;
+  statusCode: number
+  isSuccess: boolean
+  message: string
 }
 
 export const addImagesToAdvertisementPackage = async (
   requestData: AddImagesToPackageRequest
 ): Promise<AddImagesToPackageResponse> => {
   try {
-    nProgress.start();
+    nProgress.start()
     const response = await axiosClient.post<AddImagesToPackageResponse>(
       "/api/AdvertisementPackages/add-images-to-packages",
       requestData
-    );
-    return response.data;
+    )
+    return response.data
   } catch (error: any) {
-    nProgress.done();
+    nProgress.done()
     if (error.response) {
-      console.error("API Error: ", error.response.data.message);
-      toast.error(error.response.data.message || "An error occurred");
-      throw new Error(error.response.data.message || "An error occurred");
+      console.error("API Error: ", error.response.data.message)
+      toast.error(error.response.data.message || "An error occurred")
+      throw new Error(error.response.data.message || "An error occurred")
     } else {
-      console.error("Unknown error: ", error.message);
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      console.error("Unknown error: ", error.message)
+      toast.error("An unknown error occurred")
+      throw new Error("An unknown error occurred")
     }
   } finally {
-    nProgress.done();
+    nProgress.done()
   }
-};
+}
 
 interface DeleteImagesFromPackageRequest {
-  advertisementPackageId: number;
-  imageIds: number[];
+  advertisementPackageId: number
+  imageIds: number[]
 }
 
 interface DeleteImagesFromPackageResponse {
-  statusCode: number;
-  isSuccess: boolean;
-  message: string;
+  statusCode: number
+  isSuccess: boolean
+  message: string
 }
 
 export const deleteImagesFromAdvertisementPackage = async (
   requestData: DeleteImagesFromPackageRequest
 ): Promise<DeleteImagesFromPackageResponse> => {
   try {
-    nProgress.start();
+    nProgress.start()
     const response = await axiosClient.post<DeleteImagesFromPackageResponse>(
       "/api/AdvertisementPackages/delete-images-from-package",
       requestData
-    );
-    return response.data;
+    )
+    return response.data
   } catch (error: any) {
-    nProgress.done();
+    nProgress.done()
     if (error.response) {
-      console.error("API Error: ", error.response.data.message);
-      toast.error(error.response.data.message || "An error occurred");
-      throw new Error(error.response.data.message || "An error occurred");
+      console.error("API Error: ", error.response.data.message)
+      toast.error(error.response.data.message || "An error occurred")
+      throw new Error(error.response.data.message || "An error occurred")
     } else {
-      console.error("Unknown error: ", error.message);
-      toast.error("An unknown error occurred");
-      throw new Error("An unknown error occurred");
+      console.error("Unknown error: ", error.message)
+      toast.error("An unknown error occurred")
+      throw new Error("An unknown error occurred")
     }
   } finally {
-    nProgress.done();
+    nProgress.done()
   }
-};
+}

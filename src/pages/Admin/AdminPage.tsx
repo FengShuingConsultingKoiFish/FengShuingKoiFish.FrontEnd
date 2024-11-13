@@ -170,7 +170,7 @@ const Dashboard = ({ totalStatistics, monthlyRevenue }: { totalStatistics: { tot
           className="-top-40 left-0 md:-top-20 md:left-60"
           fill="white"
         />
-        <div className="relative z-10 mx-auto h-full max-h-[55rem] w-full p-4 pt-20 md:pt-0">
+        <div className="relative z-10 mx-auto h-screen max-h-[55rem] w-full p-4 pt-20 md:pt-0">
           <h1 className="my-10 bg-opacity-50 bg-gradient-to-b from-neutral-50 to-neutral-400 bg-clip-text py-3 text-center text-4xl font-bold text-transparent md:text-7xl">
             Quản lý hệ thống
           </h1>

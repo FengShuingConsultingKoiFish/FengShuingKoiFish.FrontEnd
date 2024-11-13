@@ -102,6 +102,13 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
     }
   }, [currentUser, navigate])
 
+  const handleDashboard = useCallback(() => {
+    if(currentUser) {
+      navigate(`/`)
+    }
+  }, [currentUser, navigate])
+  
+
   return (
     <div className="relative">
       <div
@@ -159,7 +166,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                     icon={<CgProfile size={20} />}
                   />
                   <MenuItem
-                    onClick={() => {}}
+                    onClick={handleDashboard}
                     closeMenu={closeMenu}
                     label="Dashboard"
                     icon={<MdDashboard size={20} />}
