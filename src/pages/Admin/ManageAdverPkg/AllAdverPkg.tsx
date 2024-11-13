@@ -28,6 +28,7 @@ interface AdvertisementPackage {
   limitAd: number
   limitContent: number
   limitImage: number
+  durationsInDays: number
   isActive: boolean
   createdDate: string
   createdBy: string
@@ -102,11 +103,13 @@ export const AllAdverPkg = () => {
               key={pkg.id}
               id={pkg.id}
               name={pkg.name}
+              createdDate={pkg.createdDate}
               price={pkg.price}
               description={pkg.description}
               limitAd={pkg.limitAd}
               limitContent={pkg.limitContent}
               limitImage={pkg.limitImage}
+              durationsInDays={pkg.durationsInDays}
               imageViewDtos={pkg.imageViewDTOs}
               clickToEdit={() => handleEditDetail(pkg.id)}
             />

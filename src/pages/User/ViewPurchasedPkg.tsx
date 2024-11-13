@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 
 import { IconPencilPlus } from "@tabler/icons-react"
 import { motion } from "framer-motion"
+import toast from "react-hot-toast"
 import { useDispatch } from "react-redux"
 import { useParams } from "react-router-dom"
 import { useNavigate } from "react-router-dom"
@@ -16,7 +17,6 @@ import { AuroraBackground } from "@/components/ui/AuroraBg"
 import { ArticleReading } from "@/components/ui/blog/ArticleReading"
 
 import CustomButton from "../Setting/Components/CustomBtn"
-import toast from "react-hot-toast"
 
 interface UserPruchasedPkgDetail {
   id: number
@@ -26,9 +26,9 @@ interface UserPruchasedPkgDetail {
   limitAd: number
   limitContent: number
   limitImage: number
-  durationInDays: number
+  durationsInDays: number
   advertisementPackageId: number
-  monitoredQuantity: number
+  mornitoredQuantity: number
   userId: number
   userName: string
   status: number
@@ -92,16 +92,6 @@ export const UserPackageDetailPage = () => {
         <div>
           <p className="mb-8 text-5xl font-normal text-neutral-800 dark:text-neutral-200 md:text-sm">
             {packageDetail?.description || "No description available"}
-          </p>
-        </div>
-      )
-    },
-    {
-      title: "Hình ảnh từ gói",
-      content: (
-        <div>
-          <p className="mb-8 text-xl font-normal text-neutral-800 dark:text-neutral-200">
-            Hình ảnh từ gói dịch vụ
           </p>
         </div>
       )
@@ -204,10 +194,29 @@ export const UserPackageDetailPage = () => {
           ) : error ? (
             <div className="text-center text-red-500">{error}</div>
           ) : (
-            <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-10">
-              <h2 className="mb-4 max-w-4xl text-lg text-black md:text-4xl">
+            <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-20 md:px-8 lg:px-10">
+              <h2 className="text-shadow mb-4 max-w-4xl text-lg font-bold text-black md:text-4xl">
                 {packageDetail?.name || "Package Details"}
               </h2>
+              <p className="inline-flex max-w-sm items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Ngày tạo :</p>
+
+                {packageDetail?.createdDate || "0"}
+              </p>
+              <p className="inline-flex w-full items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Số lượng quảng cáo đã đăng :</p>
+                {packageDetail?.mornitoredQuantity || "0"} quảng cáo
+              </p>
+              <p className="inline-flex w-full items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Thời hạn còn lại :</p>
+
+                {packageDetail?.durationsInDays &&
+                packageDetail.durationsInDays > 0 ? (
+                  <span>{packageDetail.durationsInDays} ngày</span>
+                ) : (
+                  <span className="font-semibold">Gói của bạn đã hết hạn</span>
+                )}
+              </p>
               <p className="inline-flex max-w-sm items-center justify-start gap-4 text-sm font-semibold text-black md:text-base">
                 <span className="text-xl">Giá :</span>
                 {packageDetail?.price.toLocaleString("vi-VN", {
@@ -223,28 +232,40 @@ export const UserPackageDetailPage = () => {
               icon={<IconPencilPlus />}
               label="Tạo quảng cáo của bạn ngay"
               onClick={handleClickToCreateAdver}
+              disabled={
+                !packageDetail?.durationsInDays ||
+                packageDetail.durationsInDays <= 0
+              }
             />
-            <p className="mb-4 flex text-lg text-black md:text-4xl">
-              NẾU BẠN CẢM THẤY HÀI LÒNG VỀ GÓI CỦA CHÚNG TÔI
-            </p>
-            <div className="flex h-[30rem] w-full items-center justify-center">
-              <PinContainer title="Gia hạn ngay" onClick={handleExtendPackage}>
-                <div className="flex h-[20rem] w-[20rem] basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2">
-                  <h3 className="!m-0 max-w-xs text-pretty !pb-2 text-2xl font-bold text-white">
-                    {packageDetail?.name || "Package Details"}
-                  </h3>
-                  <div className="!m-0 !p-0 text-base font-normal">
-                    <span className="text-white">
-                      Giá :
-                      {packageDetail?.price.toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND"
-                      })}
-                    </span>
+            {packageDetail?.durationsInDays !== undefined &&
+              packageDetail.durationsInDays <= 0 && (
+                <>
+                  <p className="mb-4 flex text-lg text-black md:text-4xl">
+                    NẾU BẠN CẢM THẤY HÀI LÒNG VỀ GÓI CỦA CHÚNG TÔI
+                  </p>
+                  <div className="flex h-[30rem] w-full items-center justify-center">
+                    <PinContainer
+                      title="Gia hạn ngay"
+                      onClick={handleExtendPackage}
+                    >
+                      <div className="flex h-[20rem] w-[20rem] basis-full flex-col p-4 tracking-tight text-slate-100/50 sm:basis-1/2">
+                        <h3 className="!m-0 max-w-xs text-pretty !pb-2 text-2xl font-bold text-white">
+                          {packageDetail?.name || "Package Details"}
+                        </h3>
+                        <div className="!m-0 !p-0 text-base font-normal">
+                          <span className="text-white">
+                            Giá :
+                            {packageDetail?.price.toLocaleString("vi-VN", {
+                              style: "currency",
+                              currency: "VND"
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                    </PinContainer>
                   </div>
-                </div>
-              </PinContainer>
-            </div>
+                </>
+              )}
           </div>
         </div>
       </motion.div>

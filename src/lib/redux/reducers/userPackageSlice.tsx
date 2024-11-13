@@ -10,7 +10,7 @@ interface UserPruchasedPkgDetail {
   limitImage: number
   durationInDays: number
   advertisementPackageId: number
-  monitoredQuantity: number
+  mornitoredQuantity: number
   userId: number
   userName: string
   status: number

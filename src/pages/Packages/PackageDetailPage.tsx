@@ -26,6 +26,7 @@ interface AdvertisementPackage {
   limitAd: number
   limitContent: number
   limitImage: number
+  durationsInDays: number
   isActive: boolean
   createdDate: string
   createdBy: string
@@ -218,17 +219,48 @@ export const PackageDetailPage = () => {
           ) : error ? (
             <div className="text-center text-red-500">{error}</div>
           ) : (
-            <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-10">
-              <h2 className="mb-4 max-w-4xl text-lg text-black md:text-4xl">
+            <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 lg:px-10 flex flex-col gap-2">
+              <h2 className="mb-4 max-w-4xl text-lg text-black md:text-4xl font-bold text-shadow">
                 {packageDetail?.name || "Package Details"}
               </h2>
-              <p className="inline-flex max-w-sm items-center justify-start gap-4 text-sm font-semibold text-black md:text-base">
-                <p className="text-xl">Giá :</p>
+              <p className="inline-flex max-w-sm items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Ngày tạo :</p>
+
+                {packageDetail?.createdDate || "0"} 
+              </p>
+              <p className="inline-flex max-w-sm items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Gói được tạo bởi :</p>
+
+                {packageDetail?.createdBy || "0"} 
+              </p>
+              
+              <p className="inline-flex max-w-sm items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Giá :</p>
 
                 {packageDetail?.price.toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND"
                 })}
+              </p>
+              <p className="inline-flex max-w-sm items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Giới hạn quảng cáo :</p>
+
+                {packageDetail?.limitAd || "0"} 
+              </p>
+              <p className="inline-flex max-w-sm items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Giới hạn nội dung :</p>
+
+                {packageDetail?.limitContent || "0"} Kí tự
+              </p>
+              <p className="inline-flex max-w-sm items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Giới hạn hình ảnh :</p>
+
+                {packageDetail?.limitImage || "0"}
+              </p>
+              <p className="inline-flex max-w-sm items-center justify-start gap-2 text-sm font-semibold text-black md:text-base">
+                <p className="text-base">Thời lượng của gói :</p>
+
+                {packageDetail?.durationsInDays || "0"} ngày
               </p>
               <ArticleReading data={data} />
             </div>

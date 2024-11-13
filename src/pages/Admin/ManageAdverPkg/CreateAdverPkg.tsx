@@ -23,6 +23,7 @@ interface CreateAdverFormData {
   limitAd: number
   limitContent: number
   limitImage: number
+  durationsInDays: number
   imageIds: number[]
 }
 
@@ -86,6 +87,7 @@ export const CreateAdver: React.FC = () => {
       limitAd: 0,
       limitContent: 0,
       limitImage: 0,
+      durationsInDays: 0,
       imageIds: []
     }
   })
@@ -112,6 +114,7 @@ export const CreateAdver: React.FC = () => {
           limitAd: data.limitAd,
           limitContent: data.limitContent,
           limitImage: data.limitImage,
+          durationsInDays: data.durationsInDays,
           imageIds: imageIds
         }
 
@@ -256,6 +259,17 @@ export const CreateAdver: React.FC = () => {
             placeholder=""
             onChange={() => {}}
             label="Giới hạn hình ảnh"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+          />
+          <Input
+            id="durationsInDays"
+            type="number"
+            placeholder=""
+            onChange={() => {}}
+            label="Thời hạn của gói"
             disabled={isLoading}
             register={register}
             errors={errors}

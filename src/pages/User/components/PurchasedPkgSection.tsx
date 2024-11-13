@@ -60,11 +60,16 @@ export function PurchasedPkgSection({
         </CardItem>
         <CardItem className="mb-2 flex-grow" translateZ={40}>
           <p className="card-item-description flex-grow text-gray-600">
-            Thời gian sử dụng : {durationInDays} ngày
+            Thời hạn còn lại :
+            {durationInDays > 0 ? (
+              <span>{durationInDays} ngày</span>
+            ) : (
+              <span className="font-semibold">Gói của bạn đã hết hạn</span>
+            )}
           </p>
         </CardItem>
         <CardItem className="mb-2 flex-grow" translateZ={40}>
-          <p className="card-item-description flex-grow text-gray-600 inline-flex items-center gap-1">
+          <p className="card-item-description inline-flex flex-grow items-center gap-1 text-gray-600">
             <p className="">Giá tiền :</p>
             {price.toLocaleString("vi-VN", {
               style: "currency",
